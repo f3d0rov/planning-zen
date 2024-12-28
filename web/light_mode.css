@@ -1,0 +1,42 @@
+
+.light_mode {
+	--accent-color: #8aee8a;
+	--background-color: white;
+	--text-color: black;
+	--task-criteria-color: rgb(197, 197, 197);
+
+
+
+	--header-button-background-color: #5dbb5d;
+	--header-button-symbol-color: var(--text-color);
+
+	--header-button-background-hover-color: #73ea73;
+	--header-button-symbol-hover-color: var(--text-color);
+
+	--header-button-background-active-color: var(--text-color);
+	--header-button-symbol-active-color: #5dbb5d;
+	
+
+
+	--decision-box-square-name: gray;
+	--decision-box-square-background: #f0f0c6;
+
+	
+	--decision-box-task-text-color: var(--text-color);
+	--decision-box-task-background-color: var(--accent-color);
+
+	--decision-box-task-hover-text-color: var(--text-color);
+	--decision-box-task-hover-background-color: #47ec47;
+	--decision-box-task-hover-box-shadow: rgb(156, 156, 156) 0 3px 3px;
+
+
+	--decision-box-add-task-color: var(--text-color);
+	--decision-box-add-task-background-color: var(--accent-color);
+
+	--decision-box-add-task-hover-color: var(--text-color);
+	--decision-box-add-task-hover-background-color: #47ec47;
+	
+	--decision-box-add-task-active-color: var(--text-color);
+	--decision-box-add-task-active-background-color: #47ec47;
+	--decision-box-add-task-active-box-shadow: inset rgb(49, 49, 49) 0 3px 3px;
+}

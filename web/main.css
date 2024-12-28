@@ -1,0 +1,272 @@
+
+.noselect {
+	user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	-o-user-select: none;
+}
+
+.nodisplay {
+	display: none !important;
+}
+
+body {
+	padding: 0;
+	margin: 0;
+
+	font-family: "Finlandica", serif;
+	font-optical-sizing: auto;
+
+	background-color: var(--background-color);
+	color: var(--text-color);
+}
+
+body.switching_style, body.switching_style * {
+	transition: color 0.67s ease-in-out,
+				background-color 0.67s ease-in-out,
+				fill 0.67s ease-in-out !important;
+}
+
+.header {
+	width: 100%;
+	height: 40px;
+	display: flex;
+	flex-flow: row;
+	justify-content: center;
+	align-items: center;
+
+	margin-bottom: 10px;
+
+	padding: 5px;
+	box-sizing: border-box;
+
+	background-color: var(--accent-color);
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.header_half {
+	flex-basis: 0;
+	flex-grow: 1;
+
+	display: flex;
+	flex-flow: row;
+}
+
+.right_half {
+	justify-content: end;
+}
+
+.title {
+	color: color(--text-color);
+	font-size: 28px;
+}
+
+.header_button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	width: 32px;
+	height: 32px;
+	border-radius: 16px;
+	
+	background-color: var(--header-button-background-color);
+
+	transition: background-color 0.1s ease-in-out;
+}
+
+.header_button:hover {
+	cursor: pointer;
+	background-color: var(--header-button-background-hover-color);
+}
+
+.header_button:active {
+	background-color: var(--header-button-background-active-color);
+}
+
+.header_button_symbol {
+	fill: var(--header-button-symbol-color);
+	width: 24px;
+	height: 24px;
+	transition: fill 0.1s ease-in-out;
+}
+
+.header_button:hover .header_button_symbol {
+	fill: var(--header-button-symbol-hover-color);
+}
+
+.header_button:active .header_button_symbol {
+	fill: var(--header-button-symbol-active-color);
+}
+
+.decision_box_container {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.decision_box {
+	display: flex;
+	flex-flow: column;
+	justify-content: space-around;
+	align-items: center;
+
+	width: 816px;
+	gap: 10px;
+}
+
+.decision_box_tb {
+	display: flex;
+	flex-flow: row;
+	justify-content: space-around;
+	align-items: center;
+
+	width: 100%;
+	height: 50%;
+
+	gap: 10px;
+}
+
+.decision_box_top_names {
+	display: flex;
+	flex-flow: row;
+	justify-content: space-around;
+	align-items: center;
+
+	width: 100%;
+	height: 40px;
+	gap: 10px;
+
+	padding-left: 40px;
+	padding-right: 40px;
+
+	box-sizing: border-box;
+}
+
+.decision_box_top_name {
+	width: 50%;
+	text-align: center;
+}
+
+.decision_box_side_name {
+	writing-mode: sideways-lr;
+	width: 40px;
+	text-align: center;
+}
+
+.box_cat {
+	font-size: 28px;
+	color: var(--task-criteria-color);
+}
+
+.decision_box_square {
+	width: 50%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background-color: var(--decision-box-square-background);
+	border-radius: 10px;
+	aspect-ratio: 1;
+}
+
+.decision_box_square_name {
+	position: absolute;
+	font-size: 32px;
+	color: var(--decision-box-square-name);
+}
+
+.decision_box_square_contents {
+	display: flex;
+	
+	width: 100%;
+	height: 100%;
+
+	flex-flow: row;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: start;
+	align-content: start;
+
+	gap: 5px;
+	padding: 5px;
+	box-sizing: border-box;
+}
+
+.decision_box_task {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+
+	width: fit-content;
+	height: fit-content;
+
+	padding: 5px;
+	border-radius: 5px;
+	
+	color: var(--decision-box-task-text-color);
+	background-color: var(--decision-box-task-background-color);
+
+	transition: background-color 0.1s ease-in-out,
+				transform 0.1s ease-in-out,
+				box-shadow 0.1s ease-in-out;
+}
+
+.decision_box_task:hover {
+	color: var(--decision-box-task-hover-text-color);
+	background-color: var(--decision-box-task-hover-background-color);
+	box-shadow: var(--decision-box-task-hover-box-shadow);
+	transform: scale(105%);
+	cursor: move;
+}
+
+.decision_box_add_task_button {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+
+	height: fit-content;
+	width: 18px;
+	
+	padding: 5px;
+	border-radius: 5px;
+
+	color: var(--decision-box-add-task-color);
+	background-color: var(--decision-box-add-task-background-color);
+	
+	transition: background-color 0.1s ease-in-out,
+				box-shadow 0.1s ease-in-out;
+}
+
+.decision_box_add_task_button:hover {
+	cursor: pointer;
+	color: var(--decision-box-add-task-hover-text-color);
+	background-color: var(--decision-box-add-task-hover-background-color);
+}
+
+
+.decision_box_add_task_button:active {
+	cursor: pointer;
+	background-color: var(--decision-box-add-task-active-background-color);
+	
+	box-shadow: var(--decision-box-add-task-active-box-shadow);
+}
+
+.decision_box_add_task_button_symbol {
+	color: var(--decision-box-add-task-color);
+	fill: var(--decision-box-add-task-color);
+}
+
+.decision_box_add_task_button:hover .decision_box_add_task_button_symbol {
+	color: var(--decision-box-add-task-hover-color);
+	fill: var(--decision-box-add-task-hover-color);
+}
+
+.decision_box_add_task_button:active .decision_box_add_task_button_symbol {
+	color: var(--decision-box-add-task-active-color);
+	fill: var(--decision-box-add-task-active-color);
+}
