@@ -1,0 +1,16 @@
+{
+  "name": "planner",
+  "version": "1.0.0",
+  "description": "A simple planning and priority management app.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "f3d0rov",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
+  }
+}

@@ -1,0 +1,24 @@
+{
+	"compilerOptions": {
+		"module": "ES6",
+		"target": "ES6",
+		"moduleResolution": "bundler",
+		"outDir": "build",
+		"lib": [
+			"ES6",
+			"DOM",
+			"DOM.Iterable",
+			"DOM.AsyncIterable"
+		],
+		"sourceMap": true,
+		"rootDirs": [
+			"source"
+		],
+		"strict": true,   /* enable all strict type-checking options */
+		// "paths": {
+		// 	"common/*": ["./common/*"]
+		// },
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+	}
+}
