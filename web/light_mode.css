@@ -39,4 +39,6 @@
 	--decision-box-add-task-active-color: var(--text-color);
 	--decision-box-add-task-active-background-color: #47ec47;
 	--decision-box-add-task-active-box-shadow: inset rgb(49, 49, 49) 0 3px 3px;
+
+	--decision-box-highlight-border-color: lime;
 }

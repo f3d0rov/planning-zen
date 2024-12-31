@@ -2,6 +2,7 @@
 import { Task, TaskSection } from "../tasks/task";
 import { TaskProvider } from "../tasks/task_provider";
 import { IndexedTasks } from "./indexed_tasks";
+import { TaskElement } from "./task_element";
 import { TaskZone } from "./task_zone";
 
 
@@ -30,10 +31,14 @@ export class EisenhowerMatrixTaskEditor {
 	}
 
 	private initZones (): void {
-		this.zones.set ('do', new TaskZone ("task_zone_do"));
-		this.zones.set ('schedule', new TaskZone ("task_zone_schedule"));
-		this.zones.set ('delegate', new TaskZone ("task_zone_delegate"));
-		this.zones.set ('delete', new TaskZone ("task_zone_delete"));
+		this.zones.set ('do', new TaskZone ("task_zone_do", 'do'));
+		this.zones.set ('schedule', new TaskZone ("task_zone_schedule", 'schedule'));
+		this.zones.set ('delegate', new TaskZone ("task_zone_delegate", 'delegate'));
+		this.zones.set ('delete', new TaskZone ("task_zone_delete", 'delete'));
+
+		this.zones.forEach ((zone: TaskZone) => {
+			this.addCategoryChangeProvider (zone);
+		});
 	}
 
 	private displayInitializedTasks (): void {
@@ -46,4 +51,26 @@ export class EisenhowerMatrixTaskEditor {
 		const zone = this.zones.get (task.getSection());
 		zone?.addTask (index, task);
 	}
+
+	public addCategoryChangeProvider (catChangeProvider: CategoryChangeProvider): void {
+		catChangeProvider.setCategoryChangeCallback (
+			(taskId: number, newCat: TaskSection) => this.changeTaskCategory (taskId, newCat)
+		);
+	}
+
+	private changeTaskCategory (taskId: number, newCategory: TaskSection): void {
+		const task = this.managedTasks.getTask (taskId);
+		this.removeTaskFromZone (taskId, task.getSection());
+		task.setSection (newCategory);
+		this.displayTask (task, taskId);
+	}
+
+	private removeTaskFromZone (taskId: number, section: TaskSection): void {
+		this.zones.get (section)?.removeTask (taskId);
+	}
+}
+
+
+export interface CategoryChangeProvider {
+	setCategoryChangeCallback (callbackfn: (taskId: number, newCategory: TaskSection) => void): void;
 }

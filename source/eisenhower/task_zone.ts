@@ -1,36 +1,44 @@
 
 import { cloneTemplateById, getElementById } from "../common/common";
 import { BasicLinkedList, LinkedList } from "../common/linked_list";
-import { Task } from "../tasks/task";
+import { Task, TaskSection } from "../tasks/task";
+import { CategoryChangeProvider } from "./eisenhower_matrix_task_editor";
+import { TaskElement } from "./task_element";
 
 
-export class TaskZone {
-	static taskTemplateId: string = "task_template"; 
+export class TaskZone implements CategoryChangeProvider {
+	static contentsClass = "decision_box_square_contents";
+	static dropHighlightClass = "highlight";
 
-	private taskBoxElement: HTMLElement;
-	private displayedTasks: Map <number, Task> = new Map <number, Task>;
-	private displayedElements: Map <number, HTMLElement> = new Map <number, HTMLElement>;
+	private root: HTMLElement;
+	private contents: HTMLElement;
+	private tasks: Map <number, TaskElement> = new Map <number, TaskElement>;
 	private elementOrder: LinkedList <number> = new BasicLinkedList <number>;
+	private catChangeCallback: (taskId: number, newCat: TaskSection) => void = () => {};
+	private category: TaskSection;
 
-	constructor (taskBoxElementId: string) {
-		this.taskBoxElement = getElementById (taskBoxElementId);
+	constructor (taskBoxElementId: string, category: TaskSection) {
+		this.category = category;
+		this.root = getElementById (taskBoxElementId);
+		this.contents = this.root.querySelector (`.${TaskZone.contentsClass}`) as HTMLElement;
+		this.setupEvents();
+	}
+
+	private setupEvents (): void {
+		this.contents.addEventListener ('dragover', ev => this.dragover (ev));
+		this.contents.addEventListener ('dragend', ev => this.stopDragHighlight());
+		this.contents.addEventListener ('dragleave', ev => this.stopDragHighlight());
+		this.contents.addEventListener ('drop', ev => this.drop (ev));
 	}
 
 	public addTask (id: number, task: Task): void {
-		this.displayedTasks.set (id, task);
 		this.generateElementForTask (id, task);
 		this.displayElement (id);
 	}
 
 	private generateElementForTask (id: number, task: Task): void {
-		const newElement = cloneTemplateById (TaskZone.taskTemplateId);
-		newElement.id = this.getElementIdForTask (id);
-		newElement.innerHTML = task.getName();
-		this.displayedElements.set (id, newElement);
-	}
-
-	private getElementIdForTask (id: number): string {
-		return `task_${id}`;
+		const newElement = new TaskElement (id, task);
+		this.tasks.set (id, newElement);
 	}
 
 	private displayElement (id: number): void {
@@ -64,20 +72,19 @@ export class TaskZone {
 	private insertBefore (insertedTask: number, before: number): void {
 		const insertedElement = this.getElementForTask (insertedTask);
 		const beforeElement = this.getElementForTask (before);
-		this.taskBoxElement.insertBefore (insertedElement, beforeElement);
+		this.contents.insertBefore (insertedElement, beforeElement);
 		this.elementOrder.insertBefore (insertedTask, before);
 	}
 
 	private insertAtEnd (taskId: number): void {
 		this.elementOrder.pushBack (taskId);
 		const insertedElement = this.getElementForTask (taskId);
-		this.taskBoxElement.appendChild (insertedElement);
+		this.contents.appendChild (insertedElement);
 	}
 
 	public removeTask (id: number): void {
 		this.tryGetElementForTask (id)?.remove();
-		this.displayedTasks.delete (id);
-		this.displayedElements.delete (id);
+		this.tasks.delete (id);
 		this.elementOrder.pop (id);
 	}
 
@@ -86,7 +93,7 @@ export class TaskZone {
 	}
 
 	private tryGetTask (id: number): Task | undefined {
-		return this.displayedTasks.get (id);
+		return this.tryGetTaskData (id)?.getTask();
 	}
 
 	private getElementForTask (id: number): HTMLElement {
@@ -94,6 +101,45 @@ export class TaskZone {
 	}
 
 	private tryGetElementForTask (id: number): HTMLElement | undefined {
-		return this.displayedElements.get (id);
+		return this.tryGetTaskData (id)?.getElement();
+	}
+
+	private tryGetTaskData (id: number): TaskElement | undefined {
+		return this.tasks.get (id);
+	}
+
+	private getTaskData (id: number): TaskElement {
+		return this.tryGetTaskData (id) as TaskElement;
+	}
+
+	private dragover (event: DragEvent): void {
+		event.preventDefault();
+		this.root.classList.add (TaskZone.dropHighlightClass);
+	}
+
+	private drop (event: DragEvent): void {
+		this.stopDragHighlight();
+		const msg = event.dataTransfer?.getData (TaskElement.taskDragType);
+		const taskId = this.getTaskId (msg);
+		if (taskId === undefined) return;
+
+		event.preventDefault();
+		console.log (`Received task #${taskId}`);
+		this.catChangeCallback (taskId, this.category);
+	}
+
+	private stopDragHighlight (): void {
+		this.root.classList.remove (TaskZone.dropHighlightClass);
+	}
+
+	private getTaskId (message: string | undefined): number | undefined {
+		if (message === undefined) return undefined;
+		const droppedTaskId = parseInt (message);
+		if (isNaN (droppedTaskId)) return undefined;
+		return droppedTaskId;
+	}
+
+	public setCategoryChangeCallback (callbackfn: (taskId: number, newCategory: TaskSection) => any): void {
+		this.catChangeCallback = callbackfn;
 	}
 }

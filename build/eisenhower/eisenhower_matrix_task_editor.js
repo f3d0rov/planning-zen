@@ -19,10 +19,13 @@ export class EisenhowerMatrixTaskEditor {
         });
     }
     initZones() {
-        this.zones.set('do', new TaskZone("task_zone_do"));
-        this.zones.set('schedule', new TaskZone("task_zone_schedule"));
-        this.zones.set('delegate', new TaskZone("task_zone_delegate"));
-        this.zones.set('delete', new TaskZone("task_zone_delete"));
+        this.zones.set('do', new TaskZone("task_zone_do", 'do'));
+        this.zones.set('schedule', new TaskZone("task_zone_schedule", 'schedule'));
+        this.zones.set('delegate', new TaskZone("task_zone_delegate", 'delegate'));
+        this.zones.set('delete', new TaskZone("task_zone_delete", 'delete'));
+        this.zones.forEach((zone) => {
+            this.addCategoryChangeProvider(zone);
+        });
     }
     displayInitializedTasks() {
         this.managedTasks.forEach((task, index) => {
@@ -32,6 +35,19 @@ export class EisenhowerMatrixTaskEditor {
     displayTask(task, index) {
         const zone = this.zones.get(task.getSection());
         zone === null || zone === void 0 ? void 0 : zone.addTask(index, task);
+    }
+    addCategoryChangeProvider(catChangeProvider) {
+        catChangeProvider.setCategoryChangeCallback((taskId, newCat) => this.changeTaskCategory(taskId, newCat));
+    }
+    changeTaskCategory(taskId, newCategory) {
+        const task = this.managedTasks.getTask(taskId);
+        this.removeTaskFromZone(taskId, task.getSection());
+        task.setSection(newCategory);
+        this.displayTask(task, taskId);
+    }
+    removeTaskFromZone(taskId, section) {
+        var _a;
+        (_a = this.zones.get(section)) === null || _a === void 0 ? void 0 : _a.removeTask(taskId);
     }
 }
 //# sourceMappingURL=eisenhower_matrix_task_editor.js.map

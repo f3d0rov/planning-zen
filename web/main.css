@@ -169,6 +169,8 @@ body.switching_style, body.switching_style * {
 }
 
 .decision_box_square {
+	position: relative;
+
 	width: 50%;
 	height: 100%;
 	display: flex;
@@ -184,6 +186,24 @@ body.switching_style, body.switching_style * {
 	position: absolute;
 	font-size: 32px;
 	color: var(--decision-box-square-name);
+	pointer-events: none;
+}
+
+.decision_box_square_highlight_box {
+	position: absolute;
+	pointer-events: none;
+	
+	width: 95%;
+	height: 95%;
+
+	border: transparent dashed 3px;
+	border-radius: 25px;
+
+	transition: border-color 0.1s ease-out;
+}
+
+.decision_box_square.highlight .decision_box_square_highlight_box {
+	border-color: var(--decision-box-highlight-border-color);
 }
 
 .decision_box_square_contents {
@@ -220,6 +240,8 @@ body.switching_style, body.switching_style * {
 	transition: background-color 0.1s ease-in-out,
 				transform 0.1s ease-in-out,
 				box-shadow 0.1s ease-in-out;
+
+	z-index: 10;
 }
 
 .decision_box_task:hover {
