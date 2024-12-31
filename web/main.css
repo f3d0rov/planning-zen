@@ -11,6 +11,10 @@
 	display: none !important;
 }
 
+.template {
+	display: none !important;
+}
+
 body {
 	padding: 0;
 	margin: 0;
@@ -52,6 +56,8 @@ body.switching_style, body.switching_style * {
 
 	display: flex;
 	flex-flow: row;
+
+	gap: 5px;
 }
 
 .right_half {

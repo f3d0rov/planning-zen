@@ -1,5 +1,5 @@
 
-import { getElementById } from "./common";
+import { getElementById } from "../common/common";
 
 class StyleModeState {
 	static hiddenSymbolClass: string = "nodisplay";
