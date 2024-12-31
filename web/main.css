@@ -65,8 +65,18 @@ body.switching_style, body.switching_style * {
 }
 
 .title {
-	color: color(--text-color);
+	color: var(--text-color);
 	font-size: 28px;
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+	justify-content: center;
+}
+
+.title_icon {
+	fill: var(--text-color);
+	width: 32px;
+	height: 32px;
 }
 
 .header_button {
