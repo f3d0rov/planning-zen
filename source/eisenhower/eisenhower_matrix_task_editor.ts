@@ -38,6 +38,7 @@ export class EisenhowerMatrixTaskEditor {
 
 		this.zones.forEach ((zone: TaskZone) => {
 			this.addCategoryChangeProvider (zone);
+			this.addNewTaskProvider (zone);
 		});
 	}
 
@@ -58,6 +59,11 @@ export class EisenhowerMatrixTaskEditor {
 		);
 	}
 
+	public addNewTaskProvider (newTaskProvider: NewTaskProvider): void {
+		newTaskProvider.setInitializeTaskCallback (() => this.initTaskCallback());
+		newTaskProvider.setFinalizeTaskCallback (task => this.finalizeTaskCallback (task));
+	}
+
 	private changeTaskCategory (taskId: number, newCategory: TaskSection): void {
 		const task = this.managedTasks.getTask (taskId);
 		this.removeTaskFromZone (taskId, task.getSection());
@@ -68,9 +74,24 @@ export class EisenhowerMatrixTaskEditor {
 	private removeTaskFromZone (taskId: number, section: TaskSection): void {
 		this.zones.get (section)?.removeTask (taskId);
 	}
+
+	private initTaskCallback (): Task {
+		return this.taskProvider.createNewTask();
+	}
+
+	private finalizeTaskCallback (task: Task): void {
+		const id = this.managedTasks.addTask (task);
+		this.displayTask (task, id);
+	}
 }
 
 
 export interface CategoryChangeProvider {
 	setCategoryChangeCallback (callbackfn: (taskId: number, newCategory: TaskSection) => void): void;
+}
+
+
+export interface NewTaskProvider {
+	setInitializeTaskCallback (callbackfn: () => Task): void;
+	setFinalizeTaskCallback (callbackfn: (task: Task) => void): void;
 }

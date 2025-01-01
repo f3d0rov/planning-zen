@@ -220,6 +220,35 @@ class BasicLinkedListIterator {
 
 /***/ }),
 
+/***/ "../build/common/text_width.js":
+/*!*************************************!*\
+  !*** ../build/common/text_width.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getTextWidth: () => (/* binding */ getTextWidth)
+/* harmony export */ });
+// with help from https://stackoverflow.com/a/21015393/8665933
+var testingCanvas = document.createElement('canvas');
+function getTextWidth(text, styledElement) {
+    let ctx = testingCanvas.getContext('2d');
+    ctx.font = getFont(styledElement);
+    return ctx.measureText(text).width;
+}
+function getFont(elem) {
+    let css = window.getComputedStyle(elem);
+    let weight = css.getPropertyValue('font-weight');
+    let size = css.getPropertyValue('font-size');
+    let family = css.getPropertyValue('font-family');
+    let font = `${weight} ${size} ${family}`;
+    return font;
+}
+//# sourceMappingURL=text_width.js.map
+
+/***/ }),
+
 /***/ "../build/eisenhower/eisenhower_matrix_task_editor.js":
 /*!************************************************************!*\
   !*** ../build/eisenhower/eisenhower_matrix_task_editor.js ***!
@@ -259,6 +288,7 @@ class EisenhowerMatrixTaskEditor {
         this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_1__.TaskZone("task_zone_delete", 'delete'));
         this.zones.forEach((zone) => {
             this.addCategoryChangeProvider(zone);
+            this.addNewTaskProvider(zone);
         });
     }
     displayInitializedTasks() {
@@ -273,6 +303,10 @@ class EisenhowerMatrixTaskEditor {
     addCategoryChangeProvider(catChangeProvider) {
         catChangeProvider.setCategoryChangeCallback((taskId, newCat) => this.changeTaskCategory(taskId, newCat));
     }
+    addNewTaskProvider(newTaskProvider) {
+        newTaskProvider.setInitializeTaskCallback(() => this.initTaskCallback());
+        newTaskProvider.setFinalizeTaskCallback(task => this.finalizeTaskCallback(task));
+    }
     changeTaskCategory(taskId, newCategory) {
         const task = this.managedTasks.getTask(taskId);
         this.removeTaskFromZone(taskId, task.getSection());
@@ -282,6 +316,13 @@ class EisenhowerMatrixTaskEditor {
     removeTaskFromZone(taskId, section) {
         var _a;
         (_a = this.zones.get(section)) === null || _a === void 0 ? void 0 : _a.removeTask(taskId);
+    }
+    initTaskCallback() {
+        return this.taskProvider.createNewTask();
+    }
+    finalizeTaskCallback(task) {
+        const id = this.managedTasks.addTask(task);
+        this.displayTask(task, id);
     }
 }
 //# sourceMappingURL=eisenhower_matrix_task_editor.js.map
@@ -336,22 +377,29 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   TaskElement: () => (/* binding */ TaskElement)
 /* harmony export */ });
 /* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
+/* harmony import */ var _common_text_width__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/text_width */ "../build/common/text_width.js");
+
 
 class TaskElement {
     constructor(id, task) {
         this.id = id;
         this.task = task;
         this.element = this.generateElement();
-        this.setupEvents();
+        const stateInfo = this.generateTaskElementStateInfo();
+        this.switchToState(new DisplayedTaskElement(stateInfo));
     }
     generateElement() {
         const newElement = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.cloneTemplateById)(TaskElement.taskTemplateId);
         newElement.id = this.getElementIdForTask(this.id);
-        newElement.innerHTML = this.task.getName();
+        newElement.addEventListener('dblclick', ev => this.handleDblclick(ev));
         return newElement;
     }
     getElementIdForTask(id) {
         return `task_${id}`;
+    }
+    handleDblclick(event) {
+        event.preventDefault();
+        event.stopPropagation();
     }
     getElement() {
         return this.element;
@@ -362,18 +410,117 @@ class TaskElement {
     remove() {
         this.element.remove();
     }
-    setupEvents() {
-        this.element.addEventListener('dragstart', ev => this.dragstart(ev));
+    generateTaskElementStateInfo() {
+        return new TaskElemStateInfo(this.id, this.task, this.element);
     }
-    dragstart(event) {
-        if (event.dataTransfer) {
-            event.dataTransfer.setData(TaskElement.taskDragType, `${this.id}`);
-            event.dataTransfer.dropEffect = "move";
-        }
+    switchToState(state) {
+        this.state = state;
+        this.state.setSwitchStateCallback(state => this.switchToState(state));
     }
 }
 TaskElement.taskTemplateId = "task_template";
 TaskElement.taskDragType = "taskid";
+class TaskElemStateInfo {
+    constructor(id, task, root) {
+        this.id = id;
+        this.task = task;
+        this.root = root;
+    }
+}
+class TaskElementState {
+    constructor(taskElemInfo) {
+        this.switchToState = () => { };
+        this.taskElemInfo = taskElemInfo;
+        this.getRoot().innerHTML = "";
+    }
+    getId() {
+        return this.taskElemInfo.id;
+    }
+    getRoot() {
+        return this.taskElemInfo.root;
+    }
+    getTask() {
+        return this.taskElemInfo.task;
+    }
+    getElemInfo() {
+        return this.taskElemInfo;
+    }
+    setSwitchStateCallback(callbackfn) {
+        this.switchToState = callbackfn;
+    }
+}
+class DisplayedTaskElement extends TaskElementState {
+    constructor(taskElemInfo) {
+        super(taskElemInfo);
+        this.element = this.constructElement();
+        this.setupEvents();
+    }
+    constructElement() {
+        const element = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.cloneTemplateById)(DisplayedTaskElement.displayTemplateId);
+        element.innerText = this.getTask().getName();
+        this.getRoot().appendChild(element);
+        return element;
+    }
+    setupEvents() {
+        this.element.addEventListener('dragstart', ev => this.handleDragstart(ev));
+        this.element.addEventListener('dblclick', ev => this.handleDblclick(ev));
+    }
+    handleDragstart(event) {
+        if (event.dataTransfer) {
+            event.dataTransfer.setData(TaskElement.taskDragType, `${this.getId()}`);
+            event.dataTransfer.dropEffect = "move";
+        }
+    }
+    handleDblclick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.switchToState(new EditedTaskElement(this.getElemInfo()));
+    }
+}
+DisplayedTaskElement.displayTemplateId = "task_display_template";
+class EditedTaskElement extends TaskElementState {
+    constructor(taskElemInfo) {
+        super(taskElemInfo);
+        this.input = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.cloneTemplateById)(EditedTaskElement.templateClassId);
+        this.input.value = this.getTask().getName();
+        this.getRoot().appendChild(this.input);
+        this.updateInputSize();
+        this.setupEvents();
+        this.input.focus();
+    }
+    setupEvents() {
+        this.input.addEventListener('keypress', ev => this.stopIfEnter(ev));
+        this.input.addEventListener('keyup', ev => this.cancelIfEscape(ev));
+        this.input.addEventListener('input', ev => this.updateInputSize());
+        this.input.addEventListener('blur', ev => this.stopEditing());
+    }
+    stopIfEnter(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            this.stopEditing();
+        }
+    }
+    cancelIfEscape(event) {
+        if (event.code === "Escape") {
+            event.preventDefault();
+            this.cancelEditing();
+        }
+    }
+    updateInputSize() {
+        const currentText = this.input.value;
+        const targetWidth = (0,_common_text_width__WEBPACK_IMPORTED_MODULE_1__.getTextWidth)(currentText, this.input);
+        this.input.style.width = `${targetWidth}px`;
+        this.input.style.height = `${this.input.scrollHeight}px`;
+    }
+    stopEditing() {
+        this.getTask().setName(this.input.value);
+        this.switchToState(new DisplayedTaskElement(this.getElemInfo()));
+    }
+    cancelEditing() {
+        this.switchToState(new DisplayedTaskElement(this.getElemInfo()));
+    }
+}
+EditedTaskElement.templateClassId = "task_edit_template";
 //# sourceMappingURL=task_element.js.map
 
 /***/ }),
@@ -409,6 +556,7 @@ class TaskZone {
         this.contents.addEventListener('dragend', ev => this.stopDragHighlight());
         this.contents.addEventListener('dragleave', ev => this.stopDragHighlight());
         this.contents.addEventListener('drop', ev => this.drop(ev));
+        this.contents.addEventListener('dblclick', ev => this.spawnNewTask(ev));
     }
     addTask(id, task) {
         this.generateElementForTask(id, task);
@@ -505,6 +653,26 @@ class TaskZone {
     }
     setCategoryChangeCallback(callbackfn) {
         this.catChangeCallback = callbackfn;
+    }
+    setInitializeTaskCallback(callbackfn) {
+        this.initNewTask = callbackfn;
+    }
+    setFinalizeTaskCallback(callbackfn) {
+        this.finalizeNewTask = callbackfn;
+    }
+    spawnNewTask(event) {
+        const task = this.initNewTask();
+        task.setName("New task!");
+        task.setOrderIndex(this.getNextLastIndex());
+        task.setSection(this.category);
+        this.finalizeNewTask(task);
+    }
+    getNextLastIndex() {
+        const lastTaskId = this.elementOrder.back();
+        if (lastTaskId === undefined)
+            return 1;
+        else
+            return this.getTask(lastTaskId).getOrderIndex() + 1;
     }
 }
 TaskZone.contentsClass = "decision_box_square_contents";

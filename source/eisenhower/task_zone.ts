@@ -2,11 +2,11 @@
 import { cloneTemplateById, getElementById } from "../common/common";
 import { BasicLinkedList, LinkedList } from "../common/linked_list";
 import { Task, TaskSection } from "../tasks/task";
-import { CategoryChangeProvider } from "./eisenhower_matrix_task_editor";
+import { CategoryChangeProvider, NewTaskProvider } from "./eisenhower_matrix_task_editor";
 import { TaskElement } from "./task_element";
 
 
-export class TaskZone implements CategoryChangeProvider {
+export class TaskZone implements CategoryChangeProvider, NewTaskProvider {
 	static contentsClass = "decision_box_square_contents";
 	static dropHighlightClass = "highlight";
 
@@ -16,6 +16,9 @@ export class TaskZone implements CategoryChangeProvider {
 	private elementOrder: LinkedList <number> = new BasicLinkedList <number>;
 	private catChangeCallback: (taskId: number, newCat: TaskSection) => void = () => {};
 	private category: TaskSection;
+
+	private initNewTask: (() => Task) | undefined;
+	private finalizeNewTask: ((task: Task) => void) | undefined;
 
 	constructor (taskBoxElementId: string, category: TaskSection) {
 		this.category = category;
@@ -29,6 +32,7 @@ export class TaskZone implements CategoryChangeProvider {
 		this.contents.addEventListener ('dragend', ev => this.stopDragHighlight());
 		this.contents.addEventListener ('dragleave', ev => this.stopDragHighlight());
 		this.contents.addEventListener ('drop', ev => this.drop (ev));
+		this.contents.addEventListener ('dblclick', ev => this.spawnNewTask (ev));
 	}
 
 	public addTask (id: number, task: Task): void {
@@ -142,4 +146,27 @@ export class TaskZone implements CategoryChangeProvider {
 	public setCategoryChangeCallback (callbackfn: (taskId: number, newCategory: TaskSection) => any): void {
 		this.catChangeCallback = callbackfn;
 	}
+
+	public setInitializeTaskCallback (callbackfn: () => Task): void {
+		this.initNewTask = callbackfn;
+	}
+
+	public setFinalizeTaskCallback (callbackfn: (task: Task) => void): void {
+		this.finalizeNewTask = callbackfn;
+	}
+
+	private spawnNewTask (event: MouseEvent): void {
+		const task = this.initNewTask! ();
+		task.setName ("New task!");
+		task.setOrderIndex (this.getNextLastIndex());
+		task.setSection (this.category);
+		this.finalizeNewTask! (task);
+	}
+
+	private getNextLastIndex (): number {
+		const lastTaskId = this.elementOrder.back();
+		if (lastTaskId === undefined) return 1;
+		else return this.getTask (lastTaskId).getOrderIndex() + 1;
+	}
+	
 }

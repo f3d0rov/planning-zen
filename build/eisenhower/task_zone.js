@@ -16,6 +16,7 @@ export class TaskZone {
         this.contents.addEventListener('dragend', ev => this.stopDragHighlight());
         this.contents.addEventListener('dragleave', ev => this.stopDragHighlight());
         this.contents.addEventListener('drop', ev => this.drop(ev));
+        this.contents.addEventListener('dblclick', ev => this.spawnNewTask(ev));
     }
     addTask(id, task) {
         this.generateElementForTask(id, task);
@@ -112,6 +113,26 @@ export class TaskZone {
     }
     setCategoryChangeCallback(callbackfn) {
         this.catChangeCallback = callbackfn;
+    }
+    setInitializeTaskCallback(callbackfn) {
+        this.initNewTask = callbackfn;
+    }
+    setFinalizeTaskCallback(callbackfn) {
+        this.finalizeNewTask = callbackfn;
+    }
+    spawnNewTask(event) {
+        const task = this.initNewTask();
+        task.setName("New task!");
+        task.setOrderIndex(this.getNextLastIndex());
+        task.setSection(this.category);
+        this.finalizeNewTask(task);
+    }
+    getNextLastIndex() {
+        const lastTaskId = this.elementOrder.back();
+        if (lastTaskId === undefined)
+            return 1;
+        else
+            return this.getTask(lastTaskId).getOrderIndex() + 1;
     }
 }
 TaskZone.contentsClass = "decision_box_square_contents";

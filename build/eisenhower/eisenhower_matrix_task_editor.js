@@ -25,6 +25,7 @@ export class EisenhowerMatrixTaskEditor {
         this.zones.set('delete', new TaskZone("task_zone_delete", 'delete'));
         this.zones.forEach((zone) => {
             this.addCategoryChangeProvider(zone);
+            this.addNewTaskProvider(zone);
         });
     }
     displayInitializedTasks() {
@@ -39,6 +40,10 @@ export class EisenhowerMatrixTaskEditor {
     addCategoryChangeProvider(catChangeProvider) {
         catChangeProvider.setCategoryChangeCallback((taskId, newCat) => this.changeTaskCategory(taskId, newCat));
     }
+    addNewTaskProvider(newTaskProvider) {
+        newTaskProvider.setInitializeTaskCallback(() => this.initTaskCallback());
+        newTaskProvider.setFinalizeTaskCallback(task => this.finalizeTaskCallback(task));
+    }
     changeTaskCategory(taskId, newCategory) {
         const task = this.managedTasks.getTask(taskId);
         this.removeTaskFromZone(taskId, task.getSection());
@@ -48,6 +53,13 @@ export class EisenhowerMatrixTaskEditor {
     removeTaskFromZone(taskId, section) {
         var _a;
         (_a = this.zones.get(section)) === null || _a === void 0 ? void 0 : _a.removeTask(taskId);
+    }
+    initTaskCallback() {
+        return this.taskProvider.createNewTask();
+    }
+    finalizeTaskCallback(task) {
+        const id = this.managedTasks.addTask(task);
+        this.displayTask(task, id);
     }
 }
 //# sourceMappingURL=eisenhower_matrix_task_editor.js.map

@@ -29,6 +29,7 @@
 	--decision-box-task-hover-background-color: #3db03d;
 	--decision-box-task-hover-box-shadow: rgb(26, 26, 26) 0 3px 3px;
 
+	--task-font-size: 16px;
 
 	--decision-box-add-task-color: var(--text-color);
 	--decision-box-add-task-background-color: var(--accent-color);
