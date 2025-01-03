@@ -30,11 +30,20 @@ export class ThresholdBox {
 		return new ThresholdBox (box);
 	}
 
-	public isAfter (thresh: BasicPoint): boolean {
-		const threshFarAwayBack = thresh.x < this.rect.left || thresh.y < this.rect.top;
-		const diagonalYAtThreshX = this.getDiagonalYAtX (thresh.x);
-		const threshAboveDiagonal =  thresh.y < diagonalYAtThreshX;
-		return threshFarAwayBack || threshAboveDiagonal;
+	public isAfter (point: BasicPoint): boolean {
+		const pointIsBelow = point.y > this.rect.bottom;
+		if (pointIsBelow) return false;
+
+		const pointIsAbove = point.y < this.rect.top;
+		if (pointIsAbove) return true;
+		
+		return this.isPointAboveDiagonal (point);
+	}
+
+	private isPointAboveDiagonal (point: BasicPoint) {
+		const diagonalYAtThreshX = this.getDiagonalYAtX (point.x);
+		const pointAboveDiagonal =  point.y < diagonalYAtThreshX;
+		return pointAboveDiagonal;
 	}
 
 	private getDiagonalYAtX (x: number): number {
@@ -236,7 +245,7 @@ export class TaskZone implements CategoryChangeProvider, NewTaskProvider {
 			const taskElement = this.getElementForTask (taskId);
 			const taskThreshold = ThresholdBox.fromElement (taskElement);
 			lastIndex = task.getOrderIndex();
-			
+
 			if (taskThreshold.isAfter (position)) {
 				return lastIndex;
 			}

@@ -573,11 +573,19 @@ class ThresholdBox {
         const box = element.getBoundingClientRect();
         return new ThresholdBox(box);
     }
-    isAfter(thresh) {
-        const threshFarAwayBack = thresh.x < this.rect.left || thresh.y < this.rect.top;
-        const diagonalYAtThreshX = this.getDiagonalYAtX(thresh.x);
-        const threshAboveDiagonal = thresh.y < diagonalYAtThreshX;
-        return threshFarAwayBack || threshAboveDiagonal;
+    isAfter(point) {
+        const pointIsBelow = point.y > this.rect.bottom;
+        if (pointIsBelow)
+            return false;
+        const pointIsAbove = point.y < this.rect.top;
+        if (pointIsAbove)
+            return true;
+        return this.isPointAboveDiagonal(point);
+    }
+    isPointAboveDiagonal(point) {
+        const diagonalYAtThreshX = this.getDiagonalYAtX(point.x);
+        const pointAboveDiagonal = point.y < diagonalYAtThreshX;
+        return pointAboveDiagonal;
     }
     getDiagonalYAtX(x) {
         return this.rect.bottom - this.rect.height / this.rect.width * (x - this.rect.left);

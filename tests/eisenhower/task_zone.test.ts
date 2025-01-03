@@ -79,7 +79,7 @@ test (
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (-5, 15);
-		expect (box.isAfter (point)).toEqual (true);
+		expect (box.isAfter (point)).toEqual (false);
 	}
 );
 
@@ -124,6 +124,25 @@ test (
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (5, 15);
+		expect (box.isAfter (point)).toEqual (false);
+	}
+);
+
+
+test (
+	"ThresholdBox: left below",
+	() => {
+		const box = createTestBox_0_0_10_10();
+		const point = new BasicPoint (-5, 12);
+		expect (box.isAfter (point)).toEqual (false);
+	}
+);
+
+test (
+	"ThresholdBox: left far below",
+	() => {
+		const box = createTestBox_0_0_10_10();
+		const point = new BasicPoint (-5, 18);
 		expect (box.isAfter (point)).toEqual (false);
 	}
 );
