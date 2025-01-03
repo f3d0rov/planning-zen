@@ -1,9 +1,64 @@
 
 import { cloneTemplateById, getElementById } from "../common/common";
 import { BasicLinkedList, LinkedList } from "../common/linked_list";
+import { getMousePosition } from "../common/mouse_pos";
 import { Task, TaskSection } from "../tasks/task";
 import { CategoryChangeProvider, NewTaskProvider } from "./eisenhower_matrix_task_editor";
 import { TaskElement } from "./task_element";
+
+
+export class BasicPoint {
+	public x: number = 0;
+	public y: number = 0;
+
+	constructor (x: number, y: number) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+
+export class ThresholdBox {
+	private rect: DOMRect;
+
+	constructor (rect: DOMRect) {
+		this.rect = rect;
+	}
+
+	public static fromElement (element: HTMLElement): ThresholdBox {
+		const box = element.getBoundingClientRect();
+		return new ThresholdBox (box);
+	}
+
+	public isAfter (thresh: BasicPoint): boolean {
+		const threshFarAwayBack = thresh.x < this.rect.left || thresh.y < this.rect.top;
+		const diagonalYAtThreshX = this.getDiagonalYAtX (thresh.x);
+		const threshAboveDiagonal =  thresh.y < diagonalYAtThreshX;
+		return threshFarAwayBack || threshAboveDiagonal;
+	}
+
+	private getDiagonalYAtX (x: number): number {
+		return this.rect.bottom - this.rect.height / this.rect.width * (x - this.rect.left);
+	}
+}
+
+class TaskThresholdInfo {
+	private taskId: number;
+	private threshold: ThresholdBox;
+
+	constructor (taskId: number, threshold: ThresholdBox) {
+		this.taskId = taskId;
+		this.threshold = threshold;
+	}
+
+	public getTaskId (): number {
+		return this.taskId;
+	}
+
+	public getThreshold (): ThresholdBox {
+		return this.threshold;
+	}
+}
 
 
 export class TaskZone implements CategoryChangeProvider, NewTaskProvider {
@@ -14,7 +69,7 @@ export class TaskZone implements CategoryChangeProvider, NewTaskProvider {
 	private contents: HTMLElement;
 	private tasks: Map <number, TaskElement> = new Map <number, TaskElement>;
 	private elementOrder: LinkedList <number> = new BasicLinkedList <number>;
-	private catChangeCallback: (taskId: number, newCat: TaskSection) => void = () => {};
+	private catChangeCallback: (taskId: number, newCat: TaskSection, newIndex: number) => void = () => {};
 	private category: TaskSection;
 
 	private initNewTask: (() => Task) | undefined;
@@ -28,10 +83,10 @@ export class TaskZone implements CategoryChangeProvider, NewTaskProvider {
 	}
 
 	private setupEvents (): void {
-		this.contents.addEventListener ('dragover', ev => this.dragover (ev));
+		this.contents.addEventListener ('dragover', ev => this.handleDragover (ev));
 		this.contents.addEventListener ('dragend', ev => this.stopDragHighlight());
 		this.contents.addEventListener ('dragleave', ev => this.stopDragHighlight());
-		this.contents.addEventListener ('drop', ev => this.drop (ev));
+		this.contents.addEventListener ('drop', ev => this.handleDrop (ev));
 		this.contents.addEventListener ('dblclick', ev => this.spawnNewTask (ev));
 	}
 
@@ -116,20 +171,23 @@ export class TaskZone implements CategoryChangeProvider, NewTaskProvider {
 		return this.tryGetTaskData (id) as TaskElement;
 	}
 
-	private dragover (event: DragEvent): void {
+	private handleDragover (event: DragEvent): void {
 		event.preventDefault();
 		this.root.classList.add (TaskZone.dropHighlightClass);
 	}
 
-	private drop (event: DragEvent): void {
+	private handleDrop (event: DragEvent): void {
 		this.stopDragHighlight();
 		const msg = event.dataTransfer?.getData (TaskElement.taskDragType);
 		const taskId = this.getTaskId (msg);
 		if (taskId === undefined) return;
+		
+		const dropPos = new BasicPoint (event.pageX, event.pageY);
+		const droppedTaskIndex = this.getIndexForDroppedTask (dropPos);
 
 		event.preventDefault();
 		console.log (`Received task #${taskId}`);
-		this.catChangeCallback (taskId, this.category);
+		this.catChangeCallback (taskId, this.category, droppedTaskIndex);
 	}
 
 	private stopDragHighlight (): void {
@@ -143,7 +201,7 @@ export class TaskZone implements CategoryChangeProvider, NewTaskProvider {
 		return droppedTaskId;
 	}
 
-	public setCategoryChangeCallback (callbackfn: (taskId: number, newCategory: TaskSection) => any): void {
+	public setCategoryChangeCallback (callbackfn: (taskId: number, newCategory: TaskSection, newIndex: number) => any): void {
 		this.catChangeCallback = callbackfn;
 	}
 
@@ -168,5 +226,21 @@ export class TaskZone implements CategoryChangeProvider, NewTaskProvider {
 		if (lastTaskId === undefined) return 1;
 		else return this.getTask (lastTaskId).getOrderIndex() + 1;
 	}
-	
+
+	private getIndexForDroppedTask (position: BasicPoint): number {
+		const iterator = this.elementOrder.iterate();
+		let lastIndex = 0;
+		while (iterator.hasNext()) {
+			const taskId = iterator.getNext();
+			const task = this.getTask (taskId);
+			const taskElement = this.getElementForTask (taskId);
+			const taskThreshold = ThresholdBox.fromElement (taskElement);
+			lastIndex = task.getOrderIndex();
+			
+			if (taskThreshold.isAfter (position)) {
+				return lastIndex;
+			}
+		}
+		return lastIndex + 1;
+	}	
 }

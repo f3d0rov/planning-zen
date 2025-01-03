@@ -1,10 +1,11 @@
 export class BasicTask {
-    constructor(name, section = "unset") {
+    constructor(name, section = "unset", index = 0) {
         this.name = "";
         this.section = "unset";
         this.index = 0;
         this.name = name;
         this.section = section;
+        this.index = index;
     }
     getName() {
         return this.name;

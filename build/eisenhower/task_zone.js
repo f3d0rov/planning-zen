@@ -1,6 +1,44 @@
 import { getElementById } from "../common/common";
 import { BasicLinkedList } from "../common/linked_list";
 import { TaskElement } from "./task_element";
+export class BasicPoint {
+    constructor(x, y) {
+        this.x = 0;
+        this.y = 0;
+        this.x = x;
+        this.y = y;
+    }
+}
+export class ThresholdBox {
+    constructor(rect) {
+        this.rect = rect;
+    }
+    static fromElement(element) {
+        const box = element.getBoundingClientRect();
+        return new ThresholdBox(box);
+    }
+    isAfter(thresh) {
+        const threshFarAwayBack = thresh.x < this.rect.left || thresh.y < this.rect.top;
+        const diagonalYAtThreshX = this.getDiagonalYAtX(thresh.x);
+        const threshAboveDiagonal = thresh.y < diagonalYAtThreshX;
+        return threshFarAwayBack || threshAboveDiagonal;
+    }
+    getDiagonalYAtX(x) {
+        return this.rect.bottom - this.rect.height / this.rect.width * (x - this.rect.left);
+    }
+}
+class TaskThresholdInfo {
+    constructor(taskId, threshold) {
+        this.taskId = taskId;
+        this.threshold = threshold;
+    }
+    getTaskId() {
+        return this.taskId;
+    }
+    getThreshold() {
+        return this.threshold;
+    }
+}
 export class TaskZone {
     constructor(taskBoxElementId, category) {
         this.tasks = new Map;
@@ -12,10 +50,10 @@ export class TaskZone {
         this.setupEvents();
     }
     setupEvents() {
-        this.contents.addEventListener('dragover', ev => this.dragover(ev));
+        this.contents.addEventListener('dragover', ev => this.handleDragover(ev));
         this.contents.addEventListener('dragend', ev => this.stopDragHighlight());
         this.contents.addEventListener('dragleave', ev => this.stopDragHighlight());
-        this.contents.addEventListener('drop', ev => this.drop(ev));
+        this.contents.addEventListener('drop', ev => this.handleDrop(ev));
         this.contents.addEventListener('dblclick', ev => this.spawnNewTask(ev));
     }
     addTask(id, task) {
@@ -85,20 +123,22 @@ export class TaskZone {
     getTaskData(id) {
         return this.tryGetTaskData(id);
     }
-    dragover(event) {
+    handleDragover(event) {
         event.preventDefault();
         this.root.classList.add(TaskZone.dropHighlightClass);
     }
-    drop(event) {
+    handleDrop(event) {
         var _a;
         this.stopDragHighlight();
         const msg = (_a = event.dataTransfer) === null || _a === void 0 ? void 0 : _a.getData(TaskElement.taskDragType);
         const taskId = this.getTaskId(msg);
         if (taskId === undefined)
             return;
+        const dropPos = new BasicPoint(event.pageX, event.pageY);
+        const droppedTaskIndex = this.getIndexForDroppedTask(dropPos);
         event.preventDefault();
         console.log(`Received task #${taskId}`);
-        this.catChangeCallback(taskId, this.category);
+        this.catChangeCallback(taskId, this.category, droppedTaskIndex);
     }
     stopDragHighlight() {
         this.root.classList.remove(TaskZone.dropHighlightClass);
@@ -133,6 +173,21 @@ export class TaskZone {
             return 1;
         else
             return this.getTask(lastTaskId).getOrderIndex() + 1;
+    }
+    getIndexForDroppedTask(position) {
+        const iterator = this.elementOrder.iterate();
+        let lastIndex = 0;
+        while (iterator.hasNext()) {
+            const taskId = iterator.getNext();
+            const task = this.getTask(taskId);
+            const taskElement = this.getElementForTask(taskId);
+            const taskThreshold = ThresholdBox.fromElement(taskElement);
+            lastIndex = task.getOrderIndex();
+            if (taskThreshold.isAfter(position)) {
+                return lastIndex;
+            }
+        }
+        return lastIndex + 1;
     }
 }
 TaskZone.contentsClass = "decision_box_square_contents";

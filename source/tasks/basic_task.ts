@@ -7,9 +7,10 @@ export class BasicTask implements Task {
 	private section: TaskSection = "unset";
 	private index: number = 0;
 
-	constructor (name: string, section: TaskSection = "unset") {
+	constructor (name: string, section: TaskSection = "unset", index: number = 0) {
 		this.name = name;
 		this.section = section;
+		this.index = index;
 	}
 
 	public getName (): string {

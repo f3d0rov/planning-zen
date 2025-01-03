@@ -127,6 +127,9 @@ class BasicLinkedList {
         const removed = prev === null || prev === void 0 ? void 0 : prev.getNext();
         prev === null || prev === void 0 ? void 0 : prev.setNext(removed === null || removed === void 0 ? void 0 : removed.getNext());
     }
+    clear() {
+        this.head = undefined;
+    }
     front() {
         var _a;
         return (_a = this.head) === null || _a === void 0 ? void 0 : _a.getValue();
@@ -301,17 +304,27 @@ class EisenhowerMatrixTaskEditor {
         zone === null || zone === void 0 ? void 0 : zone.addTask(index, task);
     }
     addCategoryChangeProvider(catChangeProvider) {
-        catChangeProvider.setCategoryChangeCallback((taskId, newCat) => this.changeTaskCategory(taskId, newCat));
+        catChangeProvider.setCategoryChangeCallback((taskId, newCat, newIndex) => this.changeTaskCategory(taskId, newCat, newIndex));
     }
     addNewTaskProvider(newTaskProvider) {
         newTaskProvider.setInitializeTaskCallback(() => this.initTaskCallback());
         newTaskProvider.setFinalizeTaskCallback(task => this.finalizeTaskCallback(task));
     }
-    changeTaskCategory(taskId, newCategory) {
+    changeTaskCategory(taskId, newCategory, newIndex) {
         const task = this.managedTasks.getTask(taskId);
         this.removeTaskFromZone(taskId, task.getSection());
+        this.incrementIndicesToFreeSpaceForInsertedTask(newCategory, newIndex);
         task.setSection(newCategory);
+        task.setOrderIndex(newIndex);
+        console.log(`New index: ${newIndex}`);
         this.displayTask(task, taskId);
+    }
+    incrementIndicesToFreeSpaceForInsertedTask(category, startIndex) {
+        this.managedTasks.forEach((task) => {
+            if (task.getSection() === category && task.getOrderIndex() >= startIndex) {
+                task.setOrderIndex(task.getOrderIndex() + 1);
+            }
+        });
     }
     removeTaskFromZone(taskId, section) {
         var _a;
@@ -509,6 +522,7 @@ class EditedTaskElement extends TaskElementState {
     updateInputSize() {
         const currentText = this.input.value;
         const targetWidth = (0,_common_text_width__WEBPACK_IMPORTED_MODULE_1__.getTextWidth)(currentText, this.input);
+        this.input.style.height = `1px`; // Reset height so that it could be reduced
         this.input.style.width = `${targetWidth}px`;
         this.input.style.height = `${this.input.scrollHeight}px`;
     }
@@ -533,7 +547,9 @@ EditedTaskElement.templateClassId = "task_edit_template";
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   TaskZone: () => (/* binding */ TaskZone)
+/* harmony export */   BasicPoint: () => (/* binding */ BasicPoint),
+/* harmony export */   TaskZone: () => (/* binding */ TaskZone),
+/* harmony export */   ThresholdBox: () => (/* binding */ ThresholdBox)
 /* harmony export */ });
 /* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
 /* harmony import */ var _common_linked_list__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/linked_list */ "../build/common/linked_list.js");
@@ -541,6 +557,44 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+class BasicPoint {
+    constructor(x, y) {
+        this.x = 0;
+        this.y = 0;
+        this.x = x;
+        this.y = y;
+    }
+}
+class ThresholdBox {
+    constructor(rect) {
+        this.rect = rect;
+    }
+    static fromElement(element) {
+        const box = element.getBoundingClientRect();
+        return new ThresholdBox(box);
+    }
+    isAfter(thresh) {
+        const threshFarAwayBack = thresh.x < this.rect.left || thresh.y < this.rect.top;
+        const diagonalYAtThreshX = this.getDiagonalYAtX(thresh.x);
+        const threshAboveDiagonal = thresh.y < diagonalYAtThreshX;
+        return threshFarAwayBack || threshAboveDiagonal;
+    }
+    getDiagonalYAtX(x) {
+        return this.rect.bottom - this.rect.height / this.rect.width * (x - this.rect.left);
+    }
+}
+class TaskThresholdInfo {
+    constructor(taskId, threshold) {
+        this.taskId = taskId;
+        this.threshold = threshold;
+    }
+    getTaskId() {
+        return this.taskId;
+    }
+    getThreshold() {
+        return this.threshold;
+    }
+}
 class TaskZone {
     constructor(taskBoxElementId, category) {
         this.tasks = new Map;
@@ -552,10 +606,10 @@ class TaskZone {
         this.setupEvents();
     }
     setupEvents() {
-        this.contents.addEventListener('dragover', ev => this.dragover(ev));
+        this.contents.addEventListener('dragover', ev => this.handleDragover(ev));
         this.contents.addEventListener('dragend', ev => this.stopDragHighlight());
         this.contents.addEventListener('dragleave', ev => this.stopDragHighlight());
-        this.contents.addEventListener('drop', ev => this.drop(ev));
+        this.contents.addEventListener('drop', ev => this.handleDrop(ev));
         this.contents.addEventListener('dblclick', ev => this.spawnNewTask(ev));
     }
     addTask(id, task) {
@@ -625,20 +679,22 @@ class TaskZone {
     getTaskData(id) {
         return this.tryGetTaskData(id);
     }
-    dragover(event) {
+    handleDragover(event) {
         event.preventDefault();
         this.root.classList.add(TaskZone.dropHighlightClass);
     }
-    drop(event) {
+    handleDrop(event) {
         var _a;
         this.stopDragHighlight();
         const msg = (_a = event.dataTransfer) === null || _a === void 0 ? void 0 : _a.getData(_task_element__WEBPACK_IMPORTED_MODULE_2__.TaskElement.taskDragType);
         const taskId = this.getTaskId(msg);
         if (taskId === undefined)
             return;
+        const dropPos = new BasicPoint(event.pageX, event.pageY);
+        const droppedTaskIndex = this.getIndexForDroppedTask(dropPos);
         event.preventDefault();
         console.log(`Received task #${taskId}`);
-        this.catChangeCallback(taskId, this.category);
+        this.catChangeCallback(taskId, this.category, droppedTaskIndex);
     }
     stopDragHighlight() {
         this.root.classList.remove(TaskZone.dropHighlightClass);
@@ -673,6 +729,21 @@ class TaskZone {
             return 1;
         else
             return this.getTask(lastTaskId).getOrderIndex() + 1;
+    }
+    getIndexForDroppedTask(position) {
+        const iterator = this.elementOrder.iterate();
+        let lastIndex = 0;
+        while (iterator.hasNext()) {
+            const taskId = iterator.getNext();
+            const task = this.getTask(taskId);
+            const taskElement = this.getElementForTask(taskId);
+            const taskThreshold = ThresholdBox.fromElement(taskElement);
+            lastIndex = task.getOrderIndex();
+            if (taskThreshold.isAfter(position)) {
+                return lastIndex;
+            }
+        }
+        return lastIndex + 1;
     }
 }
 TaskZone.contentsClass = "decision_box_square_contents";
@@ -813,12 +884,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   BasicTask: () => (/* binding */ BasicTask)
 /* harmony export */ });
 class BasicTask {
-    constructor(name, section = "unset") {
+    constructor(name, section = "unset", index = 0) {
         this.name = "";
         this.section = "unset";
         this.index = 0;
         this.name = name;
         this.section = section;
+        this.index = index;
     }
     getName() {
         return this.name;
@@ -864,12 +936,12 @@ class BasicTaskProvider {
     }
     getInitialTasks() {
         const tasks = new Array;
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Move tasks by dragging them with your mouse", "do"));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Create new tasks by moving the \"+\" button onto the board", "do"));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Complete tasks by moving them to the \"Done\" box", "schedule"));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Remove tasks by moving them to the \"Remove\" box", "delegate"));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Double-click a task to edit it", "delegate"));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Visit the project's repository by clicking the button at the top of the page", "delete"));
+        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Move tasks by dragging them with your mouse", "do", 1));
+        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Create new tasks by moving the \"+\" button onto the board", "do", 2));
+        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Complete tasks by moving them to the \"Done\" box", "schedule", 1));
+        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Remove tasks by moving them to the \"Remove\" box", "delegate", 1));
+        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Double-click a task to edit it", "delegate", 2));
+        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Visit the project's repository by clicking the button at the top of the page", "delete", 1));
         return tasks;
     }
 }

@@ -5,6 +5,13 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"command": "npm run test",
+			"name": "Run tests",
+			"request": "launch",
+			"type": "node-terminal"
+		},
+		
+		{
 			"name": "Open main.html",
 			"type": "firefox",
 			"request": "launch",
@@ -17,6 +24,7 @@
 				}
 			]
 		},
+
 		{
 			"name": "Launch localhost",
 			"type": "firefox",
@@ -25,17 +33,11 @@
 			"url": "http://localhost/index.html",
 			"webRoot": "${workspaceFolder}"
 		},
+
 		{
 			"name": "Attach",
 			"type": "firefox",
 			"request": "attach"
 		},
-		{
-			"name": "Launch WebExtension",
-			"type": "firefox",
-			"request": "launch",
-			"reAttach": true,
-			"addonPath": "${workspaceFolder}"
-		}
 	]
 }

@@ -25,12 +25,21 @@
 		},
 
 		{
+			"label": "Run tests",
+			"group": "test",
+
+			"type": "shell",
+			"command": "npm run test"
+		},
+
+		{
 			"label": "Build app",
 			"group": "build",
 
 			"dependsOn": [
 				"Build TS",
-				"Pack app"
+				"Pack app",
+				"Run tests",
 			],
 			"dependsOrder": "sequence"
 		}

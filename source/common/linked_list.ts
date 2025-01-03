@@ -4,6 +4,7 @@ export interface LinkedList <T> {
 	pushBack (value: T): void;
 	pushFront (value: T): void;
 	pop (value: T): void;
+	clear (): void;
 
 	front (): T | undefined;
 	back (): T | undefined;
@@ -88,6 +89,11 @@ export class BasicLinkedList <T> implements LinkedList <T> {
 		const removed = prev?.getNext();
 		prev?.setNext (removed?.getNext());
 	}
+
+	public clear (): void {
+		this.head = undefined;
+	}
+
 
 	public front (): T | undefined {
 		return this.head?.getValue();

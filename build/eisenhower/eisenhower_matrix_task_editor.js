@@ -38,17 +38,27 @@ export class EisenhowerMatrixTaskEditor {
         zone === null || zone === void 0 ? void 0 : zone.addTask(index, task);
     }
     addCategoryChangeProvider(catChangeProvider) {
-        catChangeProvider.setCategoryChangeCallback((taskId, newCat) => this.changeTaskCategory(taskId, newCat));
+        catChangeProvider.setCategoryChangeCallback((taskId, newCat, newIndex) => this.changeTaskCategory(taskId, newCat, newIndex));
     }
     addNewTaskProvider(newTaskProvider) {
         newTaskProvider.setInitializeTaskCallback(() => this.initTaskCallback());
         newTaskProvider.setFinalizeTaskCallback(task => this.finalizeTaskCallback(task));
     }
-    changeTaskCategory(taskId, newCategory) {
+    changeTaskCategory(taskId, newCategory, newIndex) {
         const task = this.managedTasks.getTask(taskId);
         this.removeTaskFromZone(taskId, task.getSection());
+        this.incrementIndicesToFreeSpaceForInsertedTask(newCategory, newIndex);
         task.setSection(newCategory);
+        task.setOrderIndex(newIndex);
+        console.log(`New index: ${newIndex}`);
         this.displayTask(task, taskId);
+    }
+    incrementIndicesToFreeSpaceForInsertedTask(category, startIndex) {
+        this.managedTasks.forEach((task) => {
+            if (task.getSection() === category && task.getOrderIndex() >= startIndex) {
+                task.setOrderIndex(task.getOrderIndex() + 1);
+            }
+        });
     }
     removeTaskFromZone(taskId, section) {
         var _a;

@@ -20,5 +20,12 @@
 		// },
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,
-	}
+		
+		"esModuleInterop": true
+	},
+	"exclude": [
+		"node_modules",
+		"web",
+		"tests",
+	]
 }

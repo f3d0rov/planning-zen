@@ -345,3 +345,10 @@ body.switching_style, body.switching_style * {
 .decision_box_task_edit_input:focus-within {
 	outline: none;
 }
+
+.task_shadow {
+	width: 4px;
+	margin: -2px;
+	height: 1lh;
+	background-color: red;
+}

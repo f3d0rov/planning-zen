@@ -55,7 +55,7 @@ export class EisenhowerMatrixTaskEditor {
 
 	public addCategoryChangeProvider (catChangeProvider: CategoryChangeProvider): void {
 		catChangeProvider.setCategoryChangeCallback (
-			(taskId: number, newCat: TaskSection) => this.changeTaskCategory (taskId, newCat)
+			(taskId: number, newCat: TaskSection, newIndex: number) => this.changeTaskCategory (taskId, newCat, newIndex)
 		);
 	}
 
@@ -64,11 +64,22 @@ export class EisenhowerMatrixTaskEditor {
 		newTaskProvider.setFinalizeTaskCallback (task => this.finalizeTaskCallback (task));
 	}
 
-	private changeTaskCategory (taskId: number, newCategory: TaskSection): void {
+	private changeTaskCategory (taskId: number, newCategory: TaskSection, newIndex: number): void {
 		const task = this.managedTasks.getTask (taskId);
 		this.removeTaskFromZone (taskId, task.getSection());
+		this.incrementIndicesToFreeSpaceForInsertedTask (newCategory, newIndex);
 		task.setSection (newCategory);
+		task.setOrderIndex (newIndex);
+		console.log (`New index: ${newIndex}`);
 		this.displayTask (task, taskId);
+	}
+
+	private incrementIndicesToFreeSpaceForInsertedTask (category: TaskSection, startIndex: number): void {
+		this.managedTasks.forEach ((task: Task) => {
+			if (task.getSection() === category && task.getOrderIndex() >= startIndex) {
+				task.setOrderIndex (task.getOrderIndex() + 1);
+			}
+		});
 	}
 
 	private removeTaskFromZone (taskId: number, section: TaskSection): void {
@@ -87,7 +98,7 @@ export class EisenhowerMatrixTaskEditor {
 
 
 export interface CategoryChangeProvider {
-	setCategoryChangeCallback (callbackfn: (taskId: number, newCategory: TaskSection) => void): void;
+	setCategoryChangeCallback (callbackfn: (taskId: number, newCategory: TaskSection, newIndex: number) => void): void;
 }
 
 

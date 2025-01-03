@@ -181,6 +181,7 @@ class EditedTaskElement extends TaskElementState {
 	private updateInputSize (): void {
 		const currentText = this.input.value;
 		const targetWidth = getTextWidth (currentText, this.input);
+		this.input.style.height = `1px`; // Reset height so that it could be reduced
 		this.input.style.width = `${targetWidth}px`;
 		this.input.style.height = `${this.input.scrollHeight}px`;
 	}
