@@ -8,5 +8,5 @@ module.exports = {
   },
   "transformIgnorePatterns": [
     "node_modules/(?!variables/.*)"
-  ],
+  ]
 };

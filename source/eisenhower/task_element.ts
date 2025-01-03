@@ -39,6 +39,10 @@ export class TaskElement {
 		event.stopPropagation();
 	}
 
+	public getId (): number {
+		return this.id;
+	}
+
 	public getElement (): HTMLElement {
 		return this.element;
 	}

@@ -37,8 +37,8 @@ export class EisenhowerMatrixTaskEditor {
 		this.zones.set ('delete', new TaskZone ("task_zone_delete", 'delete'));
 
 		this.zones.forEach ((zone: TaskZone) => {
-			this.addCategoryChangeProvider (zone);
-			this.addNewTaskProvider (zone);
+			this.addCategoryChangeProvider (zone.getCatChangeProvider());
+			this.addNewTaskProvider (zone.getNewTaskProvider());
 		});
 	}
 

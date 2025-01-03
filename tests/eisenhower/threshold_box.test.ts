@@ -1,5 +1,6 @@
 
-import { BasicPoint, ThresholdBox } from '../../source/eisenhower/task_zone';
+import { ThresholdBox } from '../../source/eisenhower/threshold_box';
+import { BasicPoint } from '../../source/common/basic_point';
 
 
 class DOMRect {
@@ -37,7 +38,7 @@ function createTestBox_0_0_10_10 (): ThresholdBox {
 
 
 test (
-	"ThresholdBox: point far back",
+	"Point far back",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (-5, -5);
@@ -46,7 +47,7 @@ test (
 );
 
 test (
-	"ThresholdBox: point above",
+	"Point above",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (5, -5);
@@ -55,7 +56,7 @@ test (
 );
 
 test (
-	"ThresholdBox: point above, x infront",
+	"Point above, x infront",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (15, -5);
@@ -65,7 +66,7 @@ test (
 
 
 test (
-	"ThresholdBox: point to left",
+	"Point to left",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (-5, 5);
@@ -75,7 +76,7 @@ test (
 
 
 test (
-	"ThresholdBox: point to left, y below",
+	"Point to left, y below",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (-5, 15);
@@ -84,7 +85,7 @@ test (
 );
 
 test (
-	"ThresholdBox: point above diagonal",
+	"Point above diagonal",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (2, 2);
@@ -93,7 +94,7 @@ test (
 );
 
 test (
-	"ThresholdBox: point below diagonal",
+	"Point below diagonal",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (8, 8);
@@ -102,7 +103,7 @@ test (
 );
 
 test (
-	"ThresholdBox: point to the right & below",
+	"Point to the right & below",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (15, 15);
@@ -111,7 +112,7 @@ test (
 );
 
 test (
-	"ThresholdBox: point to the right",
+	"Point to the right",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (15, 5);
@@ -120,7 +121,7 @@ test (
 );
 
 test (
-	"ThresholdBox: point below",
+	"Point below",
 	() => {
 		const box = createTestBox_0_0_10_10();
 		const point = new BasicPoint (5, 15);

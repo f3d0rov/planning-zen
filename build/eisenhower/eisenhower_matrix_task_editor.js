@@ -24,8 +24,8 @@ export class EisenhowerMatrixTaskEditor {
         this.zones.set('delegate', new TaskZone("task_zone_delegate", 'delegate'));
         this.zones.set('delete', new TaskZone("task_zone_delete", 'delete'));
         this.zones.forEach((zone) => {
-            this.addCategoryChangeProvider(zone);
-            this.addNewTaskProvider(zone);
+            this.addCategoryChangeProvider(zone.getCatChangeProvider());
+            this.addNewTaskProvider(zone.getNewTaskProvider());
         });
     }
     displayInitializedTasks() {

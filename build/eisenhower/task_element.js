@@ -21,6 +21,9 @@ export class TaskElement {
         event.preventDefault();
         event.stopPropagation();
     }
+    getId() {
+        return this.id;
+    }
     getElement() {
         return this.element;
     }

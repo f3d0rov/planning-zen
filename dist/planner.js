@@ -2,6 +2,28 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "../build/common/basic_point.js":
+/*!**************************************!*\
+  !*** ../build/common/basic_point.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BasicPoint: () => (/* binding */ BasicPoint)
+/* harmony export */ });
+class BasicPoint {
+    constructor(x, y) {
+        this.x = 0;
+        this.y = 0;
+        this.x = x;
+        this.y = y;
+    }
+}
+//# sourceMappingURL=basic_point.js.map
+
+/***/ }),
+
 /***/ "../build/common/common.js":
 /*!*********************************!*\
   !*** ../build/common/common.js ***!
@@ -252,6 +274,43 @@ function getFont(elem) {
 
 /***/ }),
 
+/***/ "../build/eisenhower/base_task_zone_data.js":
+/*!**************************************************!*\
+  !*** ../build/eisenhower/base_task_zone_data.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BaseTaskZoneData: () => (/* binding */ BaseTaskZoneData)
+/* harmony export */ });
+/* harmony import */ var _common_linked_list__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/linked_list */ "../build/common/linked_list.js");
+/* harmony import */ var _task_zone_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_zone_element */ "../build/eisenhower/task_zone_element.js");
+
+
+class BaseTaskZoneData {
+    constructor(taskBoxElementId, category) {
+        this.orderedTasks = new _common_linked_list__WEBPACK_IMPORTED_MODULE_0__.BasicLinkedList;
+        this.element = new _task_zone_element__WEBPACK_IMPORTED_MODULE_1__.TaskZoneElement(taskBoxElementId);
+        this.category = category;
+    }
+    getCategory() {
+        return this.category;
+    }
+    getElement() {
+        return this.element;
+    }
+    getContents() {
+        return this.getElement().getContents();
+    }
+    getTasks() {
+        return this.orderedTasks;
+    }
+}
+//# sourceMappingURL=base_task_zone_data.js.map
+
+/***/ }),
+
 /***/ "../build/eisenhower/eisenhower_matrix_task_editor.js":
 /*!************************************************************!*\
   !*** ../build/eisenhower/eisenhower_matrix_task_editor.js ***!
@@ -290,8 +349,8 @@ class EisenhowerMatrixTaskEditor {
         this.zones.set('delegate', new _task_zone__WEBPACK_IMPORTED_MODULE_1__.TaskZone("task_zone_delegate", 'delegate'));
         this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_1__.TaskZone("task_zone_delete", 'delete'));
         this.zones.forEach((zone) => {
-            this.addCategoryChangeProvider(zone);
-            this.addNewTaskProvider(zone);
+            this.addCategoryChangeProvider(zone.getCatChangeProvider());
+            this.addNewTaskProvider(zone.getNewTaskProvider());
         });
     }
     displayInitializedTasks() {
@@ -379,6 +438,83 @@ class IndexedTasks {
 
 /***/ }),
 
+/***/ "../build/eisenhower/task_drop_zone.js":
+/*!*********************************************!*\
+  !*** ../build/eisenhower/task_drop_zone.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TaskDropZone: () => (/* binding */ TaskDropZone)
+/* harmony export */ });
+/* harmony import */ var _common_basic_point__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/basic_point */ "../build/common/basic_point.js");
+/* harmony import */ var _task_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_element */ "../build/eisenhower/task_element.js");
+
+
+class TaskDropZone {
+    constructor(element) {
+        this.reportTaskDrop = () => { };
+        this.reportTaskEnter = () => { };
+        this.reportTaskLeave = () => { };
+        this.element = element;
+        this.setupEvents();
+    }
+    onTaskDrop(callbackfn) {
+        this.reportTaskDrop = callbackfn;
+    }
+    onTaskEnter(callbackfn) {
+        this.reportTaskEnter = callbackfn;
+    }
+    onTaskLeave(callbackfn) {
+        this.reportTaskLeave = callbackfn;
+    }
+    getElement() {
+        return this.element;
+    }
+    setupEvents() {
+        this.element.addEventListener('dragover', ev => this.handleDragover(ev));
+        this.element.addEventListener('dragend', ev => this.handleDragend(ev));
+        this.element.addEventListener('dragleave', ev => this.handleDragend(ev));
+        this.element.addEventListener('drop', ev => this.handleDrop(ev));
+    }
+    handleDragover(event) {
+        event.preventDefault();
+        const taskId = this.getTaskId(event);
+        if (taskId !== undefined) {
+            this.reportTaskEnter();
+        }
+    }
+    handleDrop(event) {
+        event.preventDefault();
+        const taskId = this.getTaskId(event);
+        if (taskId === undefined)
+            return;
+        const dropPos = new _common_basic_point__WEBPACK_IMPORTED_MODULE_0__.BasicPoint(event.pageX, event.pageY);
+        this.reportTaskDrop(taskId, dropPos);
+    }
+    handleDragend(event) {
+        event.preventDefault();
+        const taskId = this.getTaskId(event);
+        if (taskId !== undefined) {
+            this.reportTaskLeave();
+        }
+    }
+    getTaskId(event) {
+        var _a;
+        const message = (_a = event.dataTransfer) === null || _a === void 0 ? void 0 : _a.getData(_task_element__WEBPACK_IMPORTED_MODULE_1__.TaskElement.taskDragType);
+        if (message === undefined)
+            return undefined;
+        const droppedTaskId = parseInt(message);
+        if (isNaN(droppedTaskId))
+            return undefined;
+        return droppedTaskId;
+    }
+}
+//# sourceMappingURL=task_drop_zone.js.map
+
+/***/ }),
+
 /***/ "../build/eisenhower/task_element.js":
 /*!*******************************************!*\
   !*** ../build/eisenhower/task_element.js ***!
@@ -413,6 +549,9 @@ class TaskElement {
     handleDblclick(event) {
         event.preventDefault();
         event.stopPropagation();
+    }
+    getId() {
+        return this.id;
     }
     getElement() {
         return this.element;
@@ -547,24 +686,287 @@ EditedTaskElement.templateClassId = "task_edit_template";
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   BasicPoint: () => (/* binding */ BasicPoint),
-/* harmony export */   TaskZone: () => (/* binding */ TaskZone),
-/* harmony export */   ThresholdBox: () => (/* binding */ ThresholdBox)
+/* harmony export */   TaskZone: () => (/* binding */ TaskZone)
 /* harmony export */ });
-/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
-/* harmony import */ var _common_linked_list__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/linked_list */ "../build/common/linked_list.js");
-/* harmony import */ var _task_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task_element */ "../build/eisenhower/task_element.js");
+/* harmony import */ var _base_task_zone_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./base_task_zone_data */ "../build/eisenhower/base_task_zone_data.js");
+/* harmony import */ var _task_zone_drop_handler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_zone_drop_handler */ "../build/eisenhower/task_zone_drop_handler.js");
+/* harmony import */ var _task_zone_new_task_handler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task_zone_new_task_handler */ "../build/eisenhower/task_zone_new_task_handler.js");
+/* harmony import */ var _task_zone_task_inserter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task_zone_task_inserter */ "../build/eisenhower/task_zone_task_inserter.js");
+/* harmony import */ var _task_zone_task_remover__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task_zone_task_remover */ "../build/eisenhower/task_zone_task_remover.js");
 
 
 
-class BasicPoint {
-    constructor(x, y) {
-        this.x = 0;
-        this.y = 0;
-        this.x = x;
-        this.y = y;
+
+
+class TaskZone {
+    constructor(taskBoxElementId, category) {
+        this.baseData = new _base_task_zone_data__WEBPACK_IMPORTED_MODULE_0__.BaseTaskZoneData(taskBoxElementId, category);
+        this.dropHandler = new _task_zone_drop_handler__WEBPACK_IMPORTED_MODULE_1__.TaskZoneDropHandler(this.baseData);
+        this.newTaskHandler = new _task_zone_new_task_handler__WEBPACK_IMPORTED_MODULE_2__.TaskZoneNewTaskHandler(this.baseData);
+        this.taskInserter = new _task_zone_task_inserter__WEBPACK_IMPORTED_MODULE_3__.TaskZoneTaskInserter(this.baseData);
+        this.taskRemover = new _task_zone_task_remover__WEBPACK_IMPORTED_MODULE_4__.TaskZoneTaskRemover(this.baseData);
+    }
+    getCatChangeProvider() {
+        return this.dropHandler;
+    }
+    getNewTaskProvider() {
+        return this.newTaskHandler;
+    }
+    addTask(id, task) {
+        this.taskInserter.addTask(id, task);
+    }
+    removeTask(id) {
+        this.taskRemover.removeTask(id);
     }
 }
+//# sourceMappingURL=task_zone.js.map
+
+/***/ }),
+
+/***/ "../build/eisenhower/task_zone_drop_handler.js":
+/*!*****************************************************!*\
+  !*** ../build/eisenhower/task_zone_drop_handler.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TaskZoneDropHandler: () => (/* binding */ TaskZoneDropHandler)
+/* harmony export */ });
+/* harmony import */ var _task_drop_zone__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_drop_zone */ "../build/eisenhower/task_drop_zone.js");
+/* harmony import */ var _threshold_box__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./threshold_box */ "../build/eisenhower/threshold_box.js");
+
+
+class TaskZoneDropHandler {
+    constructor(baseData) {
+        this.catChangeCallback = () => { };
+        this.data = baseData;
+        const contents = this.data.getContents();
+        this.dropZone = new _task_drop_zone__WEBPACK_IMPORTED_MODULE_0__.TaskDropZone(contents);
+        this.setupEvents();
+    }
+    setupEvents() {
+        this.dropZone.onTaskDrop((taskId, dropPos) => this.handleTaskDrop(taskId, dropPos));
+        this.dropZone.onTaskEnter(() => this.data.getElement().highlightDropZone());
+        this.dropZone.onTaskLeave(() => this.data.getElement().dimDropZone());
+    }
+    handleTaskDrop(taskId, dropPosition) {
+        this.data.getElement().dimDropZone();
+        const droppedTaskIndex = this.getIndexForDroppedTask(dropPosition);
+        this.catChangeCallback(taskId, this.data.getCategory(), droppedTaskIndex);
+    }
+    getIndexForDroppedTask(position) {
+        const iterator = this.data.getTasks().iterate();
+        let lastIndex = 0;
+        while (iterator.hasNext()) {
+            const taskElement = iterator.getNext();
+            const taskHTMLElement = taskElement.getElement();
+            const taskThreshold = _threshold_box__WEBPACK_IMPORTED_MODULE_1__.ThresholdBox.fromElement(taskHTMLElement);
+            lastIndex = taskElement.getTask().getOrderIndex();
+            if (taskThreshold.isAfter(position)) {
+                return lastIndex;
+            }
+        }
+        return lastIndex + 1;
+    }
+    setCategoryChangeCallback(callbackfn) {
+        this.catChangeCallback = callbackfn;
+    }
+}
+//# sourceMappingURL=task_zone_drop_handler.js.map
+
+/***/ }),
+
+/***/ "../build/eisenhower/task_zone_element.js":
+/*!************************************************!*\
+  !*** ../build/eisenhower/task_zone_element.js ***!
+  \************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TaskZoneElement: () => (/* binding */ TaskZoneElement)
+/* harmony export */ });
+/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
+
+class TaskZoneElement {
+    constructor(taskBoxElementId) {
+        this.root = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)(taskBoxElementId);
+        this.contents = this.root.querySelector(`.${TaskZoneElement.contentsClass}`);
+    }
+    getRoot() {
+        return this.root;
+    }
+    getContents() {
+        return this.contents;
+    }
+    highlightDropZone() {
+        this.root.classList.add(TaskZoneElement.dropHighlightClass);
+    }
+    dimDropZone() {
+        this.root.classList.remove(TaskZoneElement.dropHighlightClass);
+    }
+    addContentsEvent(type, callbackfn) {
+        this.getContents().addEventListener(type, callbackfn);
+    }
+}
+TaskZoneElement.contentsClass = "decision_box_square_contents";
+TaskZoneElement.dropHighlightClass = "highlight";
+//# sourceMappingURL=task_zone_element.js.map
+
+/***/ }),
+
+/***/ "../build/eisenhower/task_zone_new_task_handler.js":
+/*!*********************************************************!*\
+  !*** ../build/eisenhower/task_zone_new_task_handler.js ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TaskZoneNewTaskHandler: () => (/* binding */ TaskZoneNewTaskHandler)
+/* harmony export */ });
+class TaskZoneNewTaskHandler {
+    constructor(baseData) {
+        this.data = baseData;
+        this.setupEvents();
+    }
+    setupEvents() {
+        this.data.getElement().addContentsEvent('dblclick', ev => this.spawnNewTask(ev));
+    }
+    setInitializeTaskCallback(callbackfn) {
+        this.initNewTask = callbackfn;
+    }
+    setFinalizeTaskCallback(callbackfn) {
+        this.finalizeNewTask = callbackfn;
+    }
+    spawnNewTask(event) {
+        const task = this.initNewTask();
+        task.setName("Double-click to edit!");
+        task.setOrderIndex(this.getNextLastIndex());
+        task.setSection(this.data.getCategory());
+        this.finalizeNewTask(task);
+    }
+    getNextLastIndex() {
+        const lastTaskElement = this.data.getTasks().back();
+        if (lastTaskElement === undefined)
+            return 1;
+        else
+            return lastTaskElement.getTask().getOrderIndex() + 1;
+    }
+}
+//# sourceMappingURL=task_zone_new_task_handler.js.map
+
+/***/ }),
+
+/***/ "../build/eisenhower/task_zone_task_inserter.js":
+/*!******************************************************!*\
+  !*** ../build/eisenhower/task_zone_task_inserter.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TaskZoneTaskInserter: () => (/* binding */ TaskZoneTaskInserter)
+/* harmony export */ });
+/* harmony import */ var _task_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_element */ "../build/eisenhower/task_element.js");
+
+class TaskZoneTaskInserter {
+    constructor(baseData) {
+        this.data = baseData;
+    }
+    addTask(id, task) {
+        const taskElement = this.createElementForTask(id, task);
+        this.displayTaskElement(taskElement);
+    }
+    createElementForTask(id, task) {
+        return new _task_element__WEBPACK_IMPORTED_MODULE_0__.TaskElement(id, task);
+    }
+    displayTaskElement(taskElement) {
+        const wasInserted = this.tryInsertInMiddle(taskElement);
+        if (wasInserted === false) {
+            this.insertAtEnd(taskElement);
+        }
+    }
+    tryInsertInMiddle(taskElement) {
+        const orderIndex = taskElement.getTask().getOrderIndex();
+        const iterator = this.data.getTasks().iterate();
+        while (iterator.hasNext()) {
+            const contestedTaskElement = iterator.getNext();
+            if (this.shouldInsertBefore(orderIndex, contestedTaskElement)) {
+                this.insertBefore(taskElement, contestedTaskElement);
+                return true;
+            }
+        }
+        return false;
+    }
+    shouldInsertBefore(index, contestedTaskElement) {
+        const contestedTask = contestedTaskElement.getTask();
+        const contestedIndex = contestedTask.getOrderIndex();
+        return index < contestedIndex;
+    }
+    insertBefore(insert, before) {
+        const insertedHTMLElement = insert.getElement();
+        const beforeHTMLElement = before.getElement();
+        this.data.getContents().insertBefore(insertedHTMLElement, beforeHTMLElement);
+        this.data.getTasks().insertBefore(insert, before);
+    }
+    insertAtEnd(insert) {
+        this.data.getTasks().pushBack(insert);
+        const insertedElement = insert.getElement();
+        this.data.getContents().appendChild(insertedElement);
+    }
+}
+//# sourceMappingURL=task_zone_task_inserter.js.map
+
+/***/ }),
+
+/***/ "../build/eisenhower/task_zone_task_remover.js":
+/*!*****************************************************!*\
+  !*** ../build/eisenhower/task_zone_task_remover.js ***!
+  \*****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TaskZoneTaskRemover: () => (/* binding */ TaskZoneTaskRemover)
+/* harmony export */ });
+class TaskZoneTaskRemover {
+    constructor(baseData) {
+        this.data = baseData;
+    }
+    removeTask(id) {
+        const taskElement = this.findElementWithId(id);
+        if (taskElement) {
+            taskElement.remove();
+            this.data.getTasks().pop(taskElement);
+        }
+    }
+    findElementWithId(id) {
+        const iterator = this.data.getTasks().iterate();
+        while (iterator.hasNext()) {
+            const element = iterator.getNext();
+            if (element.getId() === id) {
+                return element;
+            }
+        }
+        return undefined;
+    }
+}
+//# sourceMappingURL=task_zone_task_remover.js.map
+
+/***/ }),
+
+/***/ "../build/eisenhower/threshold_box.js":
+/*!********************************************!*\
+  !*** ../build/eisenhower/threshold_box.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ThresholdBox: () => (/* binding */ ThresholdBox)
+/* harmony export */ });
 class ThresholdBox {
     constructor(rect) {
         this.rect = rect;
@@ -591,172 +993,7 @@ class ThresholdBox {
         return this.rect.bottom - this.rect.height / this.rect.width * (x - this.rect.left);
     }
 }
-class TaskThresholdInfo {
-    constructor(taskId, threshold) {
-        this.taskId = taskId;
-        this.threshold = threshold;
-    }
-    getTaskId() {
-        return this.taskId;
-    }
-    getThreshold() {
-        return this.threshold;
-    }
-}
-class TaskZone {
-    constructor(taskBoxElementId, category) {
-        this.tasks = new Map;
-        this.elementOrder = new _common_linked_list__WEBPACK_IMPORTED_MODULE_1__.BasicLinkedList;
-        this.catChangeCallback = () => { };
-        this.category = category;
-        this.root = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)(taskBoxElementId);
-        this.contents = this.root.querySelector(`.${TaskZone.contentsClass}`);
-        this.setupEvents();
-    }
-    setupEvents() {
-        this.contents.addEventListener('dragover', ev => this.handleDragover(ev));
-        this.contents.addEventListener('dragend', ev => this.stopDragHighlight());
-        this.contents.addEventListener('dragleave', ev => this.stopDragHighlight());
-        this.contents.addEventListener('drop', ev => this.handleDrop(ev));
-        this.contents.addEventListener('dblclick', ev => this.spawnNewTask(ev));
-    }
-    addTask(id, task) {
-        this.generateElementForTask(id, task);
-        this.displayElement(id);
-    }
-    generateElementForTask(id, task) {
-        const newElement = new _task_element__WEBPACK_IMPORTED_MODULE_2__.TaskElement(id, task);
-        this.tasks.set(id, newElement);
-    }
-    displayElement(id) {
-        const wasInserted = this.tryInsertInMiddle(id);
-        if (wasInserted === false) {
-            this.insertAtEnd(id);
-        }
-    }
-    tryInsertInMiddle(id) {
-        const orderIndex = this.getTask(id).getOrderIndex();
-        const iterator = this.elementOrder.iterate();
-        while (iterator.hasNext()) {
-            const contestedTaskId = iterator.getNext();
-            if (this.shouldInsertBefore(orderIndex, contestedTaskId)) {
-                this.insertBefore(id, contestedTaskId);
-                return true;
-            }
-        }
-        return false;
-    }
-    shouldInsertBefore(index, contestedTaskId) {
-        const contestedOrderIndex = this.getTask(contestedTaskId).getOrderIndex();
-        return index < contestedOrderIndex;
-    }
-    insertBefore(insertedTask, before) {
-        const insertedElement = this.getElementForTask(insertedTask);
-        const beforeElement = this.getElementForTask(before);
-        this.contents.insertBefore(insertedElement, beforeElement);
-        this.elementOrder.insertBefore(insertedTask, before);
-    }
-    insertAtEnd(taskId) {
-        this.elementOrder.pushBack(taskId);
-        const insertedElement = this.getElementForTask(taskId);
-        this.contents.appendChild(insertedElement);
-    }
-    removeTask(id) {
-        var _a;
-        (_a = this.tryGetElementForTask(id)) === null || _a === void 0 ? void 0 : _a.remove();
-        this.tasks.delete(id);
-        this.elementOrder.pop(id);
-    }
-    getTask(id) {
-        return this.tryGetTask(id);
-    }
-    tryGetTask(id) {
-        var _a;
-        return (_a = this.tryGetTaskData(id)) === null || _a === void 0 ? void 0 : _a.getTask();
-    }
-    getElementForTask(id) {
-        return this.tryGetElementForTask(id);
-    }
-    tryGetElementForTask(id) {
-        var _a;
-        return (_a = this.tryGetTaskData(id)) === null || _a === void 0 ? void 0 : _a.getElement();
-    }
-    tryGetTaskData(id) {
-        return this.tasks.get(id);
-    }
-    getTaskData(id) {
-        return this.tryGetTaskData(id);
-    }
-    handleDragover(event) {
-        event.preventDefault();
-        this.root.classList.add(TaskZone.dropHighlightClass);
-    }
-    handleDrop(event) {
-        var _a;
-        this.stopDragHighlight();
-        const msg = (_a = event.dataTransfer) === null || _a === void 0 ? void 0 : _a.getData(_task_element__WEBPACK_IMPORTED_MODULE_2__.TaskElement.taskDragType);
-        const taskId = this.getTaskId(msg);
-        if (taskId === undefined)
-            return;
-        const dropPos = new BasicPoint(event.pageX, event.pageY);
-        const droppedTaskIndex = this.getIndexForDroppedTask(dropPos);
-        event.preventDefault();
-        console.log(`Received task #${taskId}`);
-        this.catChangeCallback(taskId, this.category, droppedTaskIndex);
-    }
-    stopDragHighlight() {
-        this.root.classList.remove(TaskZone.dropHighlightClass);
-    }
-    getTaskId(message) {
-        if (message === undefined)
-            return undefined;
-        const droppedTaskId = parseInt(message);
-        if (isNaN(droppedTaskId))
-            return undefined;
-        return droppedTaskId;
-    }
-    setCategoryChangeCallback(callbackfn) {
-        this.catChangeCallback = callbackfn;
-    }
-    setInitializeTaskCallback(callbackfn) {
-        this.initNewTask = callbackfn;
-    }
-    setFinalizeTaskCallback(callbackfn) {
-        this.finalizeNewTask = callbackfn;
-    }
-    spawnNewTask(event) {
-        const task = this.initNewTask();
-        task.setName("New task!");
-        task.setOrderIndex(this.getNextLastIndex());
-        task.setSection(this.category);
-        this.finalizeNewTask(task);
-    }
-    getNextLastIndex() {
-        const lastTaskId = this.elementOrder.back();
-        if (lastTaskId === undefined)
-            return 1;
-        else
-            return this.getTask(lastTaskId).getOrderIndex() + 1;
-    }
-    getIndexForDroppedTask(position) {
-        const iterator = this.elementOrder.iterate();
-        let lastIndex = 0;
-        while (iterator.hasNext()) {
-            const taskId = iterator.getNext();
-            const task = this.getTask(taskId);
-            const taskElement = this.getElementForTask(taskId);
-            const taskThreshold = ThresholdBox.fromElement(taskElement);
-            lastIndex = task.getOrderIndex();
-            if (taskThreshold.isAfter(position)) {
-                return lastIndex;
-            }
-        }
-        return lastIndex + 1;
-    }
-}
-TaskZone.contentsClass = "decision_box_square_contents";
-TaskZone.dropHighlightClass = "highlight";
-//# sourceMappingURL=task_zone.js.map
+//# sourceMappingURL=threshold_box.js.map
 
 /***/ }),
 
