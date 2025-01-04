@@ -4,6 +4,7 @@ import { EisenhowerMatrixTaskEditor } from "./eisenhower/eisenhower_matrix_task_
 import { GithubPageOpener } from "./misc/github_page_opener";
 import { StyleSwitcher } from "./misc/style_switcher";
 import { TaskProvider } from "./tasks/task_provider";
+import { IndexedDBTaskProvider } from "./indexed_db_tasks/indexed_db_task_provider";
 
 
 function main () {
@@ -22,8 +23,9 @@ function initMiscTools () {
 	const githubPageOpener = new GithubPageOpener();
 }
 
-function initTasks () {
-	const taskProvider: TaskProvider = new BasicTaskProvider;
+async function initTasks () {
+	const taskProvider = new IndexedDBTaskProvider;
+	await taskProvider.openDB();
 	const app = new EisenhowerMatrixTaskEditor (taskProvider);
 	app.restoreTasks();
 }

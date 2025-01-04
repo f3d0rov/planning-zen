@@ -1,0 +1,1 @@
+{"version":3,"file":"indexed_db_data.js","sourceRoot":"","sources":["../../source/indexed_db_tasks/indexed_db_data.ts"],"names":[],"mappings":"AACA,MAAM,OAAO,aAAa;;AACX,oBAAM,GAAW,cAAc,CAAC;AAChC,uBAAS,GAAW,CAAC,CAAC;AAEtB,iCAAmB,GAAG,cAAc,CAAC;AAErC,kBAAI,GAAG;IACpB,IAAI,EAAE,WAAW;IACjB,QAAQ,EAAE,UAAU;IACpB,KAAK,EAAE,YAAY;CACnB,CAAA"}

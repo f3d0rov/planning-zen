@@ -1027,6 +1027,325 @@ class ThresholdBox {
 
 /***/ }),
 
+/***/ "../build/indexed_db_tasks/indexed_db_data.js":
+/*!****************************************************!*\
+  !*** ../build/indexed_db_tasks/indexed_db_data.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   IndexedDbData: () => (/* binding */ IndexedDbData)
+/* harmony export */ });
+class IndexedDbData {
+}
+IndexedDbData.dbName = "planning_zen";
+IndexedDbData.dbVersion = 1;
+IndexedDbData.taskObjectStoreName = "active_tasks";
+IndexedDbData.task = {
+    name: "task_name",
+    category: "task_cat",
+    index: "task_index"
+};
+//# sourceMappingURL=indexed_db_data.js.map
+
+/***/ }),
+
+/***/ "../build/indexed_db_tasks/indexed_db_opener.js":
+/*!******************************************************!*\
+  !*** ../build/indexed_db_tasks/indexed_db_opener.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   IndexedDbOpener: () => (/* binding */ IndexedDbOpener),
+/* harmony export */   IndexedDbOpeningResult: () => (/* binding */ IndexedDbOpeningResult)
+/* harmony export */ });
+/* harmony import */ var _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_db_data */ "../build/indexed_db_tasks/indexed_db_data.js");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+class IndexedDbOpeningResult {
+    constructor() {
+        this.success = false;
+        this.error = "";
+    }
+    static success(db) {
+        const result = new IndexedDbOpeningResult;
+        result.db = db;
+        result.success = true;
+        return result;
+    }
+    static failure(reason) {
+        const result = new IndexedDbOpeningResult;
+        result.error = reason;
+        result.success = false;
+        return result;
+    }
+}
+class IndexedDbOpener {
+    constructor() { }
+    openDb() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.openIDBInPromise(resolve);
+            });
+        });
+    }
+    openIDBInPromise(resolve) {
+        const request = indexedDB.open(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.dbName, _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.dbVersion);
+        request.onupgradeneeded = ev => this.getDbAndGenerateStructure(ev, resolve);
+        request.onsuccess = ev => this.getOpenedDb(ev, resolve);
+        request.onerror = ev => this.reportFailure(ev, resolve);
+    }
+    getDbAndGenerateStructure(event, resolve) {
+        const db = this.getDatabase(event);
+        if (db === undefined)
+            return;
+        this.generateDBStructure(db);
+        resolve(IndexedDbOpeningResult.success(db));
+    }
+    getOpenedDb(event, resolve) {
+        const target = event.target;
+        const db = target.result;
+        resolve(IndexedDbOpeningResult.success(db));
+    }
+    reportFailure(event, resolve) {
+        var _a;
+        const target = event.target;
+        const error = "" + ((_a = target === null || target === void 0 ? void 0 : target.error) === null || _a === void 0 ? void 0 : _a.message);
+        console.trace(`Failed to open IndexedDB, reason: ${error}`);
+        resolve(IndexedDbOpeningResult.failure(error));
+    }
+    getDatabase(event) {
+        if (event.target === undefined)
+            return undefined;
+        const target = event.target;
+        return target.result;
+    }
+    generateDBStructure(db) {
+        const taskObjectStore = db.createObjectStore(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.taskObjectStoreName, {
+            autoIncrement: true
+        });
+        taskObjectStore.createIndex(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.task.name, _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.task.name, { unique: false });
+        taskObjectStore.createIndex(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.task.category, _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.task.category, { unique: false });
+        taskObjectStore.createIndex(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.task.index, _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.task.index, { unique: false });
+    }
+}
+//# sourceMappingURL=indexed_db_opener.js.map
+
+/***/ }),
+
+/***/ "../build/indexed_db_tasks/indexed_db_task.js":
+/*!****************************************************!*\
+  !*** ../build/indexed_db_tasks/indexed_db_task.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   IndexedDBTask: () => (/* binding */ IndexedDBTask)
+/* harmony export */ });
+/* harmony import */ var _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_db_data */ "../build/indexed_db_tasks/indexed_db_data.js");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+class IndexedDBTask {
+    constructor(db, key) {
+        this.db = db;
+        this.key = key;
+    }
+    static createNew(db) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const key = yield IndexedDBTask.createTaskObjectInDb(db);
+            return new IndexedDBTask(db, key);
+        });
+    }
+    static restoreByKey(db, key) {
+        return new IndexedDBTask(db, key);
+    }
+    static createTaskObjectInDb(db) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transaction = db.transaction(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.taskObjectStoreName, "readwrite");
+            const store = transaction.objectStore(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.taskObjectStoreName);
+            const addTransaction = store.add(IndexedDBTask.newTaskData());
+            return new Promise((resolve, reject) => {
+                addTransaction.onsuccess = () => resolve(addTransaction.result.valueOf());
+                addTransaction.onerror = reject;
+            });
+        });
+    }
+    static newTaskData() {
+        return {
+            task_name: "New task - double-click to edit",
+            task_cat: "unset",
+            task_index: 0
+        };
+    }
+    getName() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const object = yield this.getMyReadonlyObject();
+            return object.task_name;
+        });
+    }
+    getOrderIndex() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const object = yield this.getMyReadonlyObject();
+            return object.task_index;
+        });
+    }
+    getSection() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const object = yield this.getMyReadonlyObject();
+            return object.task_cat;
+        });
+    }
+    setName(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const modifier = (object) => {
+                object.task_name = name;
+                console.log(`Setting task name to "${name}"`);
+            };
+            return this.modifyMyObject(modifier);
+        });
+    }
+    setOrderIndex(index) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const modifier = (object) => {
+                object.task_index = index;
+                console.log(`Setting task index to ${index}`);
+            };
+            return this.modifyMyObject(modifier);
+        });
+    }
+    setSection(section) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const modifier = (object) => {
+                object.task_cat = section;
+                console.log(`Setting task category to "${section}"`);
+            };
+            return this.modifyMyObject(modifier);
+        });
+    }
+    getMyReadonlyObject() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transaction = this.db.transaction(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.taskObjectStoreName, "readonly");
+            const store = transaction.objectStore(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.taskObjectStoreName);
+            const readTransaction = store.get(IDBKeyRange.only(this.key));
+            return new Promise((resolve, reject) => {
+                readTransaction.onsuccess = () => resolve(readTransaction.result);
+                readTransaction.onerror = reject;
+            });
+        });
+    }
+    modifyMyObject(modify) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transaction = this.db.transaction(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.taskObjectStoreName, "readwrite");
+            const store = transaction.objectStore(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.taskObjectStoreName);
+            const validKeyGetter = store.getKey(IDBKeyRange.only(this.key));
+            return new Promise((resolve, reject) => {
+                validKeyGetter.onsuccess = () => {
+                    const key = validKeyGetter.result;
+                    if (key === undefined) {
+                        reject();
+                        return;
+                    }
+                    const readTransaction = store.get(key);
+                    readTransaction.onsuccess = () => {
+                        let object = readTransaction.result;
+                        modify(object);
+                        const requestUpdate = store.put(object, key);
+                        requestUpdate.onerror = reject;
+                        requestUpdate.onsuccess = () => resolve();
+                    };
+                    readTransaction.onerror = reject;
+                };
+            });
+        });
+    }
+}
+//# sourceMappingURL=indexed_db_task.js.map
+
+/***/ }),
+
+/***/ "../build/indexed_db_tasks/indexed_db_task_provider.js":
+/*!*************************************************************!*\
+  !*** ../build/indexed_db_tasks/indexed_db_task_provider.js ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   IndexedDBTaskProvider: () => (/* binding */ IndexedDBTaskProvider)
+/* harmony export */ });
+/* harmony import */ var _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_db_data */ "../build/indexed_db_tasks/indexed_db_data.js");
+/* harmony import */ var _indexed_db_opener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./indexed_db_opener */ "../build/indexed_db_tasks/indexed_db_opener.js");
+/* harmony import */ var _indexed_db_task__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./indexed_db_task */ "../build/indexed_db_tasks/indexed_db_task.js");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+class IndexedDBTaskProvider {
+    constructor() { }
+    openDB() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dbOpener = new _indexed_db_opener__WEBPACK_IMPORTED_MODULE_1__.IndexedDbOpener;
+            const result = yield dbOpener.openDb();
+            this.db = result.db;
+        });
+    }
+    createNewTask() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return _indexed_db_task__WEBPACK_IMPORTED_MODULE_2__.IndexedDBTask.createNew(this.db);
+        });
+    }
+    restoreTasks() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transaction = this.db.transaction(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.taskObjectStoreName, "readonly");
+            const store = transaction.objectStore(_indexed_db_data__WEBPACK_IMPORTED_MODULE_0__.IndexedDbData.taskObjectStoreName);
+            const readTransaction = store.getAllKeys();
+            return new Promise((resolve, reject) => {
+                readTransaction.onsuccess = () => {
+                    const keyArray = readTransaction.result;
+                    const taskArray = new Array;
+                    for (let i of keyArray) {
+                        const restoredTask = _indexed_db_task__WEBPACK_IMPORTED_MODULE_2__.IndexedDBTask.restoreByKey(this.db, i.valueOf());
+                        taskArray.push(restoredTask);
+                    }
+                    resolve(taskArray);
+                };
+                readTransaction.onerror = reject;
+            });
+        });
+    }
+}
+//# sourceMappingURL=indexed_db_task_provider.js.map
+
+/***/ }),
+
 /***/ "../build/misc/github_page_opener.js":
 /*!*******************************************!*\
   !*** ../build/misc/github_page_opener.js ***!
@@ -1145,85 +1464,6 @@ StyleSwitcher.switchStyleButtonId = "switch_style_button";
 StyleSwitcher.bodySwitchingStyle = "switching_style";
 StyleSwitcher.bodySwitchingStyleTimeSec = 1;
 //# sourceMappingURL=style_switcher.js.map
-
-/***/ }),
-
-/***/ "../build/tasks/basic_task.js":
-/*!************************************!*\
-  !*** ../build/tasks/basic_task.js ***!
-  \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   BasicTask: () => (/* binding */ BasicTask)
-/* harmony export */ });
-class BasicTask {
-    constructor(name, section = "unset", index = 0) {
-        this.name = "";
-        this.section = "unset";
-        this.index = 0;
-        this.name = name;
-        this.section = section;
-        this.index = index;
-    }
-    getName() {
-        return this.name;
-    }
-    setName(name) {
-        this.name = name;
-        console.log(`Task name set to "${name}"`);
-    }
-    getSection() {
-        return this.section;
-    }
-    setSection(section) {
-        this.section = section;
-        console.log(`Task section set to "${section}"`);
-    }
-    getOrderIndex() {
-        return this.index;
-    }
-    setOrderIndex(index) {
-        this.index = index;
-        console.log(`Task index set to "${index}"`);
-    }
-}
-//# sourceMappingURL=basic_task.js.map
-
-/***/ }),
-
-/***/ "../build/tasks/basic_task_provider.js":
-/*!*********************************************!*\
-  !*** ../build/tasks/basic_task_provider.js ***!
-  \*********************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   BasicTaskProvider: () => (/* binding */ BasicTaskProvider)
-/* harmony export */ });
-/* harmony import */ var _basic_task__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./basic_task */ "../build/tasks/basic_task.js");
-
-class BasicTaskProvider {
-    createNewTask() {
-        return new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("", "unset");
-    }
-    restoreTasks() {
-        return this.getInitialTasks();
-    }
-    getInitialTasks() {
-        const tasks = new Array;
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Move tasks by dragging them with your mouse", "do", 1));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Create new tasks by moving the \"+\" button onto the board", "do", 2));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Complete tasks by moving them to the \"Done\" box", "schedule", 1));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Remove tasks by moving them to the \"Remove\" box", "delegate", 1));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Double-click a task to edit it", "delegate", 2));
-        tasks.push(new _basic_task__WEBPACK_IMPORTED_MODULE_0__.BasicTask("Visit the project's repository by clicking the button at the top of the page", "delete", 1));
-        return tasks;
-    }
-}
-//# sourceMappingURL=basic_task_provider.js.map
 
 /***/ }),
 
@@ -1396,10 +1636,19 @@ var __webpack_exports__ = {};
   !*** ../build/main.js ***!
   \************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _tasks_basic_task_provider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./tasks/basic_task_provider */ "../build/tasks/basic_task_provider.js");
-/* harmony import */ var _eisenhower_eisenhower_matrix_task_editor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./eisenhower/eisenhower_matrix_task_editor */ "../build/eisenhower/eisenhower_matrix_task_editor.js");
-/* harmony import */ var _misc_github_page_opener__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./misc/github_page_opener */ "../build/misc/github_page_opener.js");
-/* harmony import */ var _misc_style_switcher__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./misc/style_switcher */ "../build/misc/style_switcher.js");
+/* harmony import */ var _eisenhower_eisenhower_matrix_task_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./eisenhower/eisenhower_matrix_task_editor */ "../build/eisenhower/eisenhower_matrix_task_editor.js");
+/* harmony import */ var _misc_github_page_opener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./misc/github_page_opener */ "../build/misc/github_page_opener.js");
+/* harmony import */ var _misc_style_switcher__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./misc/style_switcher */ "../build/misc/style_switcher.js");
+/* harmony import */ var _indexed_db_tasks_indexed_db_task_provider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./indexed_db_tasks/indexed_db_task_provider */ "../build/indexed_db_tasks/indexed_db_task_provider.js");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 
 
 
@@ -1414,13 +1663,16 @@ function logWelcomeMessage() {
     console.log("Check out the source code, report issues and offer improvements at %chttps://github.com/f3d0rov/planner%c", "color:green;");
 }
 function initMiscTools() {
-    const styleSwitcher = new _misc_style_switcher__WEBPACK_IMPORTED_MODULE_3__.StyleSwitcher;
-    const githubPageOpener = new _misc_github_page_opener__WEBPACK_IMPORTED_MODULE_2__.GithubPageOpener();
+    const styleSwitcher = new _misc_style_switcher__WEBPACK_IMPORTED_MODULE_2__.StyleSwitcher;
+    const githubPageOpener = new _misc_github_page_opener__WEBPACK_IMPORTED_MODULE_1__.GithubPageOpener();
 }
 function initTasks() {
-    const taskProvider = new _tasks_basic_task_provider__WEBPACK_IMPORTED_MODULE_0__.BasicTaskProvider;
-    const app = new _eisenhower_eisenhower_matrix_task_editor__WEBPACK_IMPORTED_MODULE_1__.EisenhowerMatrixTaskEditor(taskProvider);
-    app.restoreTasks();
+    return __awaiter(this, void 0, void 0, function* () {
+        const taskProvider = new _indexed_db_tasks_indexed_db_task_provider__WEBPACK_IMPORTED_MODULE_3__.IndexedDBTaskProvider;
+        yield taskProvider.openDB();
+        const app = new _eisenhower_eisenhower_matrix_task_editor__WEBPACK_IMPORTED_MODULE_0__.EisenhowerMatrixTaskEditor(taskProvider);
+        app.restoreTasks();
+    });
 }
 window.addEventListener('load', main);
 //# sourceMappingURL=main.js.map
