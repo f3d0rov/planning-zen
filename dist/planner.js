@@ -321,22 +321,39 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   EisenhowerMatrixTaskEditor: () => (/* binding */ EisenhowerMatrixTaskEditor)
 /* harmony export */ });
-/* harmony import */ var _indexed_tasks__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_tasks */ "../build/eisenhower/indexed_tasks.js");
-/* harmony import */ var _task_zone__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_zone */ "../build/eisenhower/task_zone.js");
+/* harmony import */ var _tasks_caching_task_provider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../tasks/caching_task_provider */ "../build/tasks/caching_task_provider.js");
+/* harmony import */ var _indexed_tasks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./indexed_tasks */ "../build/eisenhower/indexed_tasks.js");
+/* harmony import */ var _task_zone__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task_zone */ "../build/eisenhower/task_zone.js");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
 
 
 class EisenhowerMatrixTaskEditor {
     constructor(taskProvider) {
-        this.managedTasks = new _indexed_tasks__WEBPACK_IMPORTED_MODULE_0__.IndexedTasks;
+        this.managedTasks = new _indexed_tasks__WEBPACK_IMPORTED_MODULE_1__.IndexedTasks;
         this.zones = new Map;
-        this.taskProvider = taskProvider;
-        this.initTasks();
-        this.initZones();
-        this.displayInitializedTasks();
+        this.taskProvider = new _tasks_caching_task_provider__WEBPACK_IMPORTED_MODULE_0__.CachingTaskProvider(taskProvider);
+    }
+    restoreTasks() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.initTasks();
+            this.initZones();
+            this.displayInitializedTasks();
+        });
     }
     initTasks() {
-        const tasks = this.taskProvider.restoreTasks();
-        this.indexRestoredTasks(tasks);
+        return __awaiter(this, void 0, void 0, function* () {
+            const tasks = yield this.taskProvider.restoreTasks();
+            this.indexRestoredTasks(tasks);
+        });
     }
     indexRestoredTasks(tasks) {
         tasks.forEach((task) => {
@@ -344,10 +361,10 @@ class EisenhowerMatrixTaskEditor {
         });
     }
     initZones() {
-        this.zones.set('do', new _task_zone__WEBPACK_IMPORTED_MODULE_1__.TaskZone("task_zone_do", 'do'));
-        this.zones.set('schedule', new _task_zone__WEBPACK_IMPORTED_MODULE_1__.TaskZone("task_zone_schedule", 'schedule'));
-        this.zones.set('delegate', new _task_zone__WEBPACK_IMPORTED_MODULE_1__.TaskZone("task_zone_delegate", 'delegate'));
-        this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_1__.TaskZone("task_zone_delete", 'delete'));
+        this.zones.set('do', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_do", 'do'));
+        this.zones.set('schedule', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_schedule", 'schedule'));
+        this.zones.set('delegate', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_delegate", 'delegate'));
+        this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_delete", 'delete'));
         this.zones.forEach((zone) => {
             this.addCategoryChangeProvider(zone.getCatChangeProvider());
             this.addNewTaskProvider(zone.getNewTaskProvider());
@@ -390,7 +407,9 @@ class EisenhowerMatrixTaskEditor {
         (_a = this.zones.get(section)) === null || _a === void 0 ? void 0 : _a.removeTask(taskId);
     }
     initTaskCallback() {
-        return this.taskProvider.createNewTask();
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.taskProvider.createNewTask();
+        });
     }
     finalizeTaskCallback(task) {
         const id = this.managedTasks.addTask(task);
@@ -826,6 +845,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TaskZoneNewTaskHandler: () => (/* binding */ TaskZoneNewTaskHandler)
 /* harmony export */ });
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 class TaskZoneNewTaskHandler {
     constructor(baseData) {
         this.data = baseData;
@@ -841,11 +869,13 @@ class TaskZoneNewTaskHandler {
         this.finalizeNewTask = callbackfn;
     }
     spawnNewTask(event) {
-        const task = this.initNewTask();
-        task.setName("Double-click to edit!");
-        task.setOrderIndex(this.getNextLastIndex());
-        task.setSection(this.data.getCategory());
-        this.finalizeNewTask(task);
+        return __awaiter(this, void 0, void 0, function* () {
+            const task = yield this.initNewTask();
+            task.setName("Double-click to edit!");
+            task.setOrderIndex(this.getNextLastIndex());
+            task.setSection(this.data.getCategory());
+            this.finalizeNewTask(task);
+        });
     }
     getNextLastIndex() {
         const lastTaskElement = this.data.getTasks().back();
@@ -1142,18 +1172,21 @@ class BasicTask {
     }
     setName(name) {
         this.name = name;
+        console.log(`Task name set to "${name}"`);
     }
     getSection() {
         return this.section;
     }
     setSection(section) {
         this.section = section;
+        console.log(`Task section set to "${section}"`);
     }
     getOrderIndex() {
         return this.index;
     }
     setOrderIndex(index) {
         this.index = index;
+        console.log(`Task index set to "${index}"`);
     }
 }
 //# sourceMappingURL=basic_task.js.map
@@ -1191,6 +1224,112 @@ class BasicTaskProvider {
     }
 }
 //# sourceMappingURL=basic_task_provider.js.map
+
+/***/ }),
+
+/***/ "../build/tasks/cached_task.js":
+/*!*************************************!*\
+  !*** ../build/tasks/cached_task.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CachedTask: () => (/* binding */ CachedTask)
+/* harmony export */ });
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+class CachedTask {
+    constructor(underlyingTask) {
+        this.underlyingTask = underlyingTask;
+    }
+    cacheInfo() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.cachedName = yield this.underlyingTask.getName();
+            this.cachedCategory = yield this.underlyingTask.getSection();
+            this.cachedIndex = yield this.underlyingTask.getOrderIndex();
+        });
+    }
+    getName() {
+        return this.cachedName;
+    }
+    getSection() {
+        return this.cachedCategory;
+    }
+    getOrderIndex() {
+        return this.cachedIndex;
+    }
+    setName(name) {
+        this.underlyingTask.setName(name);
+        this.cachedName = name;
+    }
+    setSection(cat) {
+        this.underlyingTask.setSection(cat);
+        this.cachedCategory = cat;
+    }
+    setOrderIndex(index) {
+        this.underlyingTask.setOrderIndex(index);
+        this.cachedIndex = index;
+    }
+}
+//# sourceMappingURL=cached_task.js.map
+
+/***/ }),
+
+/***/ "../build/tasks/caching_task_provider.js":
+/*!***********************************************!*\
+  !*** ../build/tasks/caching_task_provider.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CachingTaskProvider: () => (/* binding */ CachingTaskProvider)
+/* harmony export */ });
+/* harmony import */ var _cached_task__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cached_task */ "../build/tasks/cached_task.js");
+var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+class CachingTaskProvider {
+    constructor(underlyingTaskProvider) {
+        this.underlyingTaskProvider = underlyingTaskProvider;
+    }
+    createNewTask() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const newTask = yield this.underlyingTaskProvider.createNewTask();
+            const cachedTask = new _cached_task__WEBPACK_IMPORTED_MODULE_0__.CachedTask(newTask);
+            yield cachedTask.cacheInfo();
+            return cachedTask;
+        });
+    }
+    restoreTasks() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const restoredTasks = yield this.underlyingTaskProvider.restoreTasks();
+            const cachedTasks = new Array;
+            for (let task of restoredTasks) {
+                const cachedTask = new _cached_task__WEBPACK_IMPORTED_MODULE_0__.CachedTask(task);
+                yield cachedTask.cacheInfo();
+                cachedTasks.push(cachedTask);
+            }
+            return cachedTasks;
+        });
+    }
+}
+//# sourceMappingURL=caching_task_provider.js.map
 
 /***/ })
 
@@ -1281,6 +1420,7 @@ function initMiscTools() {
 function initTasks() {
     const taskProvider = new _tasks_basic_task_provider__WEBPACK_IMPORTED_MODULE_0__.BasicTaskProvider;
     const app = new _eisenhower_eisenhower_matrix_task_editor__WEBPACK_IMPORTED_MODULE_1__.EisenhowerMatrixTaskEditor(taskProvider);
+    app.restoreTasks();
 }
 window.addEventListener('load', main);
 //# sourceMappingURL=main.js.map

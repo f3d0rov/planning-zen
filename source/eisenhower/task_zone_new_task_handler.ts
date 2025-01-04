@@ -1,5 +1,5 @@
 
-import { Task } from "../tasks/task";
+import { CachedTask } from "../tasks/cached_task";
 import { BaseTaskZoneData } from "./base_task_zone_data";
 import { NewTaskProvider } from "./eisenhower_matrix_task_editor";
 
@@ -7,8 +7,8 @@ import { NewTaskProvider } from "./eisenhower_matrix_task_editor";
 export class TaskZoneNewTaskHandler implements NewTaskProvider {
 	private data: BaseTaskZoneData;
 
-	private initNewTask: (() => Task) | undefined;
-	private finalizeNewTask: ((task: Task) => void) | undefined;
+	private initNewTask: (() => Promise <CachedTask>) | undefined;
+	private finalizeNewTask: ((task: CachedTask) => void) | undefined;
 
 	constructor (baseData: BaseTaskZoneData) {
 		this.data = baseData;
@@ -19,16 +19,16 @@ export class TaskZoneNewTaskHandler implements NewTaskProvider {
 		this.data.getElement().addContentsEvent ('dblclick', ev => this.spawnNewTask (ev));
 	}
 	
-	public setInitializeTaskCallback (callbackfn: () => Task): void {
+	public setInitializeTaskCallback (callbackfn: () => Promise <CachedTask>): void {
 		this.initNewTask = callbackfn;
 	}
 
-	public setFinalizeTaskCallback (callbackfn: (task: Task) => void): void {
+	public setFinalizeTaskCallback (callbackfn: (task: CachedTask) => void): void {
 		this.finalizeNewTask = callbackfn;
 	}
 
-	private spawnNewTask (event: MouseEvent): void {
-		const task = this.initNewTask! ();
+	private async spawnNewTask (event: MouseEvent): Promise <void> {
+		const task = await this.initNewTask! ();
 		task.setName ("Double-click to edit!");
 		task.setOrderIndex (this.getNextLastIndex());
 		task.setSection (this.data.getCategory());

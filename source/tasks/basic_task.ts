@@ -19,6 +19,7 @@ export class BasicTask implements Task {
 
 	public setName (name: string): void {
 		this.name = name;
+		console.log (`Task name set to "${name}"`);
 	}
 
 	public getSection (): TaskSection {
@@ -27,6 +28,7 @@ export class BasicTask implements Task {
 
 	public setSection (section: TaskSection): void {
 		this.section = section;
+		console.log (`Task section set to "${section}"`);
 	}
 
 	public getOrderIndex (): number {
@@ -35,5 +37,6 @@ export class BasicTask implements Task {
 
 	public setOrderIndex (index: number): void {
 		this.index = index;
+		console.log (`Task index set to "${index}"`);
 	}
 }

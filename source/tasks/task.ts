@@ -4,18 +4,18 @@ export type TaskSection = 'do' | 'schedule' | 'delegate' | 'delete' | 'unset' | 
 
 
 export interface NamedTaskInfo {
-	getName (): string;
-	setName (name: string): void;
+	getName (): string | Promise <string>;
+	setName (name: string): void | Promise <void>;
 }
 
 export interface SectionedTaskInfo {
-	getSection (): TaskSection;
-	setSection (section: TaskSection): void;
+	getSection (): TaskSection | Promise <TaskSection>;
+	setSection (section: TaskSection): void | Promise <void>;
 }
 
 export interface OrderedTaskInfo {
-	getOrderIndex (): number;
-	setOrderIndex (index: number): void;
+	getOrderIndex (): number | Promise <number>;
+	setOrderIndex (index: number): void | Promise <void>;
 }
 
 export interface Task extends

@@ -1,4 +1,6 @@
 
+import { CachedTask } from "../tasks/cached_task";
+import { CachingTaskProvider } from "../tasks/caching_task_provider";
 import { Task, TaskSection } from "../tasks/task";
 import { TaskProvider } from "../tasks/task_provider";
 import { IndexedTasks } from "./indexed_tasks";
@@ -7,25 +9,28 @@ import { TaskZone } from "./task_zone";
 
 
 export class EisenhowerMatrixTaskEditor {
-	private taskProvider: TaskProvider;
+	private taskProvider: CachingTaskProvider;
 	private managedTasks: IndexedTasks = new IndexedTasks;
 
 	private zones: Map <TaskSection, TaskZone> = new Map <TaskSection, TaskZone>;
 
 	constructor (taskProvider: TaskProvider) {
-		this.taskProvider = taskProvider;
-		this.initTasks();
+		this.taskProvider = new CachingTaskProvider (taskProvider);
+	}
+
+	public async restoreTasks () {
+		await this.initTasks();
 		this.initZones();
 		this.displayInitializedTasks();
 	}
 
-	private initTasks (): void {
-		const tasks = this.taskProvider.restoreTasks();
+	private async initTasks (): Promise <void> {
+		const tasks = await this.taskProvider.restoreTasks();
 		this.indexRestoredTasks (tasks);
 	}
 
-	private indexRestoredTasks (tasks: Array <Task>): void {
-		tasks.forEach ((task: Task) => {
+	private indexRestoredTasks (tasks: Array <CachedTask>): void {
+		tasks.forEach ((task: CachedTask) => {
 			this.managedTasks.addTask (task);
 		});
 	}
@@ -43,12 +48,12 @@ export class EisenhowerMatrixTaskEditor {
 	}
 
 	private displayInitializedTasks (): void {
-		this.managedTasks.forEach ((task: Task, index: number) => {
+		this.managedTasks.forEach ((task: CachedTask, index: number) => {
 			this.displayTask (task, index);
 		});
 	}
 
-	private displayTask (task: Task, index: number) {
+	private displayTask (task: CachedTask, index: number) {
 		const zone = this.zones.get (task.getSection());
 		zone?.addTask (index, task);
 	}
@@ -75,7 +80,7 @@ export class EisenhowerMatrixTaskEditor {
 	}
 
 	private incrementIndicesToFreeSpaceForInsertedTask (category: TaskSection, startIndex: number): void {
-		this.managedTasks.forEach ((task: Task) => {
+		this.managedTasks.forEach ((task: CachedTask) => {
 			if (task.getSection() === category && task.getOrderIndex() >= startIndex) {
 				task.setOrderIndex (task.getOrderIndex() + 1);
 			}
@@ -86,11 +91,11 @@ export class EisenhowerMatrixTaskEditor {
 		this.zones.get (section)?.removeTask (taskId);
 	}
 
-	private initTaskCallback (): Task {
+	private async initTaskCallback (): Promise <CachedTask> {
 		return this.taskProvider.createNewTask();
 	}
 
-	private finalizeTaskCallback (task: Task): void {
+	private finalizeTaskCallback (task: CachedTask): void {
 		const id = this.managedTasks.addTask (task);
 		this.displayTask (task, id);
 	}
@@ -103,6 +108,6 @@ export interface CategoryChangeProvider {
 
 
 export interface NewTaskProvider {
-	setInitializeTaskCallback (callbackfn: () => Task): void;
-	setFinalizeTaskCallback (callbackfn: (task: Task) => void): void;
+	setInitializeTaskCallback (callbackfn: () => Promise <CachedTask>): void;
+	setFinalizeTaskCallback (callbackfn: (task: CachedTask) => void): void;
 }

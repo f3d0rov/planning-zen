@@ -12,18 +12,21 @@ export class BasicTask {
     }
     setName(name) {
         this.name = name;
+        console.log(`Task name set to "${name}"`);
     }
     getSection() {
         return this.section;
     }
     setSection(section) {
         this.section = section;
+        console.log(`Task section set to "${section}"`);
     }
     getOrderIndex() {
         return this.index;
     }
     setOrderIndex(index) {
         this.index = index;
+        console.log(`Task index set to "${index}"`);
     }
 }
 //# sourceMappingURL=basic_task.js.map

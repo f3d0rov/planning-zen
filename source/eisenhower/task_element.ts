@@ -1,6 +1,7 @@
 
 import { cloneTemplateById } from "../common/common";
 import { getTextWidth } from "../common/text_width";
+import { CachedTask } from "../tasks/cached_task";
 import { Task } from "../tasks/task";
 
 
@@ -9,12 +10,12 @@ export class TaskElement {
 	static taskDragType: string = "taskid";
 
 	private element: HTMLElement;
-	private task: Task;
+	private task: CachedTask;
 	private id: number;
 
 	private state!: TaskElementState;
 
-	constructor (id: number, task: Task) {
+	constructor (id: number, task: CachedTask) {
 		this.id = id;
 		this.task = task;
 		this.element = this.generateElement();
@@ -47,7 +48,7 @@ export class TaskElement {
 		return this.element;
 	}
 
-	public getTask (): Task {
+	public getTask (): CachedTask {
 		return this.task;
 	}
 
@@ -68,10 +69,10 @@ export class TaskElement {
 
 class TaskElemStateInfo {
 	public id: number;
-	public task: Task;
+	public task: CachedTask;
 	public root: HTMLElement;
 
-	constructor (id: number, task: Task, root: HTMLElement) {
+	constructor (id: number, task: CachedTask, root: HTMLElement) {
 		this.id = id;
 		this.task = task;
 		this.root = root;
@@ -95,7 +96,7 @@ class TaskElementState {
 		return this.taskElemInfo.root;
 	}
 
-	protected getTask (): Task {
+	protected getTask (): CachedTask {
 		return this.taskElemInfo.task;
 	}
 

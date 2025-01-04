@@ -25,6 +25,7 @@ function initMiscTools () {
 function initTasks () {
 	const taskProvider: TaskProvider = new BasicTaskProvider;
 	const app = new EisenhowerMatrixTaskEditor (taskProvider);
+	app.restoreTasks();
 }
 
 

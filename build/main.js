@@ -18,6 +18,7 @@ function initMiscTools() {
 function initTasks() {
     const taskProvider = new BasicTaskProvider;
     const app = new EisenhowerMatrixTaskEditor(taskProvider);
+    app.restoreTasks();
 }
 window.addEventListener('load', main);
 //# sourceMappingURL=main.js.map

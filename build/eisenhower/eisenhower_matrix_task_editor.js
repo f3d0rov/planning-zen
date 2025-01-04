@@ -1,17 +1,33 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+import { CachingTaskProvider } from "../tasks/caching_task_provider";
 import { IndexedTasks } from "./indexed_tasks";
 import { TaskZone } from "./task_zone";
 export class EisenhowerMatrixTaskEditor {
     constructor(taskProvider) {
         this.managedTasks = new IndexedTasks;
         this.zones = new Map;
-        this.taskProvider = taskProvider;
-        this.initTasks();
-        this.initZones();
-        this.displayInitializedTasks();
+        this.taskProvider = new CachingTaskProvider(taskProvider);
+    }
+    restoreTasks() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.initTasks();
+            this.initZones();
+            this.displayInitializedTasks();
+        });
     }
     initTasks() {
-        const tasks = this.taskProvider.restoreTasks();
-        this.indexRestoredTasks(tasks);
+        return __awaiter(this, void 0, void 0, function* () {
+            const tasks = yield this.taskProvider.restoreTasks();
+            this.indexRestoredTasks(tasks);
+        });
     }
     indexRestoredTasks(tasks) {
         tasks.forEach((task) => {
@@ -65,7 +81,9 @@ export class EisenhowerMatrixTaskEditor {
         (_a = this.zones.get(section)) === null || _a === void 0 ? void 0 : _a.removeTask(taskId);
     }
     initTaskCallback() {
-        return this.taskProvider.createNewTask();
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.taskProvider.createNewTask();
+        });
     }
     finalizeTaskCallback(task) {
         const id = this.managedTasks.addTask(task);

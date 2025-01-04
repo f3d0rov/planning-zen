@@ -1,5 +1,5 @@
 
-import { Task } from "../tasks/task";
+import { CachedTask } from "../tasks/cached_task";
 import { BaseTaskZoneData } from "./base_task_zone_data";
 import { TaskElement } from "./task_element";
 
@@ -11,12 +11,12 @@ export class TaskZoneTaskInserter {
 		this.data = baseData;
 	}
 
-	public addTask (id: number, task: Task): void {
+	public addTask (id: number, task: CachedTask): void {
 		const taskElement = this.createElementForTask (id, task);
 		this.displayTaskElement (taskElement);
 	}
 
-	private createElementForTask (id: number, task: Task): TaskElement {
+	private createElementForTask (id: number, task: CachedTask): TaskElement {
 		return new TaskElement (id, task);
 	}
 

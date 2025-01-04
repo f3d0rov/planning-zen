@@ -1,5 +1,6 @@
 
-import { Task, TaskSection } from "../tasks/task";
+import { CachedTask } from "../tasks/cached_task";
+import { TaskSection } from "../tasks/task";
 import { BaseTaskZoneData } from "./base_task_zone_data";
 import { CategoryChangeProvider, NewTaskProvider } from "./eisenhower_matrix_task_editor";
 import { TaskZoneDropHandler } from "./task_zone_drop_handler";
@@ -34,7 +35,7 @@ export class TaskZone {
 		return this.newTaskHandler;
 	}
 
-	public addTask (id: number, task: Task): void {
+	public addTask (id: number, task: CachedTask): void {
 		this.taskInserter.addTask (id, task);
 	}
 
