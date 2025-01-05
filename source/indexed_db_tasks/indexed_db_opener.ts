@@ -42,9 +42,12 @@ export class IndexedDbOpener {
 
 	private getDbAndGenerateStructure (event: IDBVersionChangeEvent, resolve: (db: IndexedDbOpeningResult) => void): void {
 		const db = this.getDatabase (event);
-		if (db === undefined) return;
+		if (db === undefined) {
+			return;
+		}
 		this.generateDBStructure (db);
-		resolve (IndexedDbOpeningResult.success (db));
+		const transaction = (event.target as any).transaction as IDBTransaction;
+		transaction.oncomplete = () => resolve (IndexedDbOpeningResult.success (db));
 	}
 
 	private getOpenedDb (event: Event, resolve: (db: IndexedDbOpeningResult) => void): void {
