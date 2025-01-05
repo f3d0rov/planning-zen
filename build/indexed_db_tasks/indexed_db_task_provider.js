@@ -43,5 +43,12 @@ export class IndexedDBTaskProvider {
             });
         });
     }
+    deleteTask(task) {
+        const idbTask = task;
+        return this.deleteIDBTask(idbTask);
+    }
+    deleteIDBTask(task) {
+        return task.delete();
+    }
 }
 //# sourceMappingURL=indexed_db_task_provider.js.map

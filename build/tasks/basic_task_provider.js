@@ -16,5 +16,8 @@ export class BasicTaskProvider {
         tasks.push(new BasicTask("Visit the project's repository by clicking the button at the top of the page", "delete", 1));
         return tasks;
     }
+    deleteTask(task) {
+        // Do nothing, BasicTaskProvider doesn't keep track of the tasks
+    }
 }
 //# sourceMappingURL=basic_task_provider.js.map

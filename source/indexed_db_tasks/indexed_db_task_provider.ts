@@ -1,4 +1,5 @@
 
+import { Task } from "../tasks/task";
 import { TaskProvider } from "../tasks/task_provider";
 import { IndexedDbData } from "./indexed_db_data";
 import { IndexedDbOpener } from "./indexed_db_opener";
@@ -37,5 +38,14 @@ export class IndexedDBTaskProvider implements TaskProvider {
 			}
 			readTransaction.onerror = reject;
 		});
+	}
+	
+	public deleteTask (task: Task): void | Promise <void> {
+		const idbTask = task as IndexedDBTask;
+		return this.deleteIDBTask (idbTask);
+	}
+
+	private deleteIDBTask (task: IndexedDBTask): void | Promise <void> {
+		return task.delete();
 	}
 }

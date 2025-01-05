@@ -23,4 +23,8 @@ export class BasicTaskProvider implements TaskProvider {
 		tasks.push (new BasicTask ("Visit the project's repository by clicking the button at the top of the page", "delete", 1));
 		return tasks;
 	}
+
+	public deleteTask (task: Task): void | Promise <void> {
+		// Do nothing, BasicTaskProvider doesn't keep track of the tasks
+	}
 }

@@ -42,19 +42,19 @@ export class IndexedDBTask {
     }
     getName() {
         return __awaiter(this, void 0, void 0, function* () {
-            const object = yield this.getMyReadonlyObject();
+            const object = (yield this.openTransactionAndGetMyObject()).object;
             return object.task_name;
         });
     }
     getOrderIndex() {
         return __awaiter(this, void 0, void 0, function* () {
-            const object = yield this.getMyReadonlyObject();
+            const object = (yield this.openTransactionAndGetMyObject()).object;
             return object.task_index;
         });
     }
     getSection() {
         return __awaiter(this, void 0, void 0, function* () {
-            const object = yield this.getMyReadonlyObject();
+            const object = (yield this.openTransactionAndGetMyObject()).object;
             return object.task_cat;
         });
     }
@@ -85,41 +85,62 @@ export class IndexedDBTask {
             return this.modifyMyObject(modifier);
         });
     }
-    getMyReadonlyObject() {
+    delete() {
         return __awaiter(this, void 0, void 0, function* () {
-            const transaction = this.db.transaction(IndexedDbData.taskObjectStoreName, "readonly");
-            const store = transaction.objectStore(IndexedDbData.taskObjectStoreName);
-            const readTransaction = store.get(IDBKeyRange.only(this.key));
+            const store = this.openTransaction("readwrite");
+            const request = store.delete(IDBKeyRange.only(this.key));
             return new Promise((resolve, reject) => {
-                readTransaction.onsuccess = () => resolve(readTransaction.result);
-                readTransaction.onerror = reject;
+                request.onsuccess = () => resolve();
+                request.onerror = reject;
             });
         });
     }
     modifyMyObject(modify) {
         return __awaiter(this, void 0, void 0, function* () {
-            const transaction = this.db.transaction(IndexedDbData.taskObjectStoreName, "readwrite");
-            const store = transaction.objectStore(IndexedDbData.taskObjectStoreName);
-            const validKeyGetter = store.getKey(IDBKeyRange.only(this.key));
+            const data = yield this.openTransactionAndGetMyObject("readwrite");
+            modify(data.object);
+            const updateRequest = data.store.put(data.object, data.key);
             return new Promise((resolve, reject) => {
-                validKeyGetter.onsuccess = () => {
-                    const key = validKeyGetter.result;
-                    if (key === undefined) {
-                        reject();
-                        return;
-                    }
-                    const readTransaction = store.get(key);
-                    readTransaction.onsuccess = () => {
-                        let object = readTransaction.result;
-                        modify(object);
-                        const requestUpdate = store.put(object, key);
-                        requestUpdate.onerror = reject;
-                        requestUpdate.onsuccess = () => resolve();
-                    };
-                    readTransaction.onerror = reject;
-                };
+                updateRequest.onerror = reject;
+                updateRequest.onsuccess = () => resolve();
             });
         });
+    }
+    openTransactionAndGetMyObject() {
+        return __awaiter(this, arguments, void 0, function* (mode = "readonly") {
+            const store = this.openTransaction(mode);
+            const key = yield this.getValidKey(store);
+            const object = yield this.getMyObject(store, key);
+            return new OpenTransactionData(object, store, key);
+        });
+    }
+    openTransaction(mode = "readonly") {
+        const transaction = this.db.transaction(IndexedDbData.taskObjectStoreName, mode);
+        const store = transaction.objectStore(IndexedDbData.taskObjectStoreName);
+        return store;
+    }
+    getValidKey(store) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const validKeyRequest = store.getKey(IDBKeyRange.only(this.key));
+            return new Promise((resolve, reject) => {
+                validKeyRequest.onsuccess = () => resolve(validKeyRequest.result);
+                validKeyRequest.onerror = reject;
+            });
+        });
+    }
+    getMyObject(store, key) {
+        const readTransaction = store.get(key);
+        return new Promise((resolve, reject) => {
+            readTransaction.onsuccess = () => resolve(readTransaction.result);
+            readTransaction.onerror = reject;
+        });
+    }
+}
+class OpenTransactionData {
+    constructor(object, store, key) {
+        this.store = store;
+        this.object = object;
+        this.key = key;
     }
 }
 //# sourceMappingURL=indexed_db_task.js.map
