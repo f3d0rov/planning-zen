@@ -2,7 +2,6 @@
 import { cloneTemplateById } from "../common/common";
 import { getTextWidth } from "../common/text_width";
 import { CachedTask } from "../tasks/cached_task";
-import { Task } from "../tasks/task";
 
 
 export class TaskElement {
@@ -14,14 +13,15 @@ export class TaskElement {
 	private id: number;
 
 	private state!: TaskElementState;
+	private stateInfo: TaskElemStateInfo;
 
 	constructor (id: number, task: CachedTask) {
 		this.id = id;
 		this.task = task;
 		this.element = this.generateElement();
 
-		const stateInfo = this.generateTaskElementStateInfo();
-		this.switchToState (new DisplayedTaskElement (stateInfo));
+		this.stateInfo = this.generateTaskElementStateInfo();
+		this.switchToState (new DisplayedTaskElement (this.stateInfo));
 	}
 
 	private generateElement (): HTMLElement {
@@ -57,12 +57,17 @@ export class TaskElement {
 	}
 
 	private generateTaskElementStateInfo (): TaskElemStateInfo {
-		return new TaskElemStateInfo (this.id, this.task, this.element);
+		const info = new TaskElemStateInfo (this.id, this.task, this.element);
+		return info;
 	}
 
 	private switchToState (state: TaskElementState) {
 		this.state = state;
 		this.state.setSwitchStateCallback (state => this.switchToState (state));
+	}
+
+	public setTaskUpdateCallback (callbackfn: (taskId: number, task: CachedTask) => void) {
+		this.stateInfo.setTaskUpdateCallback (callbackfn);
 	}
 }
 
@@ -71,11 +76,20 @@ class TaskElemStateInfo {
 	public id: number;
 	public task: CachedTask;
 	public root: HTMLElement;
+	private taskUpdateCallback: (taskId: number, task: CachedTask) => void = () => {};
 
 	constructor (id: number, task: CachedTask, root: HTMLElement) {
 		this.id = id;
 		this.task = task;
 		this.root = root;
+	}
+
+	public setTaskUpdateCallback (callbackfn: (taskId: number, task: CachedTask) => void) {
+		this.taskUpdateCallback = callbackfn;
+	}
+	
+	public reportTaskUpdate () {
+		this.taskUpdateCallback (this.id, this.task);
 	}
 }
 
@@ -106,6 +120,10 @@ class TaskElementState {
 
 	public setSwitchStateCallback (callbackfn: (state: TaskElementState) => void): void {
 		this.switchToState = callbackfn;
+	}
+	
+	protected reportTaskUpdate () {
+		this.taskElemInfo.reportTaskUpdate();
 	}
 }
 
@@ -146,6 +164,7 @@ class DisplayedTaskElement extends TaskElementState {
 		this.switchToState (new EditedTaskElement (this.getElemInfo()));
 	}
 }
+
 
 class EditedTaskElement extends TaskElementState {
 	static templateClassId: string = "task_edit_template";
@@ -194,6 +213,7 @@ class EditedTaskElement extends TaskElementState {
 	private stopEditing (): void {
 		this.getTask().setName (this.input.value);
 		this.switchToState (new DisplayedTaskElement (this.getElemInfo()));
+		this.reportTaskUpdate();
 	}
 
 	private cancelEditing (): void {

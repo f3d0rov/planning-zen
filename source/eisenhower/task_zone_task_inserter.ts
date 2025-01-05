@@ -17,7 +17,15 @@ export class TaskZoneTaskInserter {
 	}
 
 	private createElementForTask (id: number, task: CachedTask): TaskElement {
-		return new TaskElement (id, task);
+		const element = new TaskElement (id, task);
+		element.setTaskUpdateCallback ((taskId: number, task: CachedTask) => this.deleteTaskIfNameIsEmpty (taskId, task));
+		return element;
+	}
+
+	private deleteTaskIfNameIsEmpty (taskId: number, task: CachedTask): void {
+		if (task.getName() === "") {
+			this.data.deleteTask (taskId);
+		}
 	}
 
 	private displayTaskElement (taskElement: TaskElement): void {

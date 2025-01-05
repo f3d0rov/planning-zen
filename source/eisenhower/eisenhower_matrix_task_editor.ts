@@ -1,10 +1,9 @@
 
 import { CachedTask } from "../tasks/cached_task";
 import { CachingTaskProvider } from "../tasks/caching_task_provider";
-import { Task, TaskSection } from "../tasks/task";
+import { TaskSection } from "../tasks/task";
 import { TaskProvider } from "../tasks/task_provider";
 import { IndexedTasks } from "./indexed_tasks";
-import { TaskElement } from "./task_element";
 import { TaskZone } from "./task_zone";
 
 
@@ -44,6 +43,7 @@ export class EisenhowerMatrixTaskEditor {
 		this.zones.forEach ((zone: TaskZone) => {
 			this.addCategoryChangeProvider (zone.getCatChangeProvider());
 			this.addNewTaskProvider (zone.getNewTaskProvider());
+			this.addTaskDeleter (zone.getTaskDeleter());
 		});
 	}
 
@@ -69,13 +69,16 @@ export class EisenhowerMatrixTaskEditor {
 		newTaskProvider.setFinalizeTaskCallback (task => this.finalizeTaskCallback (task));
 	}
 
+	public addTaskDeleter (taskDeleter: TaskDeleter): void {
+		taskDeleter.setDeleteTaskCallback (taskId => this.deleteTask (taskId));
+	}
+
 	private changeTaskCategory (taskId: number, newCategory: TaskSection, newIndex: number): void {
 		const task = this.managedTasks.getTask (taskId);
 		this.removeTaskFromZone (taskId, task.getSection());
 		this.incrementIndicesToFreeSpaceForInsertedTask (newCategory, newIndex);
 		task.setSection (newCategory);
 		task.setOrderIndex (newIndex);
-		console.log (`New index: ${newIndex}`);
 		this.displayTask (task, taskId);
 	}
 
@@ -99,6 +102,13 @@ export class EisenhowerMatrixTaskEditor {
 		const id = this.managedTasks.addTask (task);
 		this.displayTask (task, id);
 	}
+
+	private deleteTask (id: number): Promise <void> {
+		const task = this.managedTasks.getTask (id);
+		this.removeTaskFromZone (id, task.getSection());
+		this.managedTasks.removeTask (id);
+		return this.taskProvider.deleteTask (task);
+	}
 }
 
 
@@ -110,4 +120,9 @@ export interface CategoryChangeProvider {
 export interface NewTaskProvider {
 	setInitializeTaskCallback (callbackfn: () => Promise <CachedTask>): void;
 	setFinalizeTaskCallback (callbackfn: (task: CachedTask) => void): void;
+}
+
+
+export interface TaskDeleter {
+	setDeleteTaskCallback (callbackfn: (taskId: number) => Promise <void>): void;
 }

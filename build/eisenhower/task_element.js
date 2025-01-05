@@ -5,8 +5,8 @@ export class TaskElement {
         this.id = id;
         this.task = task;
         this.element = this.generateElement();
-        const stateInfo = this.generateTaskElementStateInfo();
-        this.switchToState(new DisplayedTaskElement(stateInfo));
+        this.stateInfo = this.generateTaskElementStateInfo();
+        this.switchToState(new DisplayedTaskElement(this.stateInfo));
     }
     generateElement() {
         const newElement = cloneTemplateById(TaskElement.taskTemplateId);
@@ -34,20 +34,31 @@ export class TaskElement {
         this.element.remove();
     }
     generateTaskElementStateInfo() {
-        return new TaskElemStateInfo(this.id, this.task, this.element);
+        const info = new TaskElemStateInfo(this.id, this.task, this.element);
+        return info;
     }
     switchToState(state) {
         this.state = state;
         this.state.setSwitchStateCallback(state => this.switchToState(state));
+    }
+    setTaskUpdateCallback(callbackfn) {
+        this.stateInfo.setTaskUpdateCallback(callbackfn);
     }
 }
 TaskElement.taskTemplateId = "task_template";
 TaskElement.taskDragType = "taskid";
 class TaskElemStateInfo {
     constructor(id, task, root) {
+        this.taskUpdateCallback = () => { };
         this.id = id;
         this.task = task;
         this.root = root;
+    }
+    setTaskUpdateCallback(callbackfn) {
+        this.taskUpdateCallback = callbackfn;
+    }
+    reportTaskUpdate() {
+        this.taskUpdateCallback(this.id, this.task);
     }
 }
 class TaskElementState {
@@ -70,6 +81,9 @@ class TaskElementState {
     }
     setSwitchStateCallback(callbackfn) {
         this.switchToState = callbackfn;
+    }
+    reportTaskUpdate() {
+        this.taskElemInfo.reportTaskUpdate();
     }
 }
 class DisplayedTaskElement extends TaskElementState {
@@ -139,6 +153,7 @@ class EditedTaskElement extends TaskElementState {
     stopEditing() {
         this.getTask().setName(this.input.value);
         this.switchToState(new DisplayedTaskElement(this.getElemInfo()));
+        this.reportTaskUpdate();
     }
     cancelEditing() {
         this.switchToState(new DisplayedTaskElement(this.getElemInfo()));

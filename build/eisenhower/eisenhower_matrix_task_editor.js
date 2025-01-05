@@ -42,6 +42,7 @@ export class EisenhowerMatrixTaskEditor {
         this.zones.forEach((zone) => {
             this.addCategoryChangeProvider(zone.getCatChangeProvider());
             this.addNewTaskProvider(zone.getNewTaskProvider());
+            this.addTaskDeleter(zone.getTaskDeleter());
         });
     }
     displayInitializedTasks() {
@@ -60,13 +61,15 @@ export class EisenhowerMatrixTaskEditor {
         newTaskProvider.setInitializeTaskCallback(() => this.initTaskCallback());
         newTaskProvider.setFinalizeTaskCallback(task => this.finalizeTaskCallback(task));
     }
+    addTaskDeleter(taskDeleter) {
+        taskDeleter.setDeleteTaskCallback(taskId => this.deleteTask(taskId));
+    }
     changeTaskCategory(taskId, newCategory, newIndex) {
         const task = this.managedTasks.getTask(taskId);
         this.removeTaskFromZone(taskId, task.getSection());
         this.incrementIndicesToFreeSpaceForInsertedTask(newCategory, newIndex);
         task.setSection(newCategory);
         task.setOrderIndex(newIndex);
-        console.log(`New index: ${newIndex}`);
         this.displayTask(task, taskId);
     }
     incrementIndicesToFreeSpaceForInsertedTask(category, startIndex) {
@@ -88,6 +91,12 @@ export class EisenhowerMatrixTaskEditor {
     finalizeTaskCallback(task) {
         const id = this.managedTasks.addTask(task);
         this.displayTask(task, id);
+    }
+    deleteTask(id) {
+        const task = this.managedTasks.getTask(id);
+        this.removeTaskFromZone(id, task.getSection());
+        this.managedTasks.removeTask(id);
+        return this.taskProvider.deleteTask(task);
     }
 }
 //# sourceMappingURL=eisenhower_matrix_task_editor.js.map

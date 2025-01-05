@@ -39,5 +39,8 @@ export class CachedTask {
         this.underlyingTask.setOrderIndex(index);
         this.cachedIndex = index;
     }
+    getUnderlyingTask() {
+        return this.underlyingTask;
+    }
 }
 //# sourceMappingURL=cached_task.js.map

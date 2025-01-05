@@ -8,7 +8,14 @@ export class TaskZoneTaskInserter {
         this.displayTaskElement(taskElement);
     }
     createElementForTask(id, task) {
-        return new TaskElement(id, task);
+        const element = new TaskElement(id, task);
+        element.setTaskUpdateCallback((taskId, task) => this.deleteTaskIfNameIsEmpty(taskId, task));
+        return element;
+    }
+    deleteTaskIfNameIsEmpty(taskId, task) {
+        if (task.getName() === "") {
+            this.data.deleteTask(taskId);
+        }
     }
     displayTaskElement(taskElement) {
         const wasInserted = this.tryInsertInMiddle(taskElement);

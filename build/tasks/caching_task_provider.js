@@ -32,5 +32,11 @@ export class CachingTaskProvider {
             return cachedTasks;
         });
     }
+    deleteTask(task) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const underlyingTask = task.getUnderlyingTask();
+            yield this.underlyingTaskProvider.deleteTask(underlyingTask);
+        });
+    }
 }
 //# sourceMappingURL=caching_task_provider.js.map

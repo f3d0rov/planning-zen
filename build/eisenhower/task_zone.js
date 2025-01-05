@@ -17,6 +17,9 @@ export class TaskZone {
     getNewTaskProvider() {
         return this.newTaskHandler;
     }
+    getTaskDeleter() {
+        return this.baseData;
+    }
     addTask(id, task) {
         this.taskInserter.addTask(id, task);
     }

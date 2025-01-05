@@ -306,6 +306,14 @@ class BaseTaskZoneData {
     getTasks() {
         return this.orderedTasks;
     }
+    deleteTask(taskId) {
+        if (this.deleteTaskCallback) {
+            this.deleteTaskCallback(taskId);
+        }
+    }
+    setDeleteTaskCallback(callbackfn) {
+        this.deleteTaskCallback = callbackfn;
+    }
 }
 //# sourceMappingURL=base_task_zone_data.js.map
 
@@ -368,6 +376,7 @@ class EisenhowerMatrixTaskEditor {
         this.zones.forEach((zone) => {
             this.addCategoryChangeProvider(zone.getCatChangeProvider());
             this.addNewTaskProvider(zone.getNewTaskProvider());
+            this.addTaskDeleter(zone.getTaskDeleter());
         });
     }
     displayInitializedTasks() {
@@ -386,13 +395,15 @@ class EisenhowerMatrixTaskEditor {
         newTaskProvider.setInitializeTaskCallback(() => this.initTaskCallback());
         newTaskProvider.setFinalizeTaskCallback(task => this.finalizeTaskCallback(task));
     }
+    addTaskDeleter(taskDeleter) {
+        taskDeleter.setDeleteTaskCallback(taskId => this.deleteTask(taskId));
+    }
     changeTaskCategory(taskId, newCategory, newIndex) {
         const task = this.managedTasks.getTask(taskId);
         this.removeTaskFromZone(taskId, task.getSection());
         this.incrementIndicesToFreeSpaceForInsertedTask(newCategory, newIndex);
         task.setSection(newCategory);
         task.setOrderIndex(newIndex);
-        console.log(`New index: ${newIndex}`);
         this.displayTask(task, taskId);
     }
     incrementIndicesToFreeSpaceForInsertedTask(category, startIndex) {
@@ -414,6 +425,12 @@ class EisenhowerMatrixTaskEditor {
     finalizeTaskCallback(task) {
         const id = this.managedTasks.addTask(task);
         this.displayTask(task, id);
+    }
+    deleteTask(id) {
+        const task = this.managedTasks.getTask(id);
+        this.removeTaskFromZone(id, task.getSection());
+        this.managedTasks.removeTask(id);
+        return this.taskProvider.deleteTask(task);
     }
 }
 //# sourceMappingURL=eisenhower_matrix_task_editor.js.map
@@ -553,8 +570,8 @@ class TaskElement {
         this.id = id;
         this.task = task;
         this.element = this.generateElement();
-        const stateInfo = this.generateTaskElementStateInfo();
-        this.switchToState(new DisplayedTaskElement(stateInfo));
+        this.stateInfo = this.generateTaskElementStateInfo();
+        this.switchToState(new DisplayedTaskElement(this.stateInfo));
     }
     generateElement() {
         const newElement = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.cloneTemplateById)(TaskElement.taskTemplateId);
@@ -582,20 +599,31 @@ class TaskElement {
         this.element.remove();
     }
     generateTaskElementStateInfo() {
-        return new TaskElemStateInfo(this.id, this.task, this.element);
+        const info = new TaskElemStateInfo(this.id, this.task, this.element);
+        return info;
     }
     switchToState(state) {
         this.state = state;
         this.state.setSwitchStateCallback(state => this.switchToState(state));
+    }
+    setTaskUpdateCallback(callbackfn) {
+        this.stateInfo.setTaskUpdateCallback(callbackfn);
     }
 }
 TaskElement.taskTemplateId = "task_template";
 TaskElement.taskDragType = "taskid";
 class TaskElemStateInfo {
     constructor(id, task, root) {
+        this.taskUpdateCallback = () => { };
         this.id = id;
         this.task = task;
         this.root = root;
+    }
+    setTaskUpdateCallback(callbackfn) {
+        this.taskUpdateCallback = callbackfn;
+    }
+    reportTaskUpdate() {
+        this.taskUpdateCallback(this.id, this.task);
     }
 }
 class TaskElementState {
@@ -618,6 +646,9 @@ class TaskElementState {
     }
     setSwitchStateCallback(callbackfn) {
         this.switchToState = callbackfn;
+    }
+    reportTaskUpdate() {
+        this.taskElemInfo.reportTaskUpdate();
     }
 }
 class DisplayedTaskElement extends TaskElementState {
@@ -687,6 +718,7 @@ class EditedTaskElement extends TaskElementState {
     stopEditing() {
         this.getTask().setName(this.input.value);
         this.switchToState(new DisplayedTaskElement(this.getElemInfo()));
+        this.reportTaskUpdate();
     }
     cancelEditing() {
         this.switchToState(new DisplayedTaskElement(this.getElemInfo()));
@@ -730,6 +762,9 @@ class TaskZone {
     }
     getNewTaskProvider() {
         return this.newTaskHandler;
+    }
+    getTaskDeleter() {
+        return this.baseData;
     }
     addTask(id, task) {
         this.taskInserter.addTask(id, task);
@@ -910,7 +945,14 @@ class TaskZoneTaskInserter {
         this.displayTaskElement(taskElement);
     }
     createElementForTask(id, task) {
-        return new _task_element__WEBPACK_IMPORTED_MODULE_0__.TaskElement(id, task);
+        const element = new _task_element__WEBPACK_IMPORTED_MODULE_0__.TaskElement(id, task);
+        element.setTaskUpdateCallback((taskId, task) => this.deleteTaskIfNameIsEmpty(taskId, task));
+        return element;
+    }
+    deleteTaskIfNameIsEmpty(taskId, task) {
+        if (task.getName() === "") {
+            this.data.deleteTask(taskId);
+        }
     }
     displayTaskElement(taskElement) {
         const wasInserted = this.tryInsertInMiddle(taskElement);
@@ -1546,6 +1588,9 @@ class CachedTask {
         this.underlyingTask.setOrderIndex(index);
         this.cachedIndex = index;
     }
+    getUnderlyingTask() {
+        return this.underlyingTask;
+    }
 }
 //# sourceMappingURL=cached_task.js.map
 
@@ -1594,6 +1639,12 @@ class CachingTaskProvider {
                 cachedTasks.push(cachedTask);
             }
             return cachedTasks;
+        });
+    }
+    deleteTask(task) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const underlyingTask = task.getUnderlyingTask();
+            yield this.underlyingTaskProvider.deleteTask(underlyingTask);
         });
     }
 }

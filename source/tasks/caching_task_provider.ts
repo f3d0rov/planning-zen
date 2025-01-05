@@ -28,4 +28,9 @@ export class CachingTaskProvider {
 		}
 		return cachedTasks;
 	}
+
+	public async deleteTask (task: CachedTask): Promise <void> {
+		const underlyingTask = task.getUnderlyingTask();
+		await this.underlyingTaskProvider.deleteTask (underlyingTask);
+	}
 }

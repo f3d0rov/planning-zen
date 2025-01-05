@@ -2,7 +2,7 @@
 import { CachedTask } from "../tasks/cached_task";
 import { TaskSection } from "../tasks/task";
 import { BaseTaskZoneData } from "./base_task_zone_data";
-import { CategoryChangeProvider, NewTaskProvider } from "./eisenhower_matrix_task_editor";
+import { CategoryChangeProvider, NewTaskProvider, TaskDeleter } from "./eisenhower_matrix_task_editor";
 import { TaskZoneDropHandler } from "./task_zone_drop_handler";
 import { TaskZoneNewTaskHandler } from "./task_zone_new_task_handler";
 import { TaskZoneTaskInserter } from "./task_zone_task_inserter";
@@ -33,6 +33,10 @@ export class TaskZone {
 
 	public getNewTaskProvider (): NewTaskProvider {
 		return this.newTaskHandler;
+	}
+
+	public getTaskDeleter (): TaskDeleter {
+		return this.baseData;
 	}
 
 	public addTask (id: number, task: CachedTask): void {

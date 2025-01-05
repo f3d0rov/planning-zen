@@ -18,5 +18,13 @@ export class BaseTaskZoneData {
     getTasks() {
         return this.orderedTasks;
     }
+    deleteTask(taskId) {
+        if (this.deleteTaskCallback) {
+            this.deleteTaskCallback(taskId);
+        }
+    }
+    setDeleteTaskCallback(callbackfn) {
+        this.deleteTaskCallback = callbackfn;
+    }
 }
 //# sourceMappingURL=base_task_zone_data.js.map

@@ -45,4 +45,8 @@ export class CachedTask {
 		this.underlyingTask.setOrderIndex (index);
 		this.cachedIndex = index;
 	}
+
+	public getUnderlyingTask (): Task {
+		return this.underlyingTask;
+	}
 }
