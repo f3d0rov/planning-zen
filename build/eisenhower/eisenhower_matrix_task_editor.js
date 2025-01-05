@@ -35,10 +35,11 @@ export class EisenhowerMatrixTaskEditor {
         });
     }
     initZones() {
-        this.zones.set('do', new TaskZone("task_zone_do", 'do'));
-        this.zones.set('schedule', new TaskZone("task_zone_schedule", 'schedule'));
-        this.zones.set('delegate', new TaskZone("task_zone_delegate", 'delegate'));
-        this.zones.set('delete', new TaskZone("task_zone_delete", 'delete'));
+        // TODO: better
+        this.zones.set('do', new TaskZone("do_task_box", 'Do', 'do'));
+        this.zones.set('schedule', new TaskZone("schedule_task_box", 'Schedule', 'schedule'));
+        this.zones.set('delegate', new TaskZone("delegate_task_box", 'Delegate', 'delegate'));
+        this.zones.set('delete', new TaskZone("dont_task_box", "Don't do", 'delete'));
         this.zones.forEach((zone) => {
             this.addCategoryChangeProvider(zone.getCatChangeProvider());
             this.addNewTaskProvider(zone.getNewTaskProvider());

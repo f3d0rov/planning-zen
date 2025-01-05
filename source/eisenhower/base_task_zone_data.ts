@@ -13,8 +13,8 @@ export class BaseTaskZoneData implements TaskDeleter {
 	private orderedTasks: LinkedList <TaskElement> = new BasicLinkedList <TaskElement>;
 	private deleteTaskCallback: ((taskId: number) => Promise <void>) | undefined;
 
-	constructor (taskBoxElementId: string, category: TaskSection) {
-		this.element = new TaskZoneElement (taskBoxElementId);
+	constructor (containerId: string, name: string, category: TaskSection) {
+		this.element = new TaskZoneElement (containerId, name);
 		this.category = category;
 	}
 

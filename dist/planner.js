@@ -289,9 +289,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class BaseTaskZoneData {
-    constructor(taskBoxElementId, category) {
+    constructor(containerId, name, category) {
         this.orderedTasks = new _common_linked_list__WEBPACK_IMPORTED_MODULE_0__.BasicLinkedList;
-        this.element = new _task_zone_element__WEBPACK_IMPORTED_MODULE_1__.TaskZoneElement(taskBoxElementId);
+        this.element = new _task_zone_element__WEBPACK_IMPORTED_MODULE_1__.TaskZoneElement(containerId, name);
         this.category = category;
     }
     getCategory() {
@@ -369,10 +369,11 @@ class EisenhowerMatrixTaskEditor {
         });
     }
     initZones() {
-        this.zones.set('do', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_do", 'do'));
-        this.zones.set('schedule', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_schedule", 'schedule'));
-        this.zones.set('delegate', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_delegate", 'delegate'));
-        this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_delete", 'delete'));
+        // TODO: better
+        this.zones.set('do', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("do_task_box", 'Do', 'do'));
+        this.zones.set('schedule', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("schedule_task_box", 'Schedule', 'schedule'));
+        this.zones.set('delegate', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("delegate_task_box", 'Delegate', 'delegate'));
+        this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("dont_task_box", "Don't do", 'delete'));
         this.zones.forEach((zone) => {
             this.addCategoryChangeProvider(zone.getCatChangeProvider());
             this.addNewTaskProvider(zone.getNewTaskProvider());
@@ -750,8 +751,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class TaskZone {
-    constructor(taskBoxElementId, category) {
-        this.baseData = new _base_task_zone_data__WEBPACK_IMPORTED_MODULE_0__.BaseTaskZoneData(taskBoxElementId, category);
+    constructor(containerId, name, category) {
+        this.baseData = new _base_task_zone_data__WEBPACK_IMPORTED_MODULE_0__.BaseTaskZoneData(containerId, name, category);
         this.dropHandler = new _task_zone_drop_handler__WEBPACK_IMPORTED_MODULE_1__.TaskZoneDropHandler(this.baseData);
         this.newTaskHandler = new _task_zone_new_task_handler__WEBPACK_IMPORTED_MODULE_2__.TaskZoneNewTaskHandler(this.baseData);
         this.taskInserter = new _task_zone_task_inserter__WEBPACK_IMPORTED_MODULE_3__.TaskZoneTaskInserter(this.baseData);
@@ -844,9 +845,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
 
 class TaskZoneElement {
-    constructor(taskBoxElementId) {
-        this.root = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)(taskBoxElementId);
+    constructor(containerId, name = "Unset") {
+        const parent = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)(containerId);
+        this.root = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.cloneTemplateById)(TaskZoneElement.templateId);
+        this.root.id = containerId + "_element";
+        parent.appendChild(this.root);
         this.contents = this.root.querySelector(`.${TaskZoneElement.contentsClass}`);
+        this.name = this.root.querySelector(`.${TaskZoneElement.nameClass}`);
+        this.name.innerText = name;
     }
     getRoot() {
         return this.root;
@@ -864,7 +870,9 @@ class TaskZoneElement {
         this.getContents().addEventListener(type, callbackfn);
     }
 }
-TaskZoneElement.contentsClass = "decision_box_square_contents";
+TaskZoneElement.templateId = "task_box_template";
+TaskZoneElement.contentsClass = "contents";
+TaskZoneElement.nameClass = "name";
 TaskZoneElement.dropHighlightClass = "highlight";
 //# sourceMappingURL=task_zone_element.js.map
 

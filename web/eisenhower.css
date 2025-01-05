@@ -1,0 +1,104 @@
+
+.eisenhower_matrix {
+	border: none;
+	border-collapse: collapse;
+	table-layout: fixed;
+
+	object-fit: contain;
+}
+
+.matrix_title {
+	text-align: center;
+	font-size: 30px;
+	color: var(--task-criteria-color);
+}
+
+.matrix_title.side {
+	writing-mode: sideways-lr;
+}
+
+.matrix_title.top {
+
+}
+
+.matrix_task_box {
+	aspect-ratio: 1/1;
+}
+
+.task_box {
+	position: relative;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background-color: var(--decision-box-square-background);
+	border-radius: 10px;
+	aspect-ratio: 1/1;
+	overflow: hidden;
+
+	box-sizing: border-box;
+	
+	flex: 0 auto;
+	min-height: 256px;
+	max-height: 100%;
+	width: 400px;
+	height: 400px;
+	margin: 4px;
+}
+
+.task_box .name {
+	display: flex;
+	position: absolute;
+	box-sizing: border-box;
+
+	width: 100%;
+	height: 100%;
+
+	padding: 10px;
+
+	font-size: 32px;
+	color: var(--decision-box-square-name);
+	pointer-events: none;
+	flex-flow: row;
+	align-items: end;
+	justify-content: end;
+}
+
+.task_box .highlight_box {
+	position: absolute;
+	pointer-events: none;
+
+	top: 3px;
+	bottom: 3px;
+	left: 3px;
+	right: 3px;
+
+	border: transparent dashed 3px;
+	border-radius: 10px;
+
+	transition: border-color 0.1s ease-out;
+}
+
+.task_box.highlight .highlight_box {
+	border-color: var(--decision-box-highlight-border-color);
+}
+
+.task_box .contents {
+	display: flex;
+	
+	width: 100%;
+	height: 100%;
+
+	flex-flow: row;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: start;
+	align-content: start;
+
+	gap: 5px;
+	padding: 10px;
+	box-sizing: border-box;
+
+	overflow-y: auto;
+}

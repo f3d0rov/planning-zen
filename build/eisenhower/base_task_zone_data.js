@@ -1,9 +1,9 @@
 import { BasicLinkedList } from "../common/linked_list";
 import { TaskZoneElement } from "./task_zone_element";
 export class BaseTaskZoneData {
-    constructor(taskBoxElementId, category) {
+    constructor(containerId, name, category) {
         this.orderedTasks = new BasicLinkedList;
-        this.element = new TaskZoneElement(taskBoxElementId);
+        this.element = new TaskZoneElement(containerId, name);
         this.category = category;
     }
     getCategory() {

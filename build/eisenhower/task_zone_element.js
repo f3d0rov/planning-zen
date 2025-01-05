@@ -1,8 +1,13 @@
-import { getElementById } from "../common/common";
+import { cloneTemplateById, getElementById } from "../common/common";
 export class TaskZoneElement {
-    constructor(taskBoxElementId) {
-        this.root = getElementById(taskBoxElementId);
+    constructor(containerId, name = "Unset") {
+        const parent = getElementById(containerId);
+        this.root = cloneTemplateById(TaskZoneElement.templateId);
+        this.root.id = containerId + "_element";
+        parent.appendChild(this.root);
         this.contents = this.root.querySelector(`.${TaskZoneElement.contentsClass}`);
+        this.name = this.root.querySelector(`.${TaskZoneElement.nameClass}`);
+        this.name.innerText = name;
     }
     getRoot() {
         return this.root;
@@ -20,6 +25,8 @@ export class TaskZoneElement {
         this.getContents().addEventListener(type, callbackfn);
     }
 }
-TaskZoneElement.contentsClass = "decision_box_square_contents";
+TaskZoneElement.templateId = "task_box_template";
+TaskZoneElement.contentsClass = "contents";
+TaskZoneElement.nameClass = "name";
 TaskZoneElement.dropHighlightClass = "highlight";
 //# sourceMappingURL=task_zone_element.js.map

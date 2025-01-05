@@ -1,17 +1,26 @@
 
-import { getElementById } from "../common/common";
+import { cloneTemplateById, getElementById } from "../common/common";
 
 
 export class TaskZoneElement {
-	static contentsClass = "decision_box_square_contents";
+	static templateId: string = "task_box_template";
+
+	static contentsClass = "contents";
+	static nameClass = "name";
 	static dropHighlightClass = "highlight";
 
 	private root: HTMLElement;
 	private contents: HTMLElement;
+	private name: HTMLElement;
 
-	constructor (taskBoxElementId: string) {
-		this.root = getElementById (taskBoxElementId);
+	constructor (containerId: string, name: string = "Unset") {
+		const parent = getElementById (containerId);
+		this.root = cloneTemplateById (TaskZoneElement.templateId);
+		this.root.id = containerId + "_element";
+		parent.appendChild (this.root);
 		this.contents = this.root.querySelector (`.${TaskZoneElement.contentsClass}`) as HTMLElement;
+		this.name = this.root.querySelector (`.${TaskZoneElement.nameClass}`) as HTMLElement;
+		this.name.innerText = name;
 	}
 
 	public getRoot (): HTMLElement {
