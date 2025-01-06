@@ -1,29 +1,35 @@
 
+import { assert } from "chai";
 import { BasicTaskProvider } from "../../source/tasks/basic_task_provider";
 
-test (
-	"Construction",
+describe (
+	"BasicTaskProvider",
 	() => {
-		const taskProvider = new BasicTaskProvider;
-	}
-);
-
-test (
-	"Restore tasks - list of initial tasks",
-	() => {
-		const taskProvider = new BasicTaskProvider;
-		const tasks = taskProvider.restoreTasks();
-		expect (tasks).toHaveLength (6);
-	}
-);
-
-test (
-	"Create tasks",
-	() => {
-		const taskProvider = new BasicTaskProvider;
-		const newTask = taskProvider.createNewTask();
-		const newTaskName = "Hello";
-		newTask.setName (newTaskName);
-		expect (newTask.getName()).toEqual (newTaskName);
+		it (
+			"Construction",
+			() => {
+				const taskProvider = new BasicTaskProvider;
+			}
+		);
+		
+		it (
+			"Restore tasks - list of initial tasks",
+			() => {
+				const taskProvider = new BasicTaskProvider;
+				const tasks = taskProvider.restoreTasks();
+				assert.lengthOf (tasks, 6);
+			}
+		);
+		
+		it (
+			"Create tasks",
+			() => {
+				const taskProvider = new BasicTaskProvider;
+				const newTask = taskProvider.createNewTask();
+				const newTaskName = "Hello";
+				newTask.setName (newTaskName);
+				assert.equal (newTask.getName(), newTaskName);
+			}
+		);		
 	}
 );

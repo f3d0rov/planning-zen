@@ -1,0 +1,26 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es6",
+		"outDir": "build/tests",
+		"lib": [
+			"ES6",
+			"DOM",
+			"DOM.Iterable",
+			"DOM.AsyncIterable"
+		],
+		"sourceMap": true,
+		"rootDirs": [
+			"tests"
+		],
+		"strict": true, 
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		
+		"esModuleInterop": true
+	},
+	"exclude": [
+		"source",
+		"web"
+	]
+}

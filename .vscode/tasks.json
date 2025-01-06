@@ -2,11 +2,22 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Build TS",
+			"label": "Build app TS",
 			"group": "build",
 
 			"type": "typescript",
 			"tsconfig": "tsconfig.json",
+			"problemMatcher": [
+				"$tsc"
+			]
+		},
+
+		{
+			"label": "Build test TS",
+			"group": "build",
+
+			"type": "typescript",
+			"tsconfig": "tests-tsconfig.json",
 			"problemMatcher": [
 				"$tsc"
 			]
@@ -25,23 +36,73 @@
 		},
 
 		{
+			"label": "Pack tests",
+			"group": "build",
+
+			"type": "shell",
+			"command": "npx webpack",
+
+			"options": {
+				"cwd": "${workspaceFolder}/tests/"
+			}
+		},
+
+		{
+			"label": "Open testing page",
+			"group": "test",
+			
+			"type": "shell",
+			"command": "mocha.html",
+
+			"options": {
+				"cwd": "${workspaceFolder}/tests/"
+			}
+		},
+
+		{
 			"label": "Run tests",
 			"group": "test",
 
-			"type": "shell",
-			"command": "npm run test"
+			"dependsOn": [
+				"Build test TS",
+				"Pack tests",
+				"Open testing page"
+			],
+			
+			"dependsOrder": "sequence"
 		},
 
+		{
+			"label": "Build TS",
+			"group": "build",
+
+			"dependsOn": [
+				"Build app TS",
+				"Build test TS",
+			],
+			"dependsOrder": "sequence"
+		},
+		
 		{
 			"label": "Build app",
 			"group": "build",
 
 			"dependsOn": [
 				"Build TS",
-				"Pack app",
-				"Run tests",
+				"Pack app"
 			],
 			"dependsOrder": "sequence"
+		},
+
+		{
+			"label": "Build app & test",
+			"group": "build",
+
+			"dependsOn": [
+				"Build app",
+				"Run tests"
+			],
+			"dependsOrder": "parallel"
 		}
 	]
 }
