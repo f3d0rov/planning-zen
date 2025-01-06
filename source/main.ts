@@ -5,6 +5,7 @@ import { GithubPageOpener } from "./misc/github_page_opener";
 import { StyleSwitcher } from "./misc/style_switcher";
 import { TaskProvider } from "./tasks/task_provider";
 import { IndexedDBTaskProvider } from "./indexed_db_tasks/indexed_db_task_provider";
+import { SizeController } from "./eisenhower/size_controller";
 
 
 function main () {
@@ -27,7 +28,12 @@ async function initTasks () {
 	const taskProvider = new IndexedDBTaskProvider;
 	await taskProvider.openDB();
 	const app = new EisenhowerMatrixTaskEditor (taskProvider);
-	app.restoreTasks();
+	await app.restoreTasks();
+	
+	const sizeController = new SizeController;
+	window.requestAnimationFrame (() => {
+		sizeController.resize();
+	});
 }
 
 

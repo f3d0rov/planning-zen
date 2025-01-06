@@ -319,6 +319,64 @@ class BaseTaskZoneData {
 
 /***/ }),
 
+/***/ "../build/eisenhower/complete_task_dropoff.js":
+/*!****************************************************!*\
+  !*** ../build/eisenhower/complete_task_dropoff.js ***!
+  \****************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CompleteTaskDropoff: () => (/* binding */ CompleteTaskDropoff)
+/* harmony export */ });
+/* harmony import */ var _task_dropoff__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_dropoff */ "../build/eisenhower/task_dropoff.js");
+
+class CompleteTaskDropoff extends _task_dropoff__WEBPACK_IMPORTED_MODULE_0__.TaskDropoff {
+    constructor(parentId) {
+        super(parentId, "Complete task");
+        this.reportTaskCompletion = () => { };
+    }
+    handleDroppedTask(taskId) {
+        console.log(`Task #${taskId} dropped to mark as complete`);
+        this.reportTaskCompletion(taskId);
+    }
+    setTaskCompletionCallback(callbackfn) {
+        this.reportTaskCompletion = callbackfn;
+    }
+}
+//# sourceMappingURL=complete_task_dropoff.js.map
+
+/***/ }),
+
+/***/ "../build/eisenhower/delete_task_dropoff.js":
+/*!**************************************************!*\
+  !*** ../build/eisenhower/delete_task_dropoff.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DeleteTaskDropoff: () => (/* binding */ DeleteTaskDropoff)
+/* harmony export */ });
+/* harmony import */ var _task_dropoff__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_dropoff */ "../build/eisenhower/task_dropoff.js");
+
+class DeleteTaskDropoff extends _task_dropoff__WEBPACK_IMPORTED_MODULE_0__.TaskDropoff {
+    constructor(parentId) {
+        super(parentId, "Delete task");
+        this.reportTaskDeletion = () => { };
+    }
+    handleDroppedTask(taskId) {
+        console.log(`Task #${taskId} dropped to delete`);
+        this.reportTaskDeletion(taskId);
+    }
+    setTaskDeletionCallback(callbackfn) {
+        this.reportTaskDeletion = callbackfn;
+    }
+}
+//# sourceMappingURL=delete_task_dropoff.js.map
+
+/***/ }),
+
 /***/ "../build/eisenhower/eisenhower_matrix_task_editor.js":
 /*!************************************************************!*\
   !*** ../build/eisenhower/eisenhower_matrix_task_editor.js ***!
@@ -330,8 +388,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   EisenhowerMatrixTaskEditor: () => (/* binding */ EisenhowerMatrixTaskEditor)
 /* harmony export */ });
 /* harmony import */ var _tasks_caching_task_provider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../tasks/caching_task_provider */ "../build/tasks/caching_task_provider.js");
-/* harmony import */ var _indexed_tasks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./indexed_tasks */ "../build/eisenhower/indexed_tasks.js");
-/* harmony import */ var _task_zone__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task_zone */ "../build/eisenhower/task_zone.js");
+/* harmony import */ var _complete_task_dropoff__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./complete_task_dropoff */ "../build/eisenhower/complete_task_dropoff.js");
+/* harmony import */ var _delete_task_dropoff__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./delete_task_dropoff */ "../build/eisenhower/delete_task_dropoff.js");
+/* harmony import */ var _indexed_tasks__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./indexed_tasks */ "../build/eisenhower/indexed_tasks.js");
+/* harmony import */ var _task_zone__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task_zone */ "../build/eisenhower/task_zone.js");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -344,9 +404,11 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
+
+
 class EisenhowerMatrixTaskEditor {
     constructor(taskProvider) {
-        this.managedTasks = new _indexed_tasks__WEBPACK_IMPORTED_MODULE_1__.IndexedTasks;
+        this.managedTasks = new _indexed_tasks__WEBPACK_IMPORTED_MODULE_3__.IndexedTasks;
         this.zones = new Map;
         this.taskProvider = new _tasks_caching_task_provider__WEBPACK_IMPORTED_MODULE_0__.CachingTaskProvider(taskProvider);
     }
@@ -354,6 +416,7 @@ class EisenhowerMatrixTaskEditor {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.initTasks();
             this.initZones();
+            this.initDropoffs();
             this.displayInitializedTasks();
         });
     }
@@ -370,15 +433,33 @@ class EisenhowerMatrixTaskEditor {
     }
     initZones() {
         // TODO: better
-        this.zones.set('do', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("do_task_box", 'Do', 'do'));
-        this.zones.set('schedule', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("schedule_task_box", 'Schedule', 'schedule'));
-        this.zones.set('delegate', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("delegate_task_box", 'Delegate', 'delegate'));
-        this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("dont_task_box", "Don't do", 'delete'));
+        this.zones.set('do', new _task_zone__WEBPACK_IMPORTED_MODULE_4__.TaskZone("do_task_box", 'Do', 'do'));
+        this.zones.set('schedule', new _task_zone__WEBPACK_IMPORTED_MODULE_4__.TaskZone("schedule_task_box", 'Schedule', 'schedule'));
+        this.zones.set('delegate', new _task_zone__WEBPACK_IMPORTED_MODULE_4__.TaskZone("delegate_task_box", 'Delegate', 'delegate'));
+        this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_4__.TaskZone("dont_task_box", "Don't do", 'delete'));
         this.zones.forEach((zone) => {
             this.addCategoryChangeProvider(zone.getCatChangeProvider());
             this.addNewTaskProvider(zone.getNewTaskProvider());
             this.addTaskDeleter(zone.getTaskDeleter());
         });
+    }
+    initDropoffs() {
+        this.initCompleteDropoffs();
+        this.initDeleteDropoffs();
+    }
+    initCompleteDropoffs() {
+        const ids = ["done_task_box_horizontal", "done_task_box_vertical"];
+        for (let i of ids) {
+            const newDropoff = new _complete_task_dropoff__WEBPACK_IMPORTED_MODULE_1__.CompleteTaskDropoff(i);
+            newDropoff.setTaskCompletionCallback(taskId => this.changeTaskCategory(taskId, 'done'));
+        }
+    }
+    initDeleteDropoffs() {
+        const ids = ["thrash_task_box_horizontal", "thrash_task_box_vertical"];
+        for (let i of ids) {
+            const newDropoff = new _delete_task_dropoff__WEBPACK_IMPORTED_MODULE_2__.DeleteTaskDropoff(i);
+            newDropoff.setTaskDeletionCallback(taskId => this.deleteTask(taskId));
+        }
     }
     displayInitializedTasks() {
         this.managedTasks.forEach((task, index) => {
@@ -399,7 +480,7 @@ class EisenhowerMatrixTaskEditor {
     addTaskDeleter(taskDeleter) {
         taskDeleter.setDeleteTaskCallback(taskId => this.deleteTask(taskId));
     }
-    changeTaskCategory(taskId, newCategory, newIndex) {
+    changeTaskCategory(taskId, newCategory, newIndex = 0) {
         const task = this.managedTasks.getTask(taskId);
         this.removeTaskFromZone(taskId, task.getSection());
         this.incrementIndicesToFreeSpaceForInsertedTask(newCategory, newIndex);
@@ -472,6 +553,134 @@ class IndexedTasks {
     }
 }
 //# sourceMappingURL=indexed_tasks.js.map
+
+/***/ }),
+
+/***/ "../build/eisenhower/size_controller.js":
+/*!**********************************************!*\
+  !*** ../build/eisenhower/size_controller.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SizeController: () => (/* binding */ SizeController)
+/* harmony export */ });
+/* harmony import */ var _common_basic_point__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/basic_point */ "../build/common/basic_point.js");
+/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
+
+
+class SizeControllerHTML {
+    static taskBoxSelector() {
+        return `.${SizeControllerHTML.taskBoxClass} > *`;
+    }
+    static verticalUtilBoxSelector() {
+        return `.${SizeControllerHTML.utilityBoxClass}.${SizeControllerHTML.verticalClass}`;
+    }
+    static horizontalUtilBoxSelector() {
+        return `.${SizeControllerHTML.utilityBoxClass}.${SizeControllerHTML.horizontalClass}`;
+    }
+}
+SizeControllerHTML.freespaceId = "content";
+SizeControllerHTML.containerId = "eisenhower";
+SizeControllerHTML.matrixClass = "eisenhower_matrix";
+SizeControllerHTML.taskBoxClass = "matrix_task_box";
+SizeControllerHTML.utilityBoxClass = "matrix_utility_box";
+SizeControllerHTML.verticalClass = "vertical";
+SizeControllerHTML.horizontalClass = "horizontal";
+SizeControllerHTML.hiddenUtilBoxClass = "template";
+class SizeController {
+    constructor() {
+        this.taskBoxes = new Array;
+        this.verticalUtilBoxes = new Array;
+        this.horizontalUtilBoxes = new Array;
+        this.initElements();
+        window.addEventListener('resize', ev => this.handleResize(ev));
+    }
+    initElements() {
+        this.initUniqueElements();
+        this.initRepeatedElements();
+    }
+    initUniqueElements() {
+        this.freespace = (0,_common_common__WEBPACK_IMPORTED_MODULE_1__.getElementById)(SizeControllerHTML.freespaceId);
+        this.container = (0,_common_common__WEBPACK_IMPORTED_MODULE_1__.getElementById)(SizeControllerHTML.containerId);
+        this.matrix = this.freespace.querySelector(`.${SizeControllerHTML.matrixClass}`);
+    }
+    initRepeatedElements() {
+        this.grabElements(SizeControllerHTML.taskBoxSelector(), this.taskBoxes);
+        this.grabElements(SizeControllerHTML.verticalUtilBoxSelector(), this.verticalUtilBoxes);
+        this.grabElements(SizeControllerHTML.horizontalUtilBoxSelector(), this.horizontalUtilBoxes);
+    }
+    grabElements(selector, into) {
+        const elements = this.container.querySelectorAll(selector);
+        elements.forEach(elem => {
+            into.push(elem);
+        });
+        console.log(`Grabbed ${into.length} elements`);
+    }
+    handleResize(event) {
+        this.resize();
+    }
+    resize() {
+        console.log('resize!');
+        const freeSpace = this.getFreeSpace();
+        const orientation = freeSpace.x > freeSpace.y ? 'landscape' : 'portrait';
+        console.log(`Orientation: ${orientation}`);
+        const taskSize = this.taskBoxes.at(0).getBoundingClientRect().width;
+        console.log(`Task size: ${taskSize}`);
+        this.showOrientedUtilBoxes(orientation, taskSize);
+    }
+    getFreeSpace() {
+        const fsbbox = this.freespace.getBoundingClientRect();
+        return new _common_basic_point__WEBPACK_IMPORTED_MODULE_0__.BasicPoint(fsbbox.width, fsbbox.height);
+    }
+    showOrientedUtilBoxes(orientation, size) {
+        if (orientation === 'landscape') {
+            this.showHorizontalUtilBoxes(size);
+        }
+        else {
+            this.showVerticalUtilBoxes(size);
+        }
+    }
+    showHorizontalUtilBoxes(size) {
+        this.hideVerticalUtilBoxes();
+        this.removeClassFromElements(this.horizontalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
+        this.setWidthToElements(this.horizontalUtilBoxes, size / 2);
+        this.setHeightToElements(this.horizontalUtilBoxes, size);
+    }
+    hideVerticalUtilBoxes() {
+        this.addClassToElements(this.verticalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
+    }
+    showVerticalUtilBoxes(size) {
+        this.hideHorizontalUtilBoxes();
+        this.removeClassFromElements(this.verticalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
+        this.setHeightToElements(this.verticalUtilBoxes, size / 2);
+    }
+    hideHorizontalUtilBoxes() {
+        this.addClassToElements(this.horizontalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
+    }
+    addClassToElements(array, className) {
+        array.forEach((elem) => {
+            elem.classList.add(className);
+        });
+    }
+    removeClassFromElements(array, className) {
+        array.forEach((elem) => {
+            elem.classList.remove(className);
+        });
+    }
+    setWidthToElements(array, width) {
+        array.forEach((elem) => {
+            elem.style.width = `${width}px`;
+        });
+    }
+    setHeightToElements(array, height) {
+        array.forEach((elem) => {
+            elem.style.height = `${height}px`;
+        });
+    }
+}
+//# sourceMappingURL=size_controller.js.map
 
 /***/ }),
 
@@ -549,6 +758,60 @@ class TaskDropZone {
     }
 }
 //# sourceMappingURL=task_drop_zone.js.map
+
+/***/ }),
+
+/***/ "../build/eisenhower/task_dropoff.js":
+/*!*******************************************!*\
+  !*** ../build/eisenhower/task_dropoff.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TaskDropoff: () => (/* binding */ TaskDropoff)
+/* harmony export */ });
+/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
+/* harmony import */ var _task_drop_zone__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_drop_zone */ "../build/eisenhower/task_drop_zone.js");
+
+
+class TaskDropoff {
+    constructor(parentId, name) {
+        this.element = this.getElement(parentId, name);
+        this.dropZone = new _task_drop_zone__WEBPACK_IMPORTED_MODULE_1__.TaskDropZone(this.element);
+        this.setupEvents();
+    }
+    getElement(parentId, name) {
+        const element = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.cloneTemplateById)(TaskDropoff.templateId);
+        const nameElem = element.querySelector(`.${TaskDropoff.nameClass}`);
+        nameElem.innerText = name;
+        const parent = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)(parentId);
+        parent.appendChild(element);
+        return element;
+    }
+    setupEvents() {
+        this.dropZone.onTaskDrop(taskId => this.handleTaskDrop(taskId));
+        this.dropZone.onTaskEnter(() => this.highlightArea());
+        this.dropZone.onTaskLeave(() => this.dimArea());
+    }
+    highlightArea() {
+        this.element.classList.add(TaskDropoff.highlightClass);
+    }
+    dimArea() {
+        this.element.classList.remove(TaskDropoff.highlightClass);
+    }
+    handleTaskDrop(taskId) {
+        this.dimArea();
+        this.handleDroppedTask(taskId);
+    }
+    handleDroppedTask(taskId) {
+        // Not implemented
+    }
+}
+TaskDropoff.templateId = "util_box_template";
+TaskDropoff.highlightClass = "highlight";
+TaskDropoff.nameClass = "name";
+//# sourceMappingURL=task_dropoff.js.map
 
 /***/ }),
 
@@ -666,13 +929,18 @@ class DisplayedTaskElement extends TaskElementState {
     }
     setupEvents() {
         this.element.addEventListener('dragstart', ev => this.handleDragstart(ev));
+        this.element.addEventListener('dragend', ev => this.handleDragend(ev));
         this.element.addEventListener('dblclick', ev => this.handleDblclick(ev));
     }
     handleDragstart(event) {
         if (event.dataTransfer) {
             event.dataTransfer.setData(TaskElement.taskDragType, `${this.getId()}`);
             event.dataTransfer.dropEffect = "move";
+            (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)('eisenhower').classList.add(DisplayedTaskElement.taskDraggedClass);
         }
+    }
+    handleDragend(event) {
+        (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)('eisenhower').classList.remove(DisplayedTaskElement.taskDraggedClass);
     }
     handleDblclick(event) {
         event.preventDefault();
@@ -681,6 +949,7 @@ class DisplayedTaskElement extends TaskElementState {
     }
 }
 DisplayedTaskElement.displayTemplateId = "task_display_template";
+DisplayedTaskElement.taskDraggedClass = "task_dragged";
 class EditedTaskElement extends TaskElementState {
     constructor(taskElemInfo) {
         super(taskElemInfo);
@@ -1729,6 +1998,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _misc_github_page_opener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./misc/github_page_opener */ "../build/misc/github_page_opener.js");
 /* harmony import */ var _misc_style_switcher__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./misc/style_switcher */ "../build/misc/style_switcher.js");
 /* harmony import */ var _indexed_db_tasks_indexed_db_task_provider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./indexed_db_tasks/indexed_db_task_provider */ "../build/indexed_db_tasks/indexed_db_task_provider.js");
+/* harmony import */ var _eisenhower_size_controller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./eisenhower/size_controller */ "../build/eisenhower/size_controller.js");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1738,6 +2008,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -1760,7 +2031,11 @@ function initTasks() {
         const taskProvider = new _indexed_db_tasks_indexed_db_task_provider__WEBPACK_IMPORTED_MODULE_3__.IndexedDBTaskProvider;
         yield taskProvider.openDB();
         const app = new _eisenhower_eisenhower_matrix_task_editor__WEBPACK_IMPORTED_MODULE_0__.EisenhowerMatrixTaskEditor(taskProvider);
-        app.restoreTasks();
+        yield app.restoreTasks();
+        const sizeController = new _eisenhower_size_controller__WEBPACK_IMPORTED_MODULE_4__.SizeController;
+        window.requestAnimationFrame(() => {
+            sizeController.resize();
+        });
     });
 }
 window.addEventListener('load', main);

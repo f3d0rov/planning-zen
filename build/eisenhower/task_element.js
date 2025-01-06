@@ -1,4 +1,4 @@
-import { cloneTemplateById } from "../common/common";
+import { cloneTemplateById, getElementById } from "../common/common";
 import { getTextWidth } from "../common/text_width";
 export class TaskElement {
     constructor(id, task) {
@@ -100,13 +100,18 @@ class DisplayedTaskElement extends TaskElementState {
     }
     setupEvents() {
         this.element.addEventListener('dragstart', ev => this.handleDragstart(ev));
+        this.element.addEventListener('dragend', ev => this.handleDragend(ev));
         this.element.addEventListener('dblclick', ev => this.handleDblclick(ev));
     }
     handleDragstart(event) {
         if (event.dataTransfer) {
             event.dataTransfer.setData(TaskElement.taskDragType, `${this.getId()}`);
             event.dataTransfer.dropEffect = "move";
+            getElementById('eisenhower').classList.add(DisplayedTaskElement.taskDraggedClass);
         }
+    }
+    handleDragend(event) {
+        getElementById('eisenhower').classList.remove(DisplayedTaskElement.taskDraggedClass);
     }
     handleDblclick(event) {
         event.preventDefault();
@@ -115,6 +120,7 @@ class DisplayedTaskElement extends TaskElementState {
     }
 }
 DisplayedTaskElement.displayTemplateId = "task_display_template";
+DisplayedTaskElement.taskDraggedClass = "task_dragged";
 class EditedTaskElement extends TaskElementState {
     constructor(taskElemInfo) {
         super(taskElemInfo);

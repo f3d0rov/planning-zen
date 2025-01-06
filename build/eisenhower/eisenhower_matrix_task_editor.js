@@ -8,6 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { CachingTaskProvider } from "../tasks/caching_task_provider";
+import { CompleteTaskDropoff } from "./complete_task_dropoff";
+import { DeleteTaskDropoff } from "./delete_task_dropoff";
 import { IndexedTasks } from "./indexed_tasks";
 import { TaskZone } from "./task_zone";
 export class EisenhowerMatrixTaskEditor {
@@ -20,6 +22,7 @@ export class EisenhowerMatrixTaskEditor {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.initTasks();
             this.initZones();
+            this.initDropoffs();
             this.displayInitializedTasks();
         });
     }
@@ -46,6 +49,24 @@ export class EisenhowerMatrixTaskEditor {
             this.addTaskDeleter(zone.getTaskDeleter());
         });
     }
+    initDropoffs() {
+        this.initCompleteDropoffs();
+        this.initDeleteDropoffs();
+    }
+    initCompleteDropoffs() {
+        const ids = ["done_task_box_horizontal", "done_task_box_vertical"];
+        for (let i of ids) {
+            const newDropoff = new CompleteTaskDropoff(i);
+            newDropoff.setTaskCompletionCallback(taskId => this.changeTaskCategory(taskId, 'done'));
+        }
+    }
+    initDeleteDropoffs() {
+        const ids = ["thrash_task_box_horizontal", "thrash_task_box_vertical"];
+        for (let i of ids) {
+            const newDropoff = new DeleteTaskDropoff(i);
+            newDropoff.setTaskDeletionCallback(taskId => this.deleteTask(taskId));
+        }
+    }
     displayInitializedTasks() {
         this.managedTasks.forEach((task, index) => {
             this.displayTask(task, index);
@@ -65,7 +86,7 @@ export class EisenhowerMatrixTaskEditor {
     addTaskDeleter(taskDeleter) {
         taskDeleter.setDeleteTaskCallback(taskId => this.deleteTask(taskId));
     }
-    changeTaskCategory(taskId, newCategory, newIndex) {
+    changeTaskCategory(taskId, newCategory, newIndex = 0) {
         const task = this.managedTasks.getTask(taskId);
         this.removeTaskFromZone(taskId, task.getSection());
         this.incrementIndicesToFreeSpaceForInsertedTask(newCategory, newIndex);

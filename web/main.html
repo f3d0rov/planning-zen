@@ -44,8 +44,13 @@
 				<div class = "contents"></div>
 			</div>
 
-			<div class = "content">
-				<div class = "eisenhower">
+			<div class = "util_box template" id = "util_box_template">
+				<div class = "name noselect"> Complete task </div>
+				<div class = "highlight_box"></div>
+			</div>
+
+			<div class = "content" id = "content">
+				<div class = "eisenhower" id = "eisenhower">
 					<table class = "eisenhower_matrix">
 						<tr>
 							<td> </td>
@@ -55,20 +60,20 @@
 						</tr>
 						<tr>
 							<td class = "matrix_title side"> Important </td>
-							<td class = "matrix_task_box" id = "do_task_box"></td>
-							<td class = "matrix_task_box" id = "schedule_task_box"></td>
-							<td class = "matrix_utility_box done horizontal" id = "done_task_box_horizontal"></td>
+							<td class = "matrix_task_box" id = "do_task_box"> </td>
+							<td class = "matrix_task_box" id = "schedule_task_box"> </td>
+							<td class = "matrix_utility_box done horizontal" id = "done_task_box_horizontal"> </td>
 						</tr>
 						<tr>
 							<td class = "matrix_title side"> Not important </td>
-							<td class = "matrix_task_box" id = "delegate_task_box"></td>
-							<td class = "matrix_task_box" id = "dont_task_box"></td>
-							<td class = "matrix_utility_box thrash horizontal" id = "thrash_task_box_horizontal"></td>
+							<td class = "matrix_task_box" id = "delegate_task_box"> </td>
+							<td class = "matrix_task_box" id = "dont_task_box"> </td>
+							<td class = "matrix_utility_box thrash horizontal" id = "thrash_task_box_horizontal"> </td>
 						</tr>
 						<tr>
 							<td> </td>
-							<td class = "matrix_utility_box thrash vertical" id = "thrash_task_box_vertical"></td>
-							<td class = "matrix_utility_box thrash vertical" id = "done_task_box_vertical"></td>
+							<td class = "matrix_utility_box thrash vertical" id = "thrash_task_box_vertical"> </td>
+							<td class = "matrix_utility_box vertical" id = "done_task_box_vertical"> </td>
 							<td> </td>
 						</tr>
 					</table>

@@ -102,3 +102,80 @@
 
 	overflow-y: auto;
 }
+
+
+.matrix_utility_box {
+}
+
+.matrix_utility_box.vertical {
+	aspect-ratio: 1/2;
+	height: auto;
+}
+
+.matrix_utility_box.horizontal {
+	aspect-ratio: 1/2;
+	width: auto;
+}
+
+.util_box {
+	display: flex;
+	position: relative;
+	opacity: 0;
+
+	justify-content: center;
+	align-items: center;
+
+	width: 100%;
+	height: 100%;
+
+	transition: scale 0.1s ease-out;
+}
+
+.task_dragged .util_box {
+	opacity: 100%;
+}
+
+.util_box .name {
+	color: var(--dropoff-box-text-color);
+	font-size: 32px;
+	transition: color 0.1s ease-in-out;
+}
+
+.horizontal .util_box .name {
+	writing-mode: vertical-lr;
+}
+
+.util_box .highlight_box {
+	position: absolute;
+	pointer-events: none;
+
+	top: 8px;
+	bottom: 8px;
+	left: 8px;
+	right: 8px;
+
+	border: var(--dropoff-box-border-color) dashed 3px;
+	border-radius: 15px;
+
+	transition: border-color 0.1s ease-out, scale 0.1s ease-out;
+}
+
+.util_box.highlight {
+	scale: 105%;
+}
+
+.util_box.highlight .highlight_box {
+	border-color: var(--dropoff-box-border-highlight-color);
+}
+
+.util_box.highlight .name {
+	color: var(--dropoff-box-text-highlight-color);
+}
+
+.thrash .util_box.highlight .highlight_box {
+	border-color: var(--delete-dropoff-box-border-highlight-color);
+}
+
+.thrash .util_box.highlight .name {
+	color: var(--delete-dropoff-box-text-highlight-color);
+}

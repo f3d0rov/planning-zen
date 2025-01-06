@@ -11,6 +11,7 @@ import { EisenhowerMatrixTaskEditor } from "./eisenhower/eisenhower_matrix_task_
 import { GithubPageOpener } from "./misc/github_page_opener";
 import { StyleSwitcher } from "./misc/style_switcher";
 import { IndexedDBTaskProvider } from "./indexed_db_tasks/indexed_db_task_provider";
+import { SizeController } from "./eisenhower/size_controller";
 function main() {
     logWelcomeMessage();
     initMiscTools();
@@ -29,7 +30,11 @@ function initTasks() {
         const taskProvider = new IndexedDBTaskProvider;
         yield taskProvider.openDB();
         const app = new EisenhowerMatrixTaskEditor(taskProvider);
-        app.restoreTasks();
+        yield app.restoreTasks();
+        const sizeController = new SizeController;
+        window.requestAnimationFrame(() => {
+            sizeController.resize();
+        });
     });
 }
 window.addEventListener('load', main);
