@@ -5,7 +5,7 @@ const webpack = require('webpack');
 module.exports = {
   target: "web",
 
-  entry: '../build/main.js',
+  entry: '../build/app/main.js',
   output: {
     filename: 'planner.js',
     globalObject: 'self',

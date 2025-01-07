@@ -19,8 +19,8 @@ export class TaskZone {
 	private taskRemover: TaskZoneTaskRemover;
 	
 
-	constructor (taskBoxElementId: string, category: TaskSection) {
-		this.baseData = new BaseTaskZoneData (taskBoxElementId, category);
+	constructor (containerId: string, name: string, category: TaskSection) {
+		this.baseData = new BaseTaskZoneData (containerId, name, category);
 		this.dropHandler = new TaskZoneDropHandler (this.baseData);
 		this.newTaskHandler = new TaskZoneNewTaskHandler (this.baseData);
 		this.taskInserter = new TaskZoneTaskInserter (this.baseData);

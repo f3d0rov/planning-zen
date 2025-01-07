@@ -1,5 +1,5 @@
 
-import { cloneTemplateById } from "../common/common";
+import { cloneTemplateById, getElementById } from "../common/common";
 import { getTextWidth } from "../common/text_width";
 import { CachedTask } from "../tasks/cached_task";
 
@@ -130,6 +130,7 @@ class TaskElementState {
 
 class DisplayedTaskElement extends TaskElementState {
 	static displayTemplateId = "task_display_template";
+	static taskDraggedClass = "task_dragged";
 
 	private element: HTMLElement;
 
@@ -148,6 +149,7 @@ class DisplayedTaskElement extends TaskElementState {
 
 	private setupEvents (): void {
 		this.element.addEventListener ('dragstart', ev => this.handleDragstart (ev));
+		this.element.addEventListener ('dragend', ev => this.handleDragend (ev));
 		this.element.addEventListener ('dblclick', ev => this.handleDblclick (ev));
 	}
 
@@ -155,7 +157,12 @@ class DisplayedTaskElement extends TaskElementState {
 		if (event.dataTransfer) {
 			event.dataTransfer.setData (TaskElement.taskDragType, `${this.getId()}`);
 			event.dataTransfer.dropEffect = "move";
+			getElementById ('eisenhower').classList.add (DisplayedTaskElement.taskDraggedClass);
 		}
+	}
+
+	private handleDragend (event: DragEvent): void {
+		getElementById ('eisenhower').classList.remove (DisplayedTaskElement.taskDraggedClass);
 	}
 
 	private handleDblclick (event: MouseEvent): void {

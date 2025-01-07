@@ -42,4 +42,17 @@
 	--decision-box-add-task-active-box-shadow: inset rgb(49, 49, 49) 0 3px 3px;
 
 	--decision-box-highlight-border-color: lime;
+
+	--dropoff-box-text-color: var(--text-color);
+	--dropoff-box-border-color: var(--text-color);
+
+	--dropoff-box-text-highlight-color: #5dbb5d;
+	--dropoff-box-border-highlight-color: #5dbb5d;
+
+	--delete-dropoff-box-text-highlight-color: red;
+	--delete-dropoff-box-border-highlight-color: red;
+
+	--notice-text-color: gray;
+	--notice-link-color: #5dbb5d;
+	--notice-link-active-color: lime;
 }

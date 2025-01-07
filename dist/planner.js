@@ -2,10 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "../build/common/basic_point.js":
-/*!**************************************!*\
-  !*** ../build/common/basic_point.js ***!
-  \**************************************/
+/***/ "../build/app/common/basic_point.js":
+/*!******************************************!*\
+  !*** ../build/app/common/basic_point.js ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -24,10 +24,10 @@ class BasicPoint {
 
 /***/ }),
 
-/***/ "../build/common/common.js":
-/*!*********************************!*\
-  !*** ../build/common/common.js ***!
-  \*********************************/
+/***/ "../build/app/common/common.js":
+/*!*************************************!*\
+  !*** ../build/app/common/common.js ***!
+  \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -82,10 +82,10 @@ function cloneTemplateById(id) {
 
 /***/ }),
 
-/***/ "../build/common/linked_list.js":
-/*!**************************************!*\
-  !*** ../build/common/linked_list.js ***!
-  \**************************************/
+/***/ "../build/app/common/linked_list.js":
+/*!******************************************!*\
+  !*** ../build/app/common/linked_list.js ***!
+  \******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -245,10 +245,10 @@ class BasicLinkedListIterator {
 
 /***/ }),
 
-/***/ "../build/common/text_width.js":
-/*!*************************************!*\
-  !*** ../build/common/text_width.js ***!
-  \*************************************/
+/***/ "../build/app/common/text_width.js":
+/*!*****************************************!*\
+  !*** ../build/app/common/text_width.js ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -274,24 +274,24 @@ function getFont(elem) {
 
 /***/ }),
 
-/***/ "../build/eisenhower/base_task_zone_data.js":
-/*!**************************************************!*\
-  !*** ../build/eisenhower/base_task_zone_data.js ***!
-  \**************************************************/
+/***/ "../build/app/eisenhower/base_task_zone_data.js":
+/*!******************************************************!*\
+  !*** ../build/app/eisenhower/base_task_zone_data.js ***!
+  \******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BaseTaskZoneData: () => (/* binding */ BaseTaskZoneData)
 /* harmony export */ });
-/* harmony import */ var _common_linked_list__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/linked_list */ "../build/common/linked_list.js");
-/* harmony import */ var _task_zone_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_zone_element */ "../build/eisenhower/task_zone_element.js");
+/* harmony import */ var _common_linked_list__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/linked_list */ "../build/app/common/linked_list.js");
+/* harmony import */ var _task_zone_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_zone_element */ "../build/app/eisenhower/task_zone_element.js");
 
 
 class BaseTaskZoneData {
-    constructor(taskBoxElementId, category) {
+    constructor(containerId, name, category) {
         this.orderedTasks = new _common_linked_list__WEBPACK_IMPORTED_MODULE_0__.BasicLinkedList;
-        this.element = new _task_zone_element__WEBPACK_IMPORTED_MODULE_1__.TaskZoneElement(taskBoxElementId);
+        this.element = new _task_zone_element__WEBPACK_IMPORTED_MODULE_1__.TaskZoneElement(containerId, name);
         this.category = category;
     }
     getCategory() {
@@ -319,19 +319,79 @@ class BaseTaskZoneData {
 
 /***/ }),
 
-/***/ "../build/eisenhower/eisenhower_matrix_task_editor.js":
-/*!************************************************************!*\
-  !*** ../build/eisenhower/eisenhower_matrix_task_editor.js ***!
-  \************************************************************/
+/***/ "../build/app/eisenhower/complete_task_dropoff.js":
+/*!********************************************************!*\
+  !*** ../build/app/eisenhower/complete_task_dropoff.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CompleteTaskDropoff: () => (/* binding */ CompleteTaskDropoff)
+/* harmony export */ });
+/* harmony import */ var _task_dropoff__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_dropoff */ "../build/app/eisenhower/task_dropoff.js");
+
+class CompleteTaskDropoff extends _task_dropoff__WEBPACK_IMPORTED_MODULE_0__.TaskDropoff {
+    constructor(parentId) {
+        super(parentId, "Complete task");
+        this.reportTaskCompletion = () => { };
+    }
+    handleDroppedTask(taskId) {
+        console.log(`Task #${taskId} dropped to mark as complete`);
+        this.reportTaskCompletion(taskId);
+    }
+    setTaskCompletionCallback(callbackfn) {
+        this.reportTaskCompletion = callbackfn;
+    }
+}
+//# sourceMappingURL=complete_task_dropoff.js.map
+
+/***/ }),
+
+/***/ "../build/app/eisenhower/delete_task_dropoff.js":
+/*!******************************************************!*\
+  !*** ../build/app/eisenhower/delete_task_dropoff.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DeleteTaskDropoff: () => (/* binding */ DeleteTaskDropoff)
+/* harmony export */ });
+/* harmony import */ var _task_dropoff__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_dropoff */ "../build/app/eisenhower/task_dropoff.js");
+
+class DeleteTaskDropoff extends _task_dropoff__WEBPACK_IMPORTED_MODULE_0__.TaskDropoff {
+    constructor(parentId) {
+        super(parentId, "Delete task");
+        this.reportTaskDeletion = () => { };
+    }
+    handleDroppedTask(taskId) {
+        console.log(`Task #${taskId} dropped to delete`);
+        this.reportTaskDeletion(taskId);
+    }
+    setTaskDeletionCallback(callbackfn) {
+        this.reportTaskDeletion = callbackfn;
+    }
+}
+//# sourceMappingURL=delete_task_dropoff.js.map
+
+/***/ }),
+
+/***/ "../build/app/eisenhower/eisenhower_matrix_task_editor.js":
+/*!****************************************************************!*\
+  !*** ../build/app/eisenhower/eisenhower_matrix_task_editor.js ***!
+  \****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   EisenhowerMatrixTaskEditor: () => (/* binding */ EisenhowerMatrixTaskEditor)
 /* harmony export */ });
-/* harmony import */ var _tasks_caching_task_provider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../tasks/caching_task_provider */ "../build/tasks/caching_task_provider.js");
-/* harmony import */ var _indexed_tasks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./indexed_tasks */ "../build/eisenhower/indexed_tasks.js");
-/* harmony import */ var _task_zone__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task_zone */ "../build/eisenhower/task_zone.js");
+/* harmony import */ var _tasks_caching_task_provider__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../tasks/caching_task_provider */ "../build/app/tasks/caching_task_provider.js");
+/* harmony import */ var _complete_task_dropoff__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./complete_task_dropoff */ "../build/app/eisenhower/complete_task_dropoff.js");
+/* harmony import */ var _delete_task_dropoff__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./delete_task_dropoff */ "../build/app/eisenhower/delete_task_dropoff.js");
+/* harmony import */ var _indexed_tasks__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./indexed_tasks */ "../build/app/eisenhower/indexed_tasks.js");
+/* harmony import */ var _task_zone__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task_zone */ "../build/app/eisenhower/task_zone.js");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -344,9 +404,11 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 
 
+
+
 class EisenhowerMatrixTaskEditor {
     constructor(taskProvider) {
-        this.managedTasks = new _indexed_tasks__WEBPACK_IMPORTED_MODULE_1__.IndexedTasks;
+        this.managedTasks = new _indexed_tasks__WEBPACK_IMPORTED_MODULE_3__.IndexedTasks;
         this.zones = new Map;
         this.taskProvider = new _tasks_caching_task_provider__WEBPACK_IMPORTED_MODULE_0__.CachingTaskProvider(taskProvider);
     }
@@ -354,6 +416,7 @@ class EisenhowerMatrixTaskEditor {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.initTasks();
             this.initZones();
+            this.initDropoffs();
             this.displayInitializedTasks();
         });
     }
@@ -369,15 +432,34 @@ class EisenhowerMatrixTaskEditor {
         });
     }
     initZones() {
-        this.zones.set('do', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_do", 'do'));
-        this.zones.set('schedule', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_schedule", 'schedule'));
-        this.zones.set('delegate', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_delegate", 'delegate'));
-        this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_2__.TaskZone("task_zone_delete", 'delete'));
+        // TODO: better
+        this.zones.set('do', new _task_zone__WEBPACK_IMPORTED_MODULE_4__.TaskZone("do_task_box", 'Do', 'do'));
+        this.zones.set('schedule', new _task_zone__WEBPACK_IMPORTED_MODULE_4__.TaskZone("schedule_task_box", 'Schedule', 'schedule'));
+        this.zones.set('delegate', new _task_zone__WEBPACK_IMPORTED_MODULE_4__.TaskZone("delegate_task_box", 'Delegate', 'delegate'));
+        this.zones.set('delete', new _task_zone__WEBPACK_IMPORTED_MODULE_4__.TaskZone("dont_task_box", "Don't do", 'delete'));
         this.zones.forEach((zone) => {
             this.addCategoryChangeProvider(zone.getCatChangeProvider());
             this.addNewTaskProvider(zone.getNewTaskProvider());
             this.addTaskDeleter(zone.getTaskDeleter());
         });
+    }
+    initDropoffs() {
+        this.initCompleteDropoffs();
+        this.initDeleteDropoffs();
+    }
+    initCompleteDropoffs() {
+        const ids = ["done_task_box_horizontal", "done_task_box_vertical"];
+        for (let i of ids) {
+            const newDropoff = new _complete_task_dropoff__WEBPACK_IMPORTED_MODULE_1__.CompleteTaskDropoff(i);
+            newDropoff.setTaskCompletionCallback(taskId => this.changeTaskCategory(taskId, 'done'));
+        }
+    }
+    initDeleteDropoffs() {
+        const ids = ["thrash_task_box_horizontal", "thrash_task_box_vertical"];
+        for (let i of ids) {
+            const newDropoff = new _delete_task_dropoff__WEBPACK_IMPORTED_MODULE_2__.DeleteTaskDropoff(i);
+            newDropoff.setTaskDeletionCallback(taskId => this.deleteTask(taskId));
+        }
     }
     displayInitializedTasks() {
         this.managedTasks.forEach((task, index) => {
@@ -398,7 +480,7 @@ class EisenhowerMatrixTaskEditor {
     addTaskDeleter(taskDeleter) {
         taskDeleter.setDeleteTaskCallback(taskId => this.deleteTask(taskId));
     }
-    changeTaskCategory(taskId, newCategory, newIndex) {
+    changeTaskCategory(taskId, newCategory, newIndex = 0) {
         const task = this.managedTasks.getTask(taskId);
         this.removeTaskFromZone(taskId, task.getSection());
         this.incrementIndicesToFreeSpaceForInsertedTask(newCategory, newIndex);
@@ -437,10 +519,10 @@ class EisenhowerMatrixTaskEditor {
 
 /***/ }),
 
-/***/ "../build/eisenhower/indexed_tasks.js":
-/*!********************************************!*\
-  !*** ../build/eisenhower/indexed_tasks.js ***!
-  \********************************************/
+/***/ "../build/app/eisenhower/indexed_tasks.js":
+/*!************************************************!*\
+  !*** ../build/app/eisenhower/indexed_tasks.js ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -474,18 +556,150 @@ class IndexedTasks {
 
 /***/ }),
 
-/***/ "../build/eisenhower/task_drop_zone.js":
-/*!*********************************************!*\
-  !*** ../build/eisenhower/task_drop_zone.js ***!
-  \*********************************************/
+/***/ "../build/app/eisenhower/size_controller.js":
+/*!**************************************************!*\
+  !*** ../build/app/eisenhower/size_controller.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SizeController: () => (/* binding */ SizeController)
+/* harmony export */ });
+/* harmony import */ var _common_basic_point__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/basic_point */ "../build/app/common/basic_point.js");
+/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/common */ "../build/app/common/common.js");
+
+
+class SizeControllerHTML {
+    static taskBoxSelector() {
+        return `.${SizeControllerHTML.taskBoxClass} > *`;
+    }
+    static verticalUtilBoxSelector() {
+        return `.${SizeControllerHTML.utilityBoxClass}.${SizeControllerHTML.verticalClass}`;
+    }
+    static horizontalUtilBoxSelector() {
+        return `.${SizeControllerHTML.utilityBoxClass}.${SizeControllerHTML.horizontalClass}`;
+    }
+}
+SizeControllerHTML.freespaceId = "content";
+SizeControllerHTML.containerId = "eisenhower";
+SizeControllerHTML.matrixClass = "eisenhower_matrix";
+SizeControllerHTML.taskBoxClass = "matrix_task_box";
+SizeControllerHTML.utilityBoxClass = "matrix_utility_box";
+SizeControllerHTML.landscapePadding = "landscape_padding";
+SizeControllerHTML.verticalClass = "vertical";
+SizeControllerHTML.horizontalClass = "horizontal";
+SizeControllerHTML.hiddenUtilBoxClass = "template";
+class SizeController {
+    constructor() {
+        this.taskBoxes = new Array;
+        this.verticalUtilBoxes = new Array;
+        this.horizontalUtilBoxes = new Array;
+        this.initElements();
+        window.addEventListener('resize', ev => this.handleResize(ev));
+    }
+    initElements() {
+        this.initUniqueElements();
+        this.initRepeatedElements();
+    }
+    initUniqueElements() {
+        this.freespace = (0,_common_common__WEBPACK_IMPORTED_MODULE_1__.getElementById)(SizeControllerHTML.freespaceId);
+        this.container = (0,_common_common__WEBPACK_IMPORTED_MODULE_1__.getElementById)(SizeControllerHTML.containerId);
+        this.landscapePadding = (0,_common_common__WEBPACK_IMPORTED_MODULE_1__.getElementById)(SizeControllerHTML.landscapePadding);
+        this.matrix = this.freespace.querySelector(`.${SizeControllerHTML.matrixClass}`);
+    }
+    initRepeatedElements() {
+        this.grabElements(SizeControllerHTML.taskBoxSelector(), this.taskBoxes);
+        this.grabElements(SizeControllerHTML.verticalUtilBoxSelector(), this.verticalUtilBoxes);
+        this.grabElements(SizeControllerHTML.horizontalUtilBoxSelector(), this.horizontalUtilBoxes);
+    }
+    grabElements(selector, into) {
+        const elements = this.container.querySelectorAll(selector);
+        elements.forEach(elem => {
+            into.push(elem);
+        });
+        console.log(`Grabbed ${into.length} elements`);
+    }
+    handleResize(event) {
+        this.resize();
+    }
+    resize() {
+        console.log('resize!');
+        const freeSpace = this.getFreeSpace();
+        const orientation = freeSpace.x > freeSpace.y ? 'landscape' : 'portrait';
+        console.log(`Orientation: ${orientation}`);
+        const taskSize = this.taskBoxes.at(0).getBoundingClientRect().width;
+        console.log(`Task size: ${taskSize}`);
+        this.showOrientedUtilBoxes(orientation, taskSize);
+    }
+    getFreeSpace() {
+        const fsbbox = this.freespace.getBoundingClientRect();
+        return new _common_basic_point__WEBPACK_IMPORTED_MODULE_0__.BasicPoint(fsbbox.width, fsbbox.height);
+    }
+    showOrientedUtilBoxes(orientation, size) {
+        if (orientation === 'landscape') {
+            this.showHorizontalUtilBoxes(size);
+        }
+        else {
+            this.showVerticalUtilBoxes(size);
+        }
+    }
+    showHorizontalUtilBoxes(size) {
+        this.hideVerticalUtilBoxes();
+        this.removeClassFromElements(this.horizontalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
+        this.setWidthToElements(this.horizontalUtilBoxes, size / 2);
+        this.setHeightToElements(this.horizontalUtilBoxes, size);
+        this.landscapePadding.style.width = `${size / 2}px`;
+    }
+    hideVerticalUtilBoxes() {
+        this.addClassToElements(this.verticalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
+    }
+    showVerticalUtilBoxes(size) {
+        this.hideHorizontalUtilBoxes();
+        this.removeClassFromElements(this.verticalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
+        this.setHeightToElements(this.verticalUtilBoxes, size / 2);
+        this.landscapePadding.style.width = `0px`;
+    }
+    hideHorizontalUtilBoxes() {
+        this.addClassToElements(this.horizontalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
+    }
+    addClassToElements(array, className) {
+        array.forEach((elem) => {
+            elem.classList.add(className);
+        });
+    }
+    removeClassFromElements(array, className) {
+        array.forEach((elem) => {
+            elem.classList.remove(className);
+        });
+    }
+    setWidthToElements(array, width) {
+        array.forEach((elem) => {
+            elem.style.width = `${width}px`;
+        });
+    }
+    setHeightToElements(array, height) {
+        array.forEach((elem) => {
+            elem.style.height = `${height}px`;
+        });
+    }
+}
+//# sourceMappingURL=size_controller.js.map
+
+/***/ }),
+
+/***/ "../build/app/eisenhower/task_drop_zone.js":
+/*!*************************************************!*\
+  !*** ../build/app/eisenhower/task_drop_zone.js ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TaskDropZone: () => (/* binding */ TaskDropZone)
 /* harmony export */ });
-/* harmony import */ var _common_basic_point__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/basic_point */ "../build/common/basic_point.js");
-/* harmony import */ var _task_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_element */ "../build/eisenhower/task_element.js");
+/* harmony import */ var _common_basic_point__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/basic_point */ "../build/app/common/basic_point.js");
+/* harmony import */ var _task_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_element */ "../build/app/eisenhower/task_element.js");
 
 
 class TaskDropZone {
@@ -551,18 +765,72 @@ class TaskDropZone {
 
 /***/ }),
 
-/***/ "../build/eisenhower/task_element.js":
-/*!*******************************************!*\
-  !*** ../build/eisenhower/task_element.js ***!
-  \*******************************************/
+/***/ "../build/app/eisenhower/task_dropoff.js":
+/*!***********************************************!*\
+  !*** ../build/app/eisenhower/task_dropoff.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TaskDropoff: () => (/* binding */ TaskDropoff)
+/* harmony export */ });
+/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/app/common/common.js");
+/* harmony import */ var _task_drop_zone__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_drop_zone */ "../build/app/eisenhower/task_drop_zone.js");
+
+
+class TaskDropoff {
+    constructor(parentId, name) {
+        this.element = this.getElement(parentId, name);
+        this.dropZone = new _task_drop_zone__WEBPACK_IMPORTED_MODULE_1__.TaskDropZone(this.element);
+        this.setupEvents();
+    }
+    getElement(parentId, name) {
+        const element = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.cloneTemplateById)(TaskDropoff.templateId);
+        const nameElem = element.querySelector(`.${TaskDropoff.nameClass}`);
+        nameElem.innerText = name;
+        const parent = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)(parentId);
+        parent.appendChild(element);
+        return element;
+    }
+    setupEvents() {
+        this.dropZone.onTaskDrop(taskId => this.handleTaskDrop(taskId));
+        this.dropZone.onTaskEnter(() => this.highlightArea());
+        this.dropZone.onTaskLeave(() => this.dimArea());
+    }
+    highlightArea() {
+        this.element.classList.add(TaskDropoff.highlightClass);
+    }
+    dimArea() {
+        this.element.classList.remove(TaskDropoff.highlightClass);
+    }
+    handleTaskDrop(taskId) {
+        this.dimArea();
+        this.handleDroppedTask(taskId);
+    }
+    handleDroppedTask(taskId) {
+        // Not implemented
+    }
+}
+TaskDropoff.templateId = "util_box_template";
+TaskDropoff.highlightClass = "highlight";
+TaskDropoff.nameClass = "name";
+//# sourceMappingURL=task_dropoff.js.map
+
+/***/ }),
+
+/***/ "../build/app/eisenhower/task_element.js":
+/*!***********************************************!*\
+  !*** ../build/app/eisenhower/task_element.js ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TaskElement: () => (/* binding */ TaskElement)
 /* harmony export */ });
-/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
-/* harmony import */ var _common_text_width__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/text_width */ "../build/common/text_width.js");
+/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/app/common/common.js");
+/* harmony import */ var _common_text_width__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../common/text_width */ "../build/app/common/text_width.js");
 
 
 class TaskElement {
@@ -665,13 +933,18 @@ class DisplayedTaskElement extends TaskElementState {
     }
     setupEvents() {
         this.element.addEventListener('dragstart', ev => this.handleDragstart(ev));
+        this.element.addEventListener('dragend', ev => this.handleDragend(ev));
         this.element.addEventListener('dblclick', ev => this.handleDblclick(ev));
     }
     handleDragstart(event) {
         if (event.dataTransfer) {
             event.dataTransfer.setData(TaskElement.taskDragType, `${this.getId()}`);
             event.dataTransfer.dropEffect = "move";
+            (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)('eisenhower').classList.add(DisplayedTaskElement.taskDraggedClass);
         }
+    }
+    handleDragend(event) {
+        (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)('eisenhower').classList.remove(DisplayedTaskElement.taskDraggedClass);
     }
     handleDblclick(event) {
         event.preventDefault();
@@ -680,6 +953,7 @@ class DisplayedTaskElement extends TaskElementState {
     }
 }
 DisplayedTaskElement.displayTemplateId = "task_display_template";
+DisplayedTaskElement.taskDraggedClass = "task_dragged";
 class EditedTaskElement extends TaskElementState {
     constructor(taskElemInfo) {
         super(taskElemInfo);
@@ -729,29 +1003,29 @@ EditedTaskElement.templateClassId = "task_edit_template";
 
 /***/ }),
 
-/***/ "../build/eisenhower/task_zone.js":
-/*!****************************************!*\
-  !*** ../build/eisenhower/task_zone.js ***!
-  \****************************************/
+/***/ "../build/app/eisenhower/task_zone.js":
+/*!********************************************!*\
+  !*** ../build/app/eisenhower/task_zone.js ***!
+  \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TaskZone: () => (/* binding */ TaskZone)
 /* harmony export */ });
-/* harmony import */ var _base_task_zone_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./base_task_zone_data */ "../build/eisenhower/base_task_zone_data.js");
-/* harmony import */ var _task_zone_drop_handler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_zone_drop_handler */ "../build/eisenhower/task_zone_drop_handler.js");
-/* harmony import */ var _task_zone_new_task_handler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task_zone_new_task_handler */ "../build/eisenhower/task_zone_new_task_handler.js");
-/* harmony import */ var _task_zone_task_inserter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task_zone_task_inserter */ "../build/eisenhower/task_zone_task_inserter.js");
-/* harmony import */ var _task_zone_task_remover__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task_zone_task_remover */ "../build/eisenhower/task_zone_task_remover.js");
+/* harmony import */ var _base_task_zone_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./base_task_zone_data */ "../build/app/eisenhower/base_task_zone_data.js");
+/* harmony import */ var _task_zone_drop_handler__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./task_zone_drop_handler */ "../build/app/eisenhower/task_zone_drop_handler.js");
+/* harmony import */ var _task_zone_new_task_handler__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./task_zone_new_task_handler */ "../build/app/eisenhower/task_zone_new_task_handler.js");
+/* harmony import */ var _task_zone_task_inserter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task_zone_task_inserter */ "../build/app/eisenhower/task_zone_task_inserter.js");
+/* harmony import */ var _task_zone_task_remover__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task_zone_task_remover */ "../build/app/eisenhower/task_zone_task_remover.js");
 
 
 
 
 
 class TaskZone {
-    constructor(taskBoxElementId, category) {
-        this.baseData = new _base_task_zone_data__WEBPACK_IMPORTED_MODULE_0__.BaseTaskZoneData(taskBoxElementId, category);
+    constructor(containerId, name, category) {
+        this.baseData = new _base_task_zone_data__WEBPACK_IMPORTED_MODULE_0__.BaseTaskZoneData(containerId, name, category);
         this.dropHandler = new _task_zone_drop_handler__WEBPACK_IMPORTED_MODULE_1__.TaskZoneDropHandler(this.baseData);
         this.newTaskHandler = new _task_zone_new_task_handler__WEBPACK_IMPORTED_MODULE_2__.TaskZoneNewTaskHandler(this.baseData);
         this.taskInserter = new _task_zone_task_inserter__WEBPACK_IMPORTED_MODULE_3__.TaskZoneTaskInserter(this.baseData);
@@ -777,18 +1051,18 @@ class TaskZone {
 
 /***/ }),
 
-/***/ "../build/eisenhower/task_zone_drop_handler.js":
-/*!*****************************************************!*\
-  !*** ../build/eisenhower/task_zone_drop_handler.js ***!
-  \*****************************************************/
+/***/ "../build/app/eisenhower/task_zone_drop_handler.js":
+/*!*********************************************************!*\
+  !*** ../build/app/eisenhower/task_zone_drop_handler.js ***!
+  \*********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TaskZoneDropHandler: () => (/* binding */ TaskZoneDropHandler)
 /* harmony export */ });
-/* harmony import */ var _task_drop_zone__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_drop_zone */ "../build/eisenhower/task_drop_zone.js");
-/* harmony import */ var _threshold_box__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./threshold_box */ "../build/eisenhower/threshold_box.js");
+/* harmony import */ var _task_drop_zone__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_drop_zone */ "../build/app/eisenhower/task_drop_zone.js");
+/* harmony import */ var _threshold_box__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./threshold_box */ "../build/app/eisenhower/threshold_box.js");
 
 
 class TaskZoneDropHandler {
@@ -831,22 +1105,27 @@ class TaskZoneDropHandler {
 
 /***/ }),
 
-/***/ "../build/eisenhower/task_zone_element.js":
-/*!************************************************!*\
-  !*** ../build/eisenhower/task_zone_element.js ***!
-  \************************************************/
+/***/ "../build/app/eisenhower/task_zone_element.js":
+/*!****************************************************!*\
+  !*** ../build/app/eisenhower/task_zone_element.js ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TaskZoneElement: () => (/* binding */ TaskZoneElement)
 /* harmony export */ });
-/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
+/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/app/common/common.js");
 
 class TaskZoneElement {
-    constructor(taskBoxElementId) {
-        this.root = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)(taskBoxElementId);
+    constructor(containerId, name = "Unset") {
+        const parent = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.getElementById)(containerId);
+        this.root = (0,_common_common__WEBPACK_IMPORTED_MODULE_0__.cloneTemplateById)(TaskZoneElement.templateId);
+        this.root.id = containerId + "_element";
+        parent.appendChild(this.root);
         this.contents = this.root.querySelector(`.${TaskZoneElement.contentsClass}`);
+        this.name = this.root.querySelector(`.${TaskZoneElement.nameClass}`);
+        this.name.innerText = name;
     }
     getRoot() {
         return this.root;
@@ -864,16 +1143,18 @@ class TaskZoneElement {
         this.getContents().addEventListener(type, callbackfn);
     }
 }
-TaskZoneElement.contentsClass = "decision_box_square_contents";
+TaskZoneElement.templateId = "task_box_template";
+TaskZoneElement.contentsClass = "contents";
+TaskZoneElement.nameClass = "name";
 TaskZoneElement.dropHighlightClass = "highlight";
 //# sourceMappingURL=task_zone_element.js.map
 
 /***/ }),
 
-/***/ "../build/eisenhower/task_zone_new_task_handler.js":
-/*!*********************************************************!*\
-  !*** ../build/eisenhower/task_zone_new_task_handler.js ***!
-  \*********************************************************/
+/***/ "../build/app/eisenhower/task_zone_new_task_handler.js":
+/*!*************************************************************!*\
+  !*** ../build/app/eisenhower/task_zone_new_task_handler.js ***!
+  \*************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -924,17 +1205,17 @@ class TaskZoneNewTaskHandler {
 
 /***/ }),
 
-/***/ "../build/eisenhower/task_zone_task_inserter.js":
-/*!******************************************************!*\
-  !*** ../build/eisenhower/task_zone_task_inserter.js ***!
-  \******************************************************/
+/***/ "../build/app/eisenhower/task_zone_task_inserter.js":
+/*!**********************************************************!*\
+  !*** ../build/app/eisenhower/task_zone_task_inserter.js ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   TaskZoneTaskInserter: () => (/* binding */ TaskZoneTaskInserter)
 /* harmony export */ });
-/* harmony import */ var _task_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_element */ "../build/eisenhower/task_element.js");
+/* harmony import */ var _task_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./task_element */ "../build/app/eisenhower/task_element.js");
 
 class TaskZoneTaskInserter {
     constructor(baseData) {
@@ -993,10 +1274,10 @@ class TaskZoneTaskInserter {
 
 /***/ }),
 
-/***/ "../build/eisenhower/task_zone_task_remover.js":
-/*!*****************************************************!*\
-  !*** ../build/eisenhower/task_zone_task_remover.js ***!
-  \*****************************************************/
+/***/ "../build/app/eisenhower/task_zone_task_remover.js":
+/*!*********************************************************!*\
+  !*** ../build/app/eisenhower/task_zone_task_remover.js ***!
+  \*********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1029,10 +1310,10 @@ class TaskZoneTaskRemover {
 
 /***/ }),
 
-/***/ "../build/eisenhower/threshold_box.js":
-/*!********************************************!*\
-  !*** ../build/eisenhower/threshold_box.js ***!
-  \********************************************/
+/***/ "../build/app/eisenhower/threshold_box.js":
+/*!************************************************!*\
+  !*** ../build/app/eisenhower/threshold_box.js ***!
+  \************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1069,10 +1350,10 @@ class ThresholdBox {
 
 /***/ }),
 
-/***/ "../build/indexed_db_tasks/indexed_db_data.js":
-/*!****************************************************!*\
-  !*** ../build/indexed_db_tasks/indexed_db_data.js ***!
-  \****************************************************/
+/***/ "../build/app/indexed_db_tasks/indexed_db_data.js":
+/*!********************************************************!*\
+  !*** ../build/app/indexed_db_tasks/indexed_db_data.js ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1093,10 +1374,10 @@ IndexedDbData.task = {
 
 /***/ }),
 
-/***/ "../build/indexed_db_tasks/indexed_db_opener.js":
-/*!******************************************************!*\
-  !*** ../build/indexed_db_tasks/indexed_db_opener.js ***!
-  \******************************************************/
+/***/ "../build/app/indexed_db_tasks/indexed_db_opener.js":
+/*!**********************************************************!*\
+  !*** ../build/app/indexed_db_tasks/indexed_db_opener.js ***!
+  \**********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1104,7 +1385,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   IndexedDbOpener: () => (/* binding */ IndexedDbOpener),
 /* harmony export */   IndexedDbOpeningResult: () => (/* binding */ IndexedDbOpeningResult)
 /* harmony export */ });
-/* harmony import */ var _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_db_data */ "../build/indexed_db_tasks/indexed_db_data.js");
+/* harmony import */ var _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_db_data */ "../build/app/indexed_db_tasks/indexed_db_data.js");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1188,17 +1469,17 @@ class IndexedDbOpener {
 
 /***/ }),
 
-/***/ "../build/indexed_db_tasks/indexed_db_task.js":
-/*!****************************************************!*\
-  !*** ../build/indexed_db_tasks/indexed_db_task.js ***!
-  \****************************************************/
+/***/ "../build/app/indexed_db_tasks/indexed_db_task.js":
+/*!********************************************************!*\
+  !*** ../build/app/indexed_db_tasks/indexed_db_task.js ***!
+  \********************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   IndexedDBTask: () => (/* binding */ IndexedDBTask)
 /* harmony export */ });
-/* harmony import */ var _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_db_data */ "../build/indexed_db_tasks/indexed_db_data.js");
+/* harmony import */ var _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_db_data */ "../build/app/indexed_db_tasks/indexed_db_data.js");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1233,6 +1514,9 @@ class IndexedDBTask {
                 addTransaction.onerror = reject;
             });
         });
+    }
+    getKey() {
+        return this.key;
     }
     static newTaskData() {
         return {
@@ -1348,19 +1632,19 @@ class OpenTransactionData {
 
 /***/ }),
 
-/***/ "../build/indexed_db_tasks/indexed_db_task_provider.js":
-/*!*************************************************************!*\
-  !*** ../build/indexed_db_tasks/indexed_db_task_provider.js ***!
-  \*************************************************************/
+/***/ "../build/app/indexed_db_tasks/indexed_db_task_provider.js":
+/*!*****************************************************************!*\
+  !*** ../build/app/indexed_db_tasks/indexed_db_task_provider.js ***!
+  \*****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   IndexedDBTaskProvider: () => (/* binding */ IndexedDBTaskProvider)
 /* harmony export */ });
-/* harmony import */ var _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_db_data */ "../build/indexed_db_tasks/indexed_db_data.js");
-/* harmony import */ var _indexed_db_opener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./indexed_db_opener */ "../build/indexed_db_tasks/indexed_db_opener.js");
-/* harmony import */ var _indexed_db_task__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./indexed_db_task */ "../build/indexed_db_tasks/indexed_db_task.js");
+/* harmony import */ var _indexed_db_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./indexed_db_data */ "../build/app/indexed_db_tasks/indexed_db_data.js");
+/* harmony import */ var _indexed_db_opener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./indexed_db_opener */ "../build/app/indexed_db_tasks/indexed_db_opener.js");
+/* harmony import */ var _indexed_db_task__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./indexed_db_task */ "../build/app/indexed_db_tasks/indexed_db_task.js");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1413,22 +1697,27 @@ class IndexedDBTaskProvider {
     deleteIDBTask(task) {
         return task.delete();
     }
+    closeDb() {
+        var _a;
+        // Used in tests
+        (_a = this.db) === null || _a === void 0 ? void 0 : _a.close();
+    }
 }
 //# sourceMappingURL=indexed_db_task_provider.js.map
 
 /***/ }),
 
-/***/ "../build/misc/github_page_opener.js":
-/*!*******************************************!*\
-  !*** ../build/misc/github_page_opener.js ***!
-  \*******************************************/
+/***/ "../build/app/misc/github_page_opener.js":
+/*!***********************************************!*\
+  !*** ../build/app/misc/github_page_opener.js ***!
+  \***********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   GithubPageOpener: () => (/* binding */ GithubPageOpener)
 /* harmony export */ });
-/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
+/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/app/common/common.js");
 
 class GithubPageOpener {
     constructor() {
@@ -1450,17 +1739,17 @@ GithubPageOpener.sourceUrl = "https://github.com/f3d0rov/planner";
 
 /***/ }),
 
-/***/ "../build/misc/style_switcher.js":
-/*!***************************************!*\
-  !*** ../build/misc/style_switcher.js ***!
-  \***************************************/
+/***/ "../build/app/misc/style_switcher.js":
+/*!*******************************************!*\
+  !*** ../build/app/misc/style_switcher.js ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   StyleSwitcher: () => (/* binding */ StyleSwitcher)
 /* harmony export */ });
-/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/common/common.js");
+/* harmony import */ var _common_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../common/common */ "../build/app/common/common.js");
 
 class StyleModeState {
     constructor(buttonSymbolId, styleClassName) {
@@ -1539,10 +1828,10 @@ StyleSwitcher.bodySwitchingStyleTimeSec = 1;
 
 /***/ }),
 
-/***/ "../build/tasks/cached_task.js":
-/*!*************************************!*\
-  !*** ../build/tasks/cached_task.js ***!
-  \*************************************/
+/***/ "../build/app/tasks/cached_task.js":
+/*!*****************************************!*\
+  !*** ../build/app/tasks/cached_task.js ***!
+  \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1598,17 +1887,17 @@ class CachedTask {
 
 /***/ }),
 
-/***/ "../build/tasks/caching_task_provider.js":
-/*!***********************************************!*\
-  !*** ../build/tasks/caching_task_provider.js ***!
-  \***********************************************/
+/***/ "../build/app/tasks/caching_task_provider.js":
+/*!***************************************************!*\
+  !*** ../build/app/tasks/caching_task_provider.js ***!
+  \***************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   CachingTaskProvider: () => (/* binding */ CachingTaskProvider)
 /* harmony export */ });
-/* harmony import */ var _cached_task__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cached_task */ "../build/tasks/cached_task.js");
+/* harmony import */ var _cached_task__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cached_task */ "../build/app/tasks/cached_task.js");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1713,14 +2002,15 @@ class CachingTaskProvider {
 var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
-/*!************************!*\
-  !*** ../build/main.js ***!
-  \************************/
+/*!****************************!*\
+  !*** ../build/app/main.js ***!
+  \****************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _eisenhower_eisenhower_matrix_task_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./eisenhower/eisenhower_matrix_task_editor */ "../build/eisenhower/eisenhower_matrix_task_editor.js");
-/* harmony import */ var _misc_github_page_opener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./misc/github_page_opener */ "../build/misc/github_page_opener.js");
-/* harmony import */ var _misc_style_switcher__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./misc/style_switcher */ "../build/misc/style_switcher.js");
-/* harmony import */ var _indexed_db_tasks_indexed_db_task_provider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./indexed_db_tasks/indexed_db_task_provider */ "../build/indexed_db_tasks/indexed_db_task_provider.js");
+/* harmony import */ var _eisenhower_eisenhower_matrix_task_editor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./eisenhower/eisenhower_matrix_task_editor */ "../build/app/eisenhower/eisenhower_matrix_task_editor.js");
+/* harmony import */ var _misc_github_page_opener__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./misc/github_page_opener */ "../build/app/misc/github_page_opener.js");
+/* harmony import */ var _misc_style_switcher__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./misc/style_switcher */ "../build/app/misc/style_switcher.js");
+/* harmony import */ var _indexed_db_tasks_indexed_db_task_provider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./indexed_db_tasks/indexed_db_task_provider */ "../build/app/indexed_db_tasks/indexed_db_task_provider.js");
+/* harmony import */ var _eisenhower_size_controller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./eisenhower/size_controller */ "../build/app/eisenhower/size_controller.js");
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1730,6 +2020,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -1752,7 +2043,11 @@ function initTasks() {
         const taskProvider = new _indexed_db_tasks_indexed_db_task_provider__WEBPACK_IMPORTED_MODULE_3__.IndexedDBTaskProvider;
         yield taskProvider.openDB();
         const app = new _eisenhower_eisenhower_matrix_task_editor__WEBPACK_IMPORTED_MODULE_0__.EisenhowerMatrixTaskEditor(taskProvider);
-        app.restoreTasks();
+        yield app.restoreTasks();
+        const sizeController = new _eisenhower_size_controller__WEBPACK_IMPORTED_MODULE_4__.SizeController;
+        window.requestAnimationFrame(() => {
+            sizeController.resize();
+        });
     });
 }
 window.addEventListener('load', main);
