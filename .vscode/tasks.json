@@ -60,13 +60,21 @@
 		},
 
 		{
+			"label": "Run karma",
+			"group": "test",
+
+			"type": "shell",
+			"command": "karma start ./karma.conf.js --single-run"
+		},
+
+		{
 			"label": "Run tests",
 			"group": "test",
 
 			"dependsOn": [
 				"Build test TS",
 				"Pack tests",
-				"Open testing page"
+				"Run karma"
 			],
 			
 			"dependsOrder": "sequence"

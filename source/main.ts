@@ -6,6 +6,7 @@ import { StyleSwitcher } from "./misc/style_switcher";
 import { TaskProvider } from "./tasks/task_provider";
 import { IndexedDBTaskProvider } from "./indexed_db_tasks/indexed_db_task_provider";
 import { SizeController } from "./eisenhower/size_controller";
+import { LocalStorageThemeSaver } from "./misc/theme_saver";
 
 
 function main () {
@@ -20,7 +21,8 @@ function logWelcomeMessage () {
 }
 
 function initMiscTools () {
-	const styleSwitcher = new StyleSwitcher;
+	const themeSaver = new LocalStorageThemeSaver;
+	const styleSwitcher = new StyleSwitcher (themeSaver);
 	const githubPageOpener = new GithubPageOpener();
 }
 
