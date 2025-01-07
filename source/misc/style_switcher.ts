@@ -1,5 +1,7 @@
 
 import { getElementById } from "../common/common";
+import { ThemeSaver } from "./theme_saver";
+
 
 class StyleModeState {
 	static hiddenSymbolClass: string = "nodisplay";
@@ -27,6 +29,10 @@ class StyleModeState {
 	public removeClassFromBody () {
 		document.body.classList.remove (this.styleClassName);
 	}
+	
+	public getClassName (): string {
+		return this.styleClassName;
+	}
 }
 
 
@@ -36,14 +42,28 @@ export class StyleSwitcher {
 	static bodySwitchingStyleTimeSec: number = 1;
 
 	private styles: Array <StyleModeState> = new Array <StyleModeState>;
+	private styleNames: Map <string, number> = new Map <string, number>;
 	private switchStyleButton: HTMLElement;
 	private currentStyleIndex: number = 0;
 	private lastSwitchToken: number = 0;
+	private themeSaver: ThemeSaver;
 
-	constructor () {
+	constructor (themeSaver: ThemeSaver) {
+		this.themeSaver = themeSaver;
 		this.switchStyleButton = this.setupStyleButton();
+
 		this.setDefaultStyles();
-		this.setStyle (0);
+		this.setInitialStyle();
+	}
+
+	private setInitialStyle (): void {
+		const userTheme = this.themeSaver.restoreStyle();
+		if (userTheme && this.styleNames.has (userTheme)) {
+			const userThemeId = this.styleNames.get (userTheme) as number;
+			this.setStyle (userThemeId);
+		} else {
+			this.setStyle (0);
+		}
 	}
 
 	private setupStyleButton (): HTMLElement {
@@ -53,15 +73,19 @@ export class StyleSwitcher {
 	}
 
 	private setDefaultStyles (): void {
-		this.styles.push (new StyleModeState ('dark_mode_button', 'dark_mode'));
-		this.styles.push (new StyleModeState ('light_mode_button', 'light_mode'));
+		this.addStyle (new StyleModeState ('dark_mode_button', 'dark_mode'));
+		this.addStyle (new StyleModeState ('light_mode_button', 'light_mode'));
+	}
+
+	private addStyle (styleModeState: StyleModeState) {
+		const newLength = this.styles.push (styleModeState);
+		this.styleNames.set (styleModeState.getClassName(), newLength - 1);
 	}
 
 	public setNextStyle (): void {
 		this.setBodySwitchingStyleClass();
 		this.removeStyle (this.currentStyleIndex);
-		this.currentStyleIndex = this.getNextStyleIndex();
-		this.setStyle (this.currentStyleIndex);
+		this.setStyle (this.getNextStyleIndex());
 	}
 
 	private getNextStyleIndex (): number {
@@ -74,7 +98,10 @@ export class StyleSwitcher {
 	}
 
 	private setStyle (index: number) {
+		this.currentStyleIndex = index;
+
 		const style = this.styles.at (index) as StyleModeState;
+		this.themeSaver.rememberStyle (style.getClassName());
 		style.applyClassToBody();
 		style.hideButtonSymbol();
 
