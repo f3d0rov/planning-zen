@@ -9,7 +9,7 @@ module.exports = {
   output: {
     filename: 'planner.js',
     globalObject: 'self',
-    path: path.resolve(__dirname, '../dist')
+    path: path.resolve(__dirname, 'dist')
   },
   devtool: 'source-map',
   module: {
