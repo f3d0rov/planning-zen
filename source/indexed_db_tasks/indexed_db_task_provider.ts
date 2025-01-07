@@ -48,4 +48,9 @@ export class IndexedDBTaskProvider implements TaskProvider {
 	private deleteIDBTask (task: IndexedDBTask): void | Promise <void> {
 		return task.delete();
 	}
+
+	public closeDb () {
+		// Used in tests
+		this.db?.close();
+	}
 }

@@ -65,6 +65,362 @@ exports.ThresholdBox = ThresholdBox;
 
 /***/ }),
 
+/***/ "../build/tests/source/indexed_db_tasks/indexed_db_data.js":
+/*!*****************************************************************!*\
+  !*** ../build/tests/source/indexed_db_tasks/indexed_db_data.js ***!
+  \*****************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IndexedDbData = void 0;
+class IndexedDbData {
+}
+exports.IndexedDbData = IndexedDbData;
+IndexedDbData.dbName = "planning_zen";
+IndexedDbData.dbVersion = 1;
+IndexedDbData.taskObjectStoreName = "active_tasks";
+IndexedDbData.task = {
+    name: "task_name",
+    category: "task_cat",
+    index: "task_index"
+};
+//# sourceMappingURL=indexed_db_data.js.map
+
+/***/ }),
+
+/***/ "../build/tests/source/indexed_db_tasks/indexed_db_opener.js":
+/*!*******************************************************************!*\
+  !*** ../build/tests/source/indexed_db_tasks/indexed_db_opener.js ***!
+  \*******************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IndexedDbOpener = exports.IndexedDbOpeningResult = void 0;
+const indexed_db_data_1 = __webpack_require__(/*! ./indexed_db_data */ "../build/tests/source/indexed_db_tasks/indexed_db_data.js");
+class IndexedDbOpeningResult {
+    constructor() {
+        this.success = false;
+        this.error = "";
+    }
+    static success(db) {
+        const result = new IndexedDbOpeningResult;
+        result.db = db;
+        result.success = true;
+        return result;
+    }
+    static failure(reason) {
+        const result = new IndexedDbOpeningResult;
+        result.error = reason;
+        result.success = false;
+        return result;
+    }
+}
+exports.IndexedDbOpeningResult = IndexedDbOpeningResult;
+class IndexedDbOpener {
+    constructor() { }
+    openDb() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.openIDBInPromise(resolve);
+            });
+        });
+    }
+    openIDBInPromise(resolve) {
+        const request = indexedDB.open(indexed_db_data_1.IndexedDbData.dbName, indexed_db_data_1.IndexedDbData.dbVersion);
+        request.onupgradeneeded = ev => this.getDbAndGenerateStructure(ev, resolve);
+        request.onsuccess = ev => this.getOpenedDb(ev, resolve);
+        request.onerror = ev => this.reportFailure(ev, resolve);
+    }
+    getDbAndGenerateStructure(event, resolve) {
+        const db = this.getDatabase(event);
+        if (db === undefined) {
+            return;
+        }
+        this.generateDBStructure(db);
+        const transaction = event.target.transaction;
+        transaction.oncomplete = () => resolve(IndexedDbOpeningResult.success(db));
+    }
+    getOpenedDb(event, resolve) {
+        const target = event.target;
+        const db = target.result;
+        resolve(IndexedDbOpeningResult.success(db));
+    }
+    reportFailure(event, resolve) {
+        var _a;
+        const target = event.target;
+        const error = "" + ((_a = target === null || target === void 0 ? void 0 : target.error) === null || _a === void 0 ? void 0 : _a.message);
+        console.trace(`Failed to open IndexedDB, reason: ${error}`);
+        resolve(IndexedDbOpeningResult.failure(error));
+    }
+    getDatabase(event) {
+        if (event.target === undefined)
+            return undefined;
+        const target = event.target;
+        return target.result;
+    }
+    generateDBStructure(db) {
+        const taskObjectStore = db.createObjectStore(indexed_db_data_1.IndexedDbData.taskObjectStoreName, {
+            autoIncrement: true
+        });
+        taskObjectStore.createIndex(indexed_db_data_1.IndexedDbData.task.name, indexed_db_data_1.IndexedDbData.task.name, { unique: false });
+        taskObjectStore.createIndex(indexed_db_data_1.IndexedDbData.task.category, indexed_db_data_1.IndexedDbData.task.category, { unique: false });
+        taskObjectStore.createIndex(indexed_db_data_1.IndexedDbData.task.index, indexed_db_data_1.IndexedDbData.task.index, { unique: false });
+    }
+}
+exports.IndexedDbOpener = IndexedDbOpener;
+//# sourceMappingURL=indexed_db_opener.js.map
+
+/***/ }),
+
+/***/ "../build/tests/source/indexed_db_tasks/indexed_db_task.js":
+/*!*****************************************************************!*\
+  !*** ../build/tests/source/indexed_db_tasks/indexed_db_task.js ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IndexedDBTask = void 0;
+const indexed_db_data_1 = __webpack_require__(/*! ./indexed_db_data */ "../build/tests/source/indexed_db_tasks/indexed_db_data.js");
+class IndexedDBTask {
+    constructor(db, key) {
+        this.db = db;
+        this.key = key;
+    }
+    static createNew(db) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const key = yield IndexedDBTask.createTaskObjectInDb(db);
+            return new IndexedDBTask(db, key);
+        });
+    }
+    static restoreByKey(db, key) {
+        return new IndexedDBTask(db, key);
+    }
+    static createTaskObjectInDb(db) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transaction = db.transaction(indexed_db_data_1.IndexedDbData.taskObjectStoreName, "readwrite");
+            const store = transaction.objectStore(indexed_db_data_1.IndexedDbData.taskObjectStoreName);
+            const addTransaction = store.add(IndexedDBTask.newTaskData());
+            return new Promise((resolve, reject) => {
+                addTransaction.onsuccess = () => resolve(addTransaction.result.valueOf());
+                addTransaction.onerror = reject;
+            });
+        });
+    }
+    getKey() {
+        return this.key;
+    }
+    static newTaskData() {
+        return {
+            task_name: "New task - double-click to edit",
+            task_cat: "unset",
+            task_index: 0
+        };
+    }
+    getName() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const object = (yield this.openTransactionAndGetMyObject()).object;
+            return object.task_name;
+        });
+    }
+    getOrderIndex() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const object = (yield this.openTransactionAndGetMyObject()).object;
+            return object.task_index;
+        });
+    }
+    getSection() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const object = (yield this.openTransactionAndGetMyObject()).object;
+            return object.task_cat;
+        });
+    }
+    setName(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const modifier = (object) => {
+                object.task_name = name;
+                console.log(`Setting task name to "${name}"`);
+            };
+            return this.modifyMyObject(modifier);
+        });
+    }
+    setOrderIndex(index) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const modifier = (object) => {
+                object.task_index = index;
+                console.log(`Setting task index to ${index}`);
+            };
+            return this.modifyMyObject(modifier);
+        });
+    }
+    setSection(section) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const modifier = (object) => {
+                object.task_cat = section;
+                console.log(`Setting task category to "${section}"`);
+            };
+            return this.modifyMyObject(modifier);
+        });
+    }
+    delete() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const store = this.openTransaction("readwrite");
+            const request = store.delete(IDBKeyRange.only(this.key));
+            return new Promise((resolve, reject) => {
+                request.onsuccess = () => resolve();
+                request.onerror = reject;
+            });
+        });
+    }
+    modifyMyObject(modify) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = yield this.openTransactionAndGetMyObject("readwrite");
+            modify(data.object);
+            const updateRequest = data.store.put(data.object, data.key);
+            return new Promise((resolve, reject) => {
+                updateRequest.onerror = reject;
+                updateRequest.onsuccess = () => resolve();
+            });
+        });
+    }
+    openTransactionAndGetMyObject() {
+        return __awaiter(this, arguments, void 0, function* (mode = "readonly") {
+            const store = this.openTransaction(mode);
+            const key = yield this.getValidKey(store);
+            const object = yield this.getMyObject(store, key);
+            return new OpenTransactionData(object, store, key);
+        });
+    }
+    openTransaction(mode = "readonly") {
+        const transaction = this.db.transaction(indexed_db_data_1.IndexedDbData.taskObjectStoreName, mode);
+        const store = transaction.objectStore(indexed_db_data_1.IndexedDbData.taskObjectStoreName);
+        return store;
+    }
+    getValidKey(store) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const validKeyRequest = store.getKey(IDBKeyRange.only(this.key));
+            return new Promise((resolve, reject) => {
+                validKeyRequest.onsuccess = () => resolve(validKeyRequest.result);
+                validKeyRequest.onerror = reject;
+            });
+        });
+    }
+    getMyObject(store, key) {
+        const readTransaction = store.get(key);
+        return new Promise((resolve, reject) => {
+            readTransaction.onsuccess = () => resolve(readTransaction.result);
+            readTransaction.onerror = reject;
+        });
+    }
+}
+exports.IndexedDBTask = IndexedDBTask;
+class OpenTransactionData {
+    constructor(object, store, key) {
+        this.store = store;
+        this.object = object;
+        this.key = key;
+    }
+}
+//# sourceMappingURL=indexed_db_task.js.map
+
+/***/ }),
+
+/***/ "../build/tests/source/indexed_db_tasks/indexed_db_task_provider.js":
+/*!**************************************************************************!*\
+  !*** ../build/tests/source/indexed_db_tasks/indexed_db_task_provider.js ***!
+  \**************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.IndexedDBTaskProvider = void 0;
+const indexed_db_data_1 = __webpack_require__(/*! ./indexed_db_data */ "../build/tests/source/indexed_db_tasks/indexed_db_data.js");
+const indexed_db_opener_1 = __webpack_require__(/*! ./indexed_db_opener */ "../build/tests/source/indexed_db_tasks/indexed_db_opener.js");
+const indexed_db_task_1 = __webpack_require__(/*! ./indexed_db_task */ "../build/tests/source/indexed_db_tasks/indexed_db_task.js");
+class IndexedDBTaskProvider {
+    constructor() { }
+    openDB() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dbOpener = new indexed_db_opener_1.IndexedDbOpener;
+            const result = yield dbOpener.openDb();
+            this.db = result.db;
+        });
+    }
+    createNewTask() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return indexed_db_task_1.IndexedDBTask.createNew(this.db);
+        });
+    }
+    restoreTasks() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const transaction = this.db.transaction(indexed_db_data_1.IndexedDbData.taskObjectStoreName, "readonly");
+            const store = transaction.objectStore(indexed_db_data_1.IndexedDbData.taskObjectStoreName);
+            const readTransaction = store.getAllKeys();
+            return new Promise((resolve, reject) => {
+                readTransaction.onsuccess = () => {
+                    const keyArray = readTransaction.result;
+                    const taskArray = new Array;
+                    for (let i of keyArray) {
+                        const restoredTask = indexed_db_task_1.IndexedDBTask.restoreByKey(this.db, i.valueOf());
+                        taskArray.push(restoredTask);
+                    }
+                    resolve(taskArray);
+                };
+                readTransaction.onerror = reject;
+            });
+        });
+    }
+    deleteTask(task) {
+        const idbTask = task;
+        return this.deleteIDBTask(idbTask);
+    }
+    deleteIDBTask(task) {
+        return task.delete();
+    }
+    closeDb() {
+        var _a;
+        // Used in tests
+        (_a = this.db) === null || _a === void 0 ? void 0 : _a.close();
+    }
+}
+exports.IndexedDBTaskProvider = IndexedDBTaskProvider;
+//# sourceMappingURL=indexed_db_task_provider.js.map
+
+/***/ }),
+
 /***/ "../build/tests/source/tasks/basic_task.js":
 /*!*************************************************!*\
   !*** ../build/tests/source/tasks/basic_task.js ***!
@@ -148,6 +504,66 @@ exports.BasicTaskProvider = BasicTaskProvider;
 
 /***/ }),
 
+/***/ "../build/tests/source/tasks/cached_task.js":
+/*!**************************************************!*\
+  !*** ../build/tests/source/tasks/cached_task.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CachedTask = void 0;
+class CachedTask {
+    constructor(underlyingTask) {
+        this.underlyingTask = underlyingTask;
+    }
+    cacheInfo() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.cachedName = yield this.underlyingTask.getName();
+            this.cachedCategory = yield this.underlyingTask.getSection();
+            this.cachedIndex = yield this.underlyingTask.getOrderIndex();
+        });
+    }
+    getName() {
+        return this.cachedName;
+    }
+    getSection() {
+        return this.cachedCategory;
+    }
+    getOrderIndex() {
+        return this.cachedIndex;
+    }
+    setName(name) {
+        this.underlyingTask.setName(name);
+        this.cachedName = name;
+    }
+    setSection(cat) {
+        this.underlyingTask.setSection(cat);
+        this.cachedCategory = cat;
+    }
+    setOrderIndex(index) {
+        this.underlyingTask.setOrderIndex(index);
+        this.cachedIndex = index;
+    }
+    getUnderlyingTask() {
+        return this.underlyingTask;
+    }
+}
+exports.CachedTask = CachedTask;
+//# sourceMappingURL=cached_task.js.map
+
+/***/ }),
+
 /***/ "../build/tests/tests/basic_test/basic_test.test.js":
 /*!**********************************************************!*\
   !*** ../build/tests/tests/basic_test/basic_test.test.js ***!
@@ -159,8 +575,11 @@ exports.BasicTaskProvider = BasicTaskProvider;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const chai_1 = __webpack_require__(/*! chai */ "../node_modules/chai/chai.js");
 describe('Basic test', () => {
-    it("should return 4's index", () => {
-        chai_1.assert.equal([1, 2, 4].indexOf(4), 2);
+    it("Running in browser?", () => {
+        chai_1.assert.exists(window);
+    });
+    it("Simple test", () => {
+        chai_1.assert.equal(2 + 2, 4);
     });
 });
 //# sourceMappingURL=basic_test.test.js.map
@@ -273,6 +692,170 @@ describe('ThresholdBox', () => {
 
 /***/ }),
 
+/***/ "../build/tests/tests/indexed_db_tasks/indexed_db_task.test.js":
+/*!*********************************************************************!*\
+  !*** ../build/tests/tests/indexed_db_tasks/indexed_db_task.test.js ***!
+  \*********************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const chai_1 = __webpack_require__(/*! chai */ "../node_modules/chai/chai.js");
+const indexed_db_task_1 = __webpack_require__(/*! ../../source/indexed_db_tasks/indexed_db_task */ "../build/tests/source/indexed_db_tasks/indexed_db_task.js");
+const indexed_db_opener_1 = __webpack_require__(/*! ../../source/indexed_db_tasks/indexed_db_opener */ "../build/tests/source/indexed_db_tasks/indexed_db_opener.js");
+describe('IndexedDBTask', function () {
+    let db;
+    let task;
+    it("Opening a database for testing", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const dbOpener = new indexed_db_opener_1.IndexedDbOpener;
+            const result = yield dbOpener.openDb();
+            db = result.db;
+            chai_1.assert.exists(db);
+        });
+    });
+    it("Creating a new task", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            task = yield indexed_db_task_1.IndexedDBTask.createNew(db);
+            chai_1.assert.exists(task);
+        });
+    });
+    it("Restoring a task", function () {
+        const restoredKey = task.getKey();
+        const restoredTask = indexed_db_task_1.IndexedDBTask.restoreByKey(db, restoredKey);
+        chai_1.assert.exists(restoredTask);
+        chai_1.assert.deepStrictEqual(task.getKey(), restoredTask.getKey());
+    });
+    it("Name manipulation", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const testedName = "Random task name";
+            yield task.setName(testedName);
+            const storedName = yield task.getName();
+            chai_1.assert.equal(storedName, testedName);
+        });
+    });
+    it("Unicode names", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const testedName = "Имя для таксы \u{1F415} 你好世界";
+            yield task.setName(testedName);
+            const storedName = yield task.getName();
+            chai_1.assert.equal(storedName, testedName);
+        });
+    });
+    it("Section manipulation", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const testedSection = 'delegate';
+            yield task.setSection(testedSection);
+            const storedSection = yield task.getSection();
+            chai_1.assert.equal(storedSection, testedSection);
+        });
+    });
+    it("Order index manipulation", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const testedIndex = 123;
+            yield task.setOrderIndex(testedIndex);
+            const storedIndex = yield task.getOrderIndex();
+            chai_1.assert.equal(storedIndex, testedIndex);
+        });
+    });
+    it("Closing the DB", function () {
+        db.close();
+    });
+});
+//# sourceMappingURL=indexed_db_task.test.js.map
+
+/***/ }),
+
+/***/ "../build/tests/tests/indexed_db_tasks/indexed_db_task_provider.test.js":
+/*!******************************************************************************!*\
+  !*** ../build/tests/tests/indexed_db_tasks/indexed_db_task_provider.test.js ***!
+  \******************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const chai_1 = __webpack_require__(/*! chai */ "../node_modules/chai/chai.js");
+const indexed_db_task_provider_1 = __webpack_require__(/*! ../../source/indexed_db_tasks/indexed_db_task_provider */ "../build/tests/source/indexed_db_tasks/indexed_db_task_provider.js");
+const indexed_db_data_1 = __webpack_require__(/*! ../../source/indexed_db_tasks/indexed_db_data */ "../build/tests/source/indexed_db_tasks/indexed_db_data.js");
+function clearDatabase() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const deleteDb = window.indexedDB.deleteDatabase(indexed_db_data_1.IndexedDbData.dbName);
+        return new Promise((resolve, reject) => {
+            deleteDb.onsuccess = () => resolve();
+        });
+    });
+}
+describe('IndexedDBTaskProvider', function () {
+    let taskProvider;
+    it("Opening DB", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield clearDatabase();
+            taskProvider = new indexed_db_task_provider_1.IndexedDBTaskProvider;
+            yield taskProvider.openDB();
+        });
+    });
+    it("Restoring tasks in a newly created DB", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tasks = yield taskProvider.restoreTasks();
+            chai_1.assert.isEmpty(tasks);
+        });
+    });
+    let createdTask;
+    it("Creating a task", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            createdTask = yield taskProvider.createNewTask();
+            chai_1.assert.exists(createdTask);
+        });
+    });
+    it("Restoring a task after it was created", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tasks = yield taskProvider.restoreTasks();
+            chai_1.assert.lengthOf(tasks, 1);
+        });
+    });
+    it("Restoring a task in another instance of IndexedDBTaskProvider (emulation of a new page)", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const newTaskProvider = new indexed_db_task_provider_1.IndexedDBTaskProvider;
+            yield newTaskProvider.openDB();
+            const tasks = yield newTaskProvider.restoreTasks();
+            chai_1.assert.lengthOf(tasks, 1);
+        });
+    });
+    it("Deleting a task", function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield taskProvider.deleteTask(createdTask);
+            const tasks = yield taskProvider.restoreTasks();
+            chai_1.assert.isEmpty(tasks);
+        });
+    });
+    it("Closing the DB", function () {
+        taskProvider.closeDb();
+    });
+});
+//# sourceMappingURL=indexed_db_task_provider.test.js.map
+
+/***/ }),
+
 /***/ "../build/tests/tests/tasks/basic_task.test.js":
 /*!*****************************************************!*\
   !*** ../build/tests/tests/tasks/basic_task.test.js ***!
@@ -352,6 +935,52 @@ describe("BasicTaskProvider", () => {
 
 /***/ }),
 
+/***/ "../build/tests/tests/tasks/cached_task.test.js":
+/*!******************************************************!*\
+  !*** ../build/tests/tests/tasks/cached_task.test.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const chai_1 = __webpack_require__(/*! chai */ "../node_modules/chai/chai.js");
+const basic_task_1 = __webpack_require__(/*! ../../source/tasks/basic_task */ "../build/tests/source/tasks/basic_task.js");
+const cached_task_1 = __webpack_require__(/*! ../../source/tasks/cached_task */ "../build/tests/source/tasks/cached_task.js");
+describe("CachedTask", function () {
+    const initialName = "Hello";
+    let underlyingTask;
+    let cachedTask;
+    it("Creating an underlying task", function () {
+        underlyingTask = new basic_task_1.BasicTask(initialName);
+    });
+    it("Constructing a cached task", function () {
+        cachedTask = new cached_task_1.CachedTask(underlyingTask);
+        chai_1.assert.equal(cachedTask.getUnderlyingTask(), underlyingTask);
+    });
+    it("Name manipulation", function () {
+        const testedName = "aisdgfuhuiasgdh";
+        cachedTask.setName(testedName);
+        chai_1.assert.equal(cachedTask.getName(), testedName);
+        chai_1.assert.equal(underlyingTask.getName(), testedName);
+    });
+    it("Section manipulation", function () {
+        const testedSection = 'schedule';
+        cachedTask.setSection(testedSection);
+        chai_1.assert.equal(cachedTask.getSection(), testedSection);
+        chai_1.assert.equal(underlyingTask.getSection(), testedSection);
+    });
+    it("Order index manipulation", function () {
+        const testedIndex = 434;
+        cachedTask.setOrderIndex(testedIndex);
+        chai_1.assert.equal(cachedTask.getOrderIndex(), testedIndex);
+        chai_1.assert.equal(underlyingTask.getOrderIndex(), testedIndex);
+    });
+});
+//# sourceMappingURL=cached_task.test.js.map
+
+/***/ }),
+
 /***/ "../build/tests sync recursive .test.js$":
 /*!**************************************!*\
   !*** ../build/tests/ sync .test.js$ ***!
@@ -361,8 +990,11 @@ describe("BasicTaskProvider", () => {
 var map = {
 	"./tests/basic_test/basic_test.test.js": "../build/tests/tests/basic_test/basic_test.test.js",
 	"./tests/eisenhower/threshold_box.test.js": "../build/tests/tests/eisenhower/threshold_box.test.js",
+	"./tests/indexed_db_tasks/indexed_db_task.test.js": "../build/tests/tests/indexed_db_tasks/indexed_db_task.test.js",
+	"./tests/indexed_db_tasks/indexed_db_task_provider.test.js": "../build/tests/tests/indexed_db_tasks/indexed_db_task_provider.test.js",
 	"./tests/tasks/basic_task.test.js": "../build/tests/tests/tasks/basic_task.test.js",
-	"./tests/tasks/basic_task_provider.test.js": "../build/tests/tests/tasks/basic_task_provider.test.js"
+	"./tests/tasks/basic_task_provider.test.js": "../build/tests/tests/tasks/basic_task_provider.test.js",
+	"./tests/tasks/cached_task.test.js": "../build/tests/tests/tasks/cached_task.test.js"
 };
 
 
@@ -7040,7 +7672,7 @@ deep-eql/index.js:
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;

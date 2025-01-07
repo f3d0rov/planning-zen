@@ -31,6 +31,10 @@ export class IndexedDBTask implements Task {
 		});
 	}
 
+	public getKey (): any {
+		return this.key;
+	}
+
 	private static newTaskData (): any {
 		return {
 			task_name: "New task - double-click to edit",

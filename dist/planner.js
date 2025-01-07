@@ -1511,6 +1511,9 @@ class IndexedDBTask {
             });
         });
     }
+    getKey() {
+        return this.key;
+    }
     static newTaskData() {
         return {
             task_name: "New task - double-click to edit",
@@ -1689,6 +1692,11 @@ class IndexedDBTaskProvider {
     }
     deleteIDBTask(task) {
         return task.delete();
+    }
+    closeDb() {
+        var _a;
+        // Used in tests
+        (_a = this.db) === null || _a === void 0 ? void 0 : _a.close();
     }
 }
 //# sourceMappingURL=indexed_db_task_provider.js.map
