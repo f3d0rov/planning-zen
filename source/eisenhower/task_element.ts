@@ -6,7 +6,7 @@ import { CachedTask } from "../tasks/cached_task";
 
 export class TaskElement {
 	static taskTemplateId: string = "task_template";
-	static taskDragType: string = "taskid";
+	static taskDragType: string = "text/plain";
 
 	private element: HTMLElement;
 	private task: CachedTask;
