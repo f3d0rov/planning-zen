@@ -586,6 +586,7 @@ SizeControllerHTML.containerId = "eisenhower";
 SizeControllerHTML.matrixClass = "eisenhower_matrix";
 SizeControllerHTML.taskBoxClass = "matrix_task_box";
 SizeControllerHTML.utilityBoxClass = "matrix_utility_box";
+SizeControllerHTML.landscapePadding = "landscape_padding";
 SizeControllerHTML.verticalClass = "vertical";
 SizeControllerHTML.horizontalClass = "horizontal";
 SizeControllerHTML.hiddenUtilBoxClass = "template";
@@ -604,6 +605,7 @@ class SizeController {
     initUniqueElements() {
         this.freespace = (0,_common_common__WEBPACK_IMPORTED_MODULE_1__.getElementById)(SizeControllerHTML.freespaceId);
         this.container = (0,_common_common__WEBPACK_IMPORTED_MODULE_1__.getElementById)(SizeControllerHTML.containerId);
+        this.landscapePadding = (0,_common_common__WEBPACK_IMPORTED_MODULE_1__.getElementById)(SizeControllerHTML.landscapePadding);
         this.matrix = this.freespace.querySelector(`.${SizeControllerHTML.matrixClass}`);
     }
     initRepeatedElements() {
@@ -647,6 +649,7 @@ class SizeController {
         this.removeClassFromElements(this.horizontalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
         this.setWidthToElements(this.horizontalUtilBoxes, size / 2);
         this.setHeightToElements(this.horizontalUtilBoxes, size);
+        this.landscapePadding.style.width = `${size / 2}px`;
     }
     hideVerticalUtilBoxes() {
         this.addClassToElements(this.verticalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
@@ -655,6 +658,7 @@ class SizeController {
         this.hideHorizontalUtilBoxes();
         this.removeClassFromElements(this.verticalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
         this.setHeightToElements(this.verticalUtilBoxes, size / 2);
+        this.landscapePadding.style.width = `0px`;
     }
     hideHorizontalUtilBoxes() {
         this.addClassToElements(this.horizontalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);

@@ -15,10 +15,11 @@
 
 .matrix_title.side {
 	writing-mode: sideways-lr;
+	width: 40px;
 }
 
-.matrix_title.top {
-
+#task_name_padding {
+	width: 40px;
 }
 
 .matrix_task_box {

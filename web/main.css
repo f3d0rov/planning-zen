@@ -65,3 +65,21 @@ body.switching_style, body.switching_style * {
 
 	padding: 10px;
 }
+
+.notice {
+	position: absolute;
+	bottom: 10px;
+	width: 100%;
+	text-align: center;
+
+	color: var(--notice-text-color);
+}
+
+.notice a {
+	color: var(--notice-link-color);
+	transition: color 0.1s ease-in-out;
+}
+
+.notice a:hover {
+	color: var(--notice-link-active-color);
+}

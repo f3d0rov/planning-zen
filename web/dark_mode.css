@@ -51,4 +51,8 @@
 	
 	--delete-dropoff-box-text-highlight-color: red;
 	--delete-dropoff-box-border-highlight-color: red;
+
+	--notice-text-color: gray;
+	--notice-link-color: #5dbb5d;
+	--notice-link-active-color: lime;
 }

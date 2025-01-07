@@ -8,6 +8,7 @@ class SizeControllerHTML {
 	public static matrixClass = "eisenhower_matrix";
 	public static taskBoxClass = "matrix_task_box";
 	public static utilityBoxClass = "matrix_utility_box";
+	public static landscapePadding = "landscape_padding";
 	public static verticalClass = "vertical";
 	public static horizontalClass = "horizontal";
 	public static hiddenUtilBoxClass = "template";
@@ -30,13 +31,14 @@ type Orientation = 'landscape' | 'portrait';
 
 
 export class SizeController {
-	public freespace!: HTMLElement;
-	public container!: HTMLElement;
-	public matrix!: HTMLElement;
+	private freespace!: HTMLElement;
+	private container!: HTMLElement;
+	private matrix!: HTMLElement;
+	private landscapePadding!: HTMLElement;
 
-	public taskBoxes: Array <HTMLElement> = new Array <HTMLElement>;
-	public verticalUtilBoxes: Array <HTMLElement> = new Array <HTMLElement>;
-	public horizontalUtilBoxes: Array <HTMLElement> = new Array <HTMLElement>;
+	private taskBoxes: Array <HTMLElement> = new Array <HTMLElement>;
+	private verticalUtilBoxes: Array <HTMLElement> = new Array <HTMLElement>;
+	private horizontalUtilBoxes: Array <HTMLElement> = new Array <HTMLElement>;
 
 
 	constructor () {
@@ -52,6 +54,7 @@ export class SizeController {
 	private initUniqueElements () {
 		this.freespace = getElementById (SizeControllerHTML.freespaceId);
 		this.container = getElementById (SizeControllerHTML.containerId);
+		this.landscapePadding = getElementById (SizeControllerHTML.landscapePadding);
 		this.matrix = this.freespace.querySelector (`.${SizeControllerHTML.matrixClass}`) as HTMLElement;
 	}
 
@@ -101,6 +104,7 @@ export class SizeController {
 		this.removeClassFromElements (this.horizontalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
 		this.setWidthToElements (this.horizontalUtilBoxes, size / 2);
 		this.setHeightToElements (this.horizontalUtilBoxes, size);
+		this.landscapePadding.style.width = `${size / 2}px`;
 	}
 
 	private hideVerticalUtilBoxes () {
@@ -111,6 +115,7 @@ export class SizeController {
 		this.hideHorizontalUtilBoxes();
 		this.removeClassFromElements (this.verticalUtilBoxes, SizeControllerHTML.hiddenUtilBoxClass);
 		this.setHeightToElements (this.verticalUtilBoxes, size / 2);
+		this.landscapePadding.style.width = `0px`;
 	}
 
 	private hideHorizontalUtilBoxes () {
