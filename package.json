@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "description": "A simple planning and priority management app.",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "build-app-ts": "tsc --build ./tsconfig.json",
+    "pack-app": "cd web && npx webpack && cd ..",
+    "build-app": "npm run build-app-ts && npm run pack-app",
+    "build-tests-ts": "tsc --build ./tests-tsconfig.json",
+    "pack-tests": "cd tests && npx webpack && cd ..",
+    "build-tests": "npm run build-tests-ts && npm run pack-tests",
+    "build": "npm run build-app && npm run build-tests"
+  },
   "author": "f3d0rov",
   "license": "MIT",
   "devDependencies": {
