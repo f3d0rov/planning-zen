@@ -1,0 +1,106 @@
+
+.decision_box_task {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+
+	width: fit-content;
+	height: fit-content;
+	max-width: 100%;
+
+	padding: 5px;
+	border-radius: 5px;
+	
+	color: var(--decision-box-task-text-color);
+	background-color: var(--decision-box-task-background-color);
+	font-size: var(--task-font-size);
+
+	word-break: break-word;
+	line-break: normal;
+	overflow-x: none;
+
+	box-sizing: border-box;
+
+	transition: background-color 0.1s ease-in-out,
+				transform 0.1s ease-in-out,
+				box-shadow 0.1s ease-in-out;
+
+	z-index: 10;
+}
+
+.decision_box_task:hover {
+	color: var(--decision-box-task-hover-text-color);
+	background-color: var(--decision-box-task-hover-background-color);
+	box-shadow: var(--decision-box-task-hover-box-shadow);
+	transform: scale(105%);
+	cursor: move;
+}
+
+.decision_box_add_task_button {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+
+	height: fit-content;
+	width: 18px;
+	
+	padding: 5px;
+	border-radius: 5px;
+
+	color: var(--decision-box-add-task-color);
+	background-color: var(--decision-box-add-task-background-color);
+	
+	transition: background-color 0.1s ease-in-out,
+				box-shadow 0.1s ease-in-out;
+}
+
+.decision_box_add_task_button:hover {
+	cursor: pointer;
+	color: var(--decision-box-add-task-hover-text-color);
+	background-color: var(--decision-box-add-task-hover-background-color);
+}
+
+
+.decision_box_add_task_button:active {
+	cursor: pointer;
+	background-color: var(--decision-box-add-task-active-background-color);
+	
+	box-shadow: var(--decision-box-add-task-active-box-shadow);
+}
+
+.decision_box_add_task_button_symbol {
+	color: var(--decision-box-add-task-color);
+	fill: var(--decision-box-add-task-color);
+}
+
+.decision_box_add_task_button:hover .decision_box_add_task_button_symbol {
+	color: var(--decision-box-add-task-hover-color);
+	fill: var(--decision-box-add-task-hover-color);
+}
+
+.decision_box_add_task_button:active .decision_box_add_task_button_symbol {
+	color: var(--decision-box-add-task-active-color);
+	fill: var(--decision-box-add-task-active-color);
+}
+
+.decision_box_task_edit_input {
+	background-color: transparent;
+	border: none;
+	color: var(--decision-box-task-text-color);
+	
+	font-family: "Finlandica", serif;
+	font-optical-sizing: auto;
+	font-size: var(--task-font-size);
+
+	resize: none;
+
+	margin: 0;
+	padding: 0px;
+
+	overflow-y: hidden;
+	height: 1px; /* Resized automatically */
+}
+
+.decision_box_task_edit_input:focus-within {
+	outline: none;
+}
