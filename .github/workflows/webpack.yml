@@ -26,7 +26,7 @@ jobs:
         npm run build
     
     - name: Upload static files
-      uses: actions/upload-pages-artifact
+      uses: actions/upload-pages-artifact@v3
       with:
         path: web/
 
@@ -37,6 +37,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
