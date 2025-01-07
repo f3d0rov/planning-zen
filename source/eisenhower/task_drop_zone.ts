@@ -41,9 +41,9 @@ export class TaskDropZone {
 	private handleDragover (event: DragEvent): void {
 		event.preventDefault();
 		const taskId = this.getTaskId (event);
-		if (taskId !== undefined) {
+		// if (taskId !== undefined) {
 			this.reportTaskEnter();
-		}
+		// }
 	}
 
 	private handleDrop (event: DragEvent): void {
@@ -59,9 +59,9 @@ export class TaskDropZone {
 	private handleDragend (event: DragEvent): void {
 		event.preventDefault();
 		const taskId = this.getTaskId (event);
-		if (taskId !== undefined) {
+		// if (taskId !== undefined) {
 			this.reportTaskLeave();
-		}
+		// }
 	}
 
 	private getTaskId (event: DragEvent): number | undefined {
