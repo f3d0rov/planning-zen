@@ -23,7 +23,6 @@ jobs:
     - name: Install Chrome to run tests
       uses: browser-actions/setup-chrome@v1
       with:
-        install-dependencies: true
         install-chromedriver: true
     
     - name: Log Chrome version
