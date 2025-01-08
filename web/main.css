@@ -67,12 +67,11 @@ body.switching_style, body.switching_style * {
 }
 
 .notice {
-	position: absolute;
-	bottom: 10px;
 	width: 100%;
 	text-align: center;
 
 	color: var(--notice-text-color);
+	padding: 10px;
 }
 
 .notice a {
