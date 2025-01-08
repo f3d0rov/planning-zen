@@ -10,7 +10,8 @@
     "build-tests-ts": "tsc --build ./tests-tsconfig.json",
     "pack-tests": "cd tests && npx webpack && cd ..",
     "build-tests": "npm run build-tests-ts && npm run pack-tests",
-    "build": "npm run build-app && npm run build-tests"
+    "build": "npm run build-app && npm run build-tests",
+    "test": "karma start ./karma.conf.js --single-run"
   },
   "author": "f3d0rov",
   "license": "MIT",
@@ -21,6 +22,7 @@
     "chai": "^5.1.2",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
+    "karma-cli": "^2.0.0",
     "karma-firefox-launcher": "^2.1.3",
     "karma-mocha": "^2.0.1",
     "mocha": "^11.0.1",
