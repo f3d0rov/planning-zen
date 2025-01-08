@@ -1,5 +1,6 @@
 import { BasicPoint } from "../common/basic_point";
 import { getElementById } from "../common/common";
+import { BasicLinkedList } from "../common/linked_list";
 
 
 class SizeControllerHTML {
@@ -77,18 +78,32 @@ export class SizeController {
 	}
 
 	public resize (): void {
-		console.log ('resize!');
 		const freeSpace = this.getFreeSpace();
 		const orientation: Orientation = freeSpace.x > freeSpace.y ? 'landscape' : 'portrait';
-		console.log (`Orientation: ${orientation}`);
-		const taskSize = this.taskBoxes.at (0)!.getBoundingClientRect().width;
-		console.log (`Task size: ${taskSize}`);
+		const taskSize = this.getTaskBoxSize (freeSpace, orientation);
+		this.container.style.setProperty ('--task-box-width', `${taskSize}px`);
 		this.showOrientedUtilBoxes (orientation, taskSize);
 	}
 
 	private getFreeSpace (): BasicPoint {
 		const fsbbox = this.freespace.getBoundingClientRect();
 		return new BasicPoint (fsbbox.width, fsbbox.height);
+	}
+
+	private getTaskBoxSize (freeSpace: BasicPoint, orientation: Orientation): number {
+		let sizeForMaxWidth: number = 400;
+		let sizeForMaxHeight: number = 400;
+
+		// This is not good (changes in CSS or HTML can lead to issues) but is the simplest solution I came up with.
+		if (orientation == "portrait") {
+			sizeForMaxWidth = (freeSpace.x - 108) / 2;
+			sizeForMaxHeight = (freeSpace.y - 61) / 2.5;
+		} else {
+			sizeForMaxWidth = (freeSpace.x - 108) / 3;
+			sizeForMaxHeight = (freeSpace.y - 61) / 2;
+		}
+
+		return Math.min (sizeForMaxWidth, sizeForMaxHeight);
 	}
 
 	private showOrientedUtilBoxes (orientation: Orientation, size: number): void {

@@ -1,4 +1,8 @@
 
+.eisenhower {
+	--task-box-width: 400px;
+}
+
 .eisenhower_matrix {
 	border: none;
 	border-collapse: collapse;
@@ -42,10 +46,8 @@
 	box-sizing: border-box;
 	
 	flex: 0 auto;
-	min-height: 256px;
-	max-height: 100%;
-	width: 400px;
-	height: 400px;
+	width: var(--task-box-width);
+	height: var(--task-box-width);
 	margin: 4px;
 }
 
