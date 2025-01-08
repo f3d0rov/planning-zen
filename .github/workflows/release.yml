@@ -1,4 +1,4 @@
-name: NodeJS with Webpack
+name: Publish
 
 on:
   push:
@@ -19,11 +19,24 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-
+    
+    - name: Install Chrome to run tests
+      uses: browser-actions/setup-chrome@v1
+      with:
+        install-dependencies: true
+        install-chromedriver: true
+    
+    - name: Log Chrome version
+      run: chrome --version
+    
     - name: Build
       run: |
         npm install
         npm run build
+    
+    - name: Test
+      run: |
+        npm run test
     
     - name: Upload static files
       uses: actions/upload-pages-artifact@v3
