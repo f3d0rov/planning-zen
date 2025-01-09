@@ -38,8 +38,3 @@ jobs:
     - name: Test
       run: |
         npm run test
-    
-    - name: Upload static files
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: web/
