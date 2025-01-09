@@ -6,8 +6,8 @@ Track your tasks and sort them with the help of Eisenhower Matrix.
 
 ## Usage
 
-Double-click on empty space in one of squares the to create a task. Double-click a task to edit it. Drag tasks to move
-them between squares, to delete them or to mark them as complete. That's basically it. Your information is stored
+Double-click on an empty space in one of squares the to create a task. Double-click a task to edit it. Drag tasks to
+move them between squares, to delete them or to mark them as complete. That's basically it. Your information is stored
 locally in your browser's [embedded database](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
 
 ## Why should you use this?
@@ -31,16 +31,17 @@ one of the primary methods of input. Mobile experince is going to be either comp
 - __You want your task management app to maintain any information other than the name of the task__. You might have
 noticed that this app is very light on features.
 
-Still not sure? [Just try it](f3d0rov.github.io/planning-zen/). Click some buttons. Drag stuff around. You'll learn
+Still not sure? [Just try it](https://www.f3d0rov.github.io/planning-zen/). Click some buttons. Drag stuff around. You'll learn
 _everything_ the app can do in _less than a minute_.
 
 # Developer guide
 
-Planning Zen is a web application written primarily with __TypeScript__, __HTML__ and __CSS__.
+Planning Zen is a web application written primarily with __[TypeScript](https://www.typescriptlang.org/)__,
+__[HTML](https://www.youtube.com/watch?v=dQw4w9WgXcQ)__ and __[CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)__.
 __[npm](https://docs.npmjs.com/about-npm)__ is used as the package manager for the dependencies, among them:
 
 - __[webpack](https://webpack.js.org/)__, used to compile the .js build files into compact packages;
-- __[Mocha](https://mochajs.org/)__ and __[Chai](https://www.chaijs.com/)__, used for testing; _I learned how to test TS
+- __[Mocha](https://mochajs.org/)__ and __[Chai](https://www.chaijs.com/)__, used for testing. _I learned how to test TS
 code about a week ago so the test coverage honestly sucks;_
 - __[Karma](https://karma-runner.github.io/latest/index.html)__, used to run the tests in a headless version of Chrome.
 
