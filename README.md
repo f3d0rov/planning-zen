@@ -31,7 +31,7 @@ one of the primary methods of input. Mobile experince is going to be either comp
 - __You want your task management app to maintain any information other than the name of the task__. You might have
 noticed that this app is very light on features.
 
-Still not sure? [Just try it](https://www.f3d0rov.github.io/planning-zen/). Click some buttons. Drag stuff around. You'll learn
+Still not sure? [Just try it](https://f3d0rov.github.io/planning-zen/). Click some buttons. Drag stuff around. You'll learn
 _everything_ the app can do in _less than a minute_.
 
 # Developer guide
