@@ -7,8 +7,9 @@ Track your tasks and sort them with the help of Eisenhower Matrix.
 ## Usage
 
 Double-click on an empty space in one of squares the to create a task. Double-click a task to edit it. Drag tasks to
-move them between squares, to delete them or to mark them as complete. That's basically it. Your information is stored
-locally in your browser's [embedded database](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
+move them between squares, to delete them or to mark them as complete. See the list of completed tasks by clicking the 
+checkbox button at the top-right. That's basically it. Your information is stored locally in your browser's
+[embedded database](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
 
 ## Why should you use this?
 
@@ -77,9 +78,16 @@ loaded.
 - `common` contains functions and classes that are often used in other modules to avoid code duplication.
 - `tasks` contains the high-level `Task` and `TaskProvider` interfaces that can be used to implement different ways of
 storing task-related information.
-- `indexed_db_tasks` contains the implementations of `Task` and `TaskProvider` that use
-[IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) for persistent storage.
-- `eisenhower` contains the code for the UI of the app. _Undoubtedly the biggest mess here_.
+- `completed_tasks` contains the high-lever `CompletedTask` and `CompletedTaskProvider` interfaces that can be
+implemented to modify the way completed tasks are stored.
+- `idb` contains some of the common functions used by
+[IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)-based modules.
+- `idb_tasks` contains the implementations of `Task` and `TaskProvider` that use IndexedDB for persistent storage.
+- `idb_completed_tasks` contains the IndexedDB-based implementations of `CompletedTaskProvider` used to store the list
+of completed tasks.
+- `eisenhower` contains the code for the UI of the app, specifically - the Eisenhower Matrix. _Undoubtedly the biggest
+mess here_.
+- `completed_tasks_view` contains the code for the UI of the list of completed tasks.
 - `misc` contains some other minor tools like the `StyleSwitcher` that allows users to switch between dark and light
 themes.
 
