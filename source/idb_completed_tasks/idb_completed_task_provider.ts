@@ -55,7 +55,6 @@ export class IdbCompletedTaskProvider implements CompletedTaskProvider {
 
 	public async restoreCompletedTasks (): Promise <Array <CompletedTask>> {
 		const keys = await getIdbStoreKeys (this.db!, IdbData.completedTasksStore);
-		console.log (`Key count: ${keys.length}`);
 		const store = this.openStore ("readonly");
 		const tasks = new Array <IdbCompletedTask>;
 		
