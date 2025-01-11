@@ -1,4 +1,5 @@
 
+import { CompletedTaskProvider } from "../completed_tasks/completed_task_provider";
 import { CachedTask } from "../tasks/cached_task";
 import { CachingTaskProvider } from "../tasks/caching_task_provider";
 import { TaskSection } from "../tasks/task";
@@ -11,12 +12,14 @@ import { TaskZone } from "./task_zone";
 
 export class EisenhowerMatrixTaskEditor {
 	private taskProvider: CachingTaskProvider;
+	private completedTaskProvier: CompletedTaskProvider;
 	private managedTasks: IndexedTasks = new IndexedTasks;
 
 	private zones: Map <TaskSection, TaskZone> = new Map <TaskSection, TaskZone>;
 
-	constructor (taskProvider: TaskProvider) {
+	constructor (taskProvider: TaskProvider, completedTaskProvier: CompletedTaskProvider) {
 		this.taskProvider = new CachingTaskProvider (taskProvider);
+		this.completedTaskProvier = completedTaskProvier;
 	}
 
 	public async restoreTasks () {
@@ -60,7 +63,7 @@ export class EisenhowerMatrixTaskEditor {
 		const ids = ["done_task_box_horizontal", "done_task_box_vertical"];
 		for (let i of ids) {
 			const newDropoff = new CompleteTaskDropoff (i);
-			newDropoff.setTaskCompletionCallback (taskId => this.changeTaskCategory (taskId, 'done'));
+			newDropoff.setTaskCompletionCallback (taskId => this.completeTask (taskId));
 		}
 	}
 
@@ -126,6 +129,12 @@ export class EisenhowerMatrixTaskEditor {
 	private finalizeTaskCallback (task: CachedTask): void {
 		const id = this.managedTasks.addTask (task);
 		this.displayTask (task, id);
+	}
+
+	private async completeTask (taskId: number): Promise <void> {
+		const task = this.managedTasks.getTask (taskId);
+		await this.completedTaskProvier.completeTask (task);
+		return this.deleteTask (taskId);
 	}
 
 	private deleteTask (id: number): Promise <void> {

@@ -7,6 +7,11 @@ import { TaskProvider } from "./tasks/task_provider";
 import { IndexedDBTaskProvider } from "./indexed_db_tasks/indexed_db_task_provider";
 import { SizeController } from "./eisenhower/size_controller";
 import { LocalStorageThemeSaver } from "./misc/theme_saver";
+import { BasicCompletedTaskProvider } from "./completed_tasks/basic_completed_task_provider";
+import { CompletedTasksOverlay } from "./completed_tasks_view/completed_tasks_overlay";
+import { CachedTask } from "./tasks/cached_task";
+import { BasicTask } from "./tasks/basic_task";
+import { CompletedTasksOverlayOpener } from "./completed_tasks_view/completed_tasks_overlay_opener";
 
 
 function main () {
@@ -29,8 +34,16 @@ function initMiscTools () {
 async function initTasks () {
 	const taskProvider = new IndexedDBTaskProvider;
 	await taskProvider.openDB();
-	const app = new EisenhowerMatrixTaskEditor (taskProvider);
+
+	const completedTaskProvider = new BasicCompletedTaskProvider;
+
+
+	const app = new EisenhowerMatrixTaskEditor (taskProvider, completedTaskProvider);
 	await app.restoreTasks();
+
+
+	const completedTasksOverlay = new CompletedTasksOverlay (completedTaskProvider);
+	const overlayOpener = new CompletedTasksOverlayOpener (completedTasksOverlay);
 	
 	const sizeController = new SizeController;
 	window.requestAnimationFrame (() => {
