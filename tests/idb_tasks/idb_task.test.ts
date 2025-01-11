@@ -1,29 +1,29 @@
 
 import { assert } from "chai";
-import { IndexedDBTask } from "../../source/indexed_db_tasks/indexed_db_task";
-import { IndexedDbOpener } from "../../source/indexed_db_tasks/indexed_db_opener";
+import { IdbTask } from "../../source/idb_tasks/idb_task";
+import { IdbOpener } from "../../source/idb/idb_opener";
 import { TaskSection } from "../../source/tasks/task";
 
 
-describe ('IndexedDBTask', function () {
+describe ('IdbTask', function () {
 	let db: IDBDatabase | undefined;
-	let task: IndexedDBTask | undefined;
+	let task: IdbTask | undefined;
 
 	it ("Opening a database for testing", async function () {
-		const dbOpener = new IndexedDbOpener;
+		const dbOpener = new IdbOpener;
 		const result = await dbOpener.openDb();
 		db = result.db;
 		assert.exists (db);
 	});
 
 	it ("Creating a new task", async function () {
-		task = await IndexedDBTask.createNew (db!);
+		task = await IdbTask.createNew (db!);
 		assert.exists (task);
 	});
 
 	it ("Restoring a task", function () {
 		const restoredKey = task!.getKey();
-		const restoredTask = IndexedDBTask.restoreByKey (db!, restoredKey);
+		const restoredTask = IdbTask.restoreByKey (db!, restoredKey);
 		assert.exists (restoredTask);
 		assert.deepStrictEqual (task!.getKey(), restoredTask.getKey());
 	});

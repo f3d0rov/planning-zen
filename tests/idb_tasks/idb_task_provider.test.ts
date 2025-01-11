@@ -1,24 +1,21 @@
 
 import { assert } from "chai";
-import { IndexedDBTaskProvider } from "../../source/indexed_db_tasks/indexed_db_task_provider";
-import { IndexedDBTask } from "../../source/indexed_db_tasks/indexed_db_task";
-import { IndexedDbData } from "../../source/indexed_db_tasks/indexed_db_data";
+import { IdbTaskProvider } from "../../source/idb_tasks/idb_task_provider";
+import { IdbTask } from "../../source/idb_tasks/idb_task";
+import { IdbOpener } from "../../source/idb/idb_opener";
+import { clearDatabase } from "../indexeddb";
 
 
-async function clearDatabase (): Promise <void> {
-	const deleteDb = window.indexedDB.deleteDatabase (IndexedDbData.dbName);
-	return new Promise ((resolve, reject) => {
-		deleteDb.onsuccess = () => resolve();
+describe ('IdbTaskProvider', function () {
+	let taskProvider: IdbTaskProvider | undefined;
+
+	it ("Clearing the database before testing", async function () {
+		await clearDatabase();
 	});
-}
-
-
-describe ('IndexedDBTaskProvider', function () {
-	let taskProvider: IndexedDBTaskProvider | undefined;
 
 	it ("Opening DB", async function () {
-		await clearDatabase();
-		taskProvider = new IndexedDBTaskProvider;
+		const dbOpener = new IdbOpener;
+		taskProvider = new IdbTaskProvider (dbOpener);
 		await taskProvider.openDB();
 	});
 
@@ -27,7 +24,7 @@ describe ('IndexedDBTaskProvider', function () {
 		assert.isEmpty (tasks);
 	});
 
-	let createdTask: IndexedDBTask | undefined;
+	let createdTask: IdbTask | undefined;
 
 	it ("Creating a task", async function () {
 		createdTask = await taskProvider!.createNewTask();
@@ -39,10 +36,14 @@ describe ('IndexedDBTaskProvider', function () {
 		assert.lengthOf (tasks, 1);
 	});
 
-	it ("Restoring a task in another instance of IndexedDBTaskProvider (emulation of a new page)", async function () {
-		const newTaskProvider = new IndexedDBTaskProvider;
+	it ("Restoring a task in another instance of IdbTaskProvider (emulation of a new page)", async function () {
+		const dbOpener = new IdbOpener;
+		const newTaskProvider = new IdbTaskProvider (dbOpener);
+	
 		await newTaskProvider.openDB();
 		const tasks = await newTaskProvider.restoreTasks();
+		newTaskProvider!.closeDb();
+		
 		assert.lengthOf (tasks, 1);
 	});
 
