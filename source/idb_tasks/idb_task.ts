@@ -1,9 +1,10 @@
 
 import { Task, TaskSection } from "../tasks/task";
-import { IndexedDbData } from "./indexed_db_data";
+import { IdbData } from "../idb/idb_data";
+import { requestAsPromise } from "../idb/idb_tools";
 
 
-export class IndexedDBTask implements Task {
+export class IdbTask implements Task {
 	private db: IDBDatabase;
 	private key: string | number | Object;
 
@@ -12,23 +13,20 @@ export class IndexedDBTask implements Task {
 		this.key = key;
 	}
 
-	public static async createNew (db: IDBDatabase): Promise <IndexedDBTask> {
-		const key = await IndexedDBTask.createTaskObjectInDb (db);
-		return new IndexedDBTask (db, key);
+	public static async createNew (db: IDBDatabase): Promise <IdbTask> {
+		const key = await IdbTask.createTaskObjectInDb (db);
+		return new IdbTask (db, key);
 	}
 
 	public static restoreByKey (db: IDBDatabase, key: string | number | Object) {
-		return new IndexedDBTask (db, key);
+		return new IdbTask (db, key);
 	}
 
 	private static async createTaskObjectInDb (db: IDBDatabase): Promise <string | number | Object> {
-		const transaction = db.transaction (IndexedDbData.taskObjectStoreName, "readwrite");
-		const store = transaction.objectStore (IndexedDbData.taskObjectStoreName);
-		const addTransaction = store.add (IndexedDBTask.newTaskData());
-		return new Promise ((resolve, reject) => {
-			addTransaction.onsuccess = () => resolve (addTransaction.result.valueOf());
-			addTransaction.onerror = reject;
-		});
+		const transaction = db.transaction (IdbData.tasksStore, "readwrite");
+		const store = transaction.objectStore (IdbData.tasksStore);
+		const addRequest = store.add (IdbTask.newTaskData());
+		return requestAsPromise (addRequest);
 	}
 
 	public getKey (): any {
@@ -83,12 +81,9 @@ export class IndexedDBTask implements Task {
 	}
 
 	public async delete (): Promise <void> {
-		const store = this.openTransaction ("readwrite");
+		const store = this.openStore ("readwrite");
 		const request = store.delete (IDBKeyRange.only (this.key));
-		return new Promise ((resolve, reject) => {
-			request.onsuccess = () => resolve();
-			request.onerror = reject;
-		});
+		return requestAsPromise (request);
 	}
 
 	private async modifyMyObject (modify: (object: any) => void): Promise <void> {
@@ -97,42 +92,31 @@ export class IndexedDBTask implements Task {
 		modify (data.object);
 		
 		const updateRequest = data.store.put (data.object, data.key);
-		return new Promise ((resolve, reject) => {
-			updateRequest.onerror = reject;
-			updateRequest.onsuccess = () => resolve();
-		});
+		await requestAsPromise (updateRequest);
 	}
 
 
 	private async openTransactionAndGetMyObject (mode: IDBTransactionMode = "readonly"): Promise <OpenTransactionData> {
-		const store = this.openTransaction (mode);
+		const store = this.openStore (mode);
 		const key = await this.getValidKey (store);
 		const object = await this.getMyObject (store, key);
 		return new OpenTransactionData (object, store, key);
 	}
 
-	private openTransaction (mode: IDBTransactionMode = "readonly"): IDBObjectStore {
-		const transaction = this.db.transaction (IndexedDbData.taskObjectStoreName, mode);
-		const store = transaction.objectStore (IndexedDbData.taskObjectStoreName);
+	private openStore (mode: IDBTransactionMode = "readonly"): IDBObjectStore {
+		const transaction = this.db.transaction (IdbData.tasksStore, mode);
+		const store = transaction.objectStore (IdbData.tasksStore);
 		return store;
 	}
 
 	private async getValidKey (store: IDBObjectStore): Promise <any> {
 		const validKeyRequest = store.getKey (IDBKeyRange.only (this.key));
-
-		return new Promise ((resolve, reject) => {
-			validKeyRequest.onsuccess = () => resolve (validKeyRequest.result);
-			validKeyRequest.onerror = reject;
-		});
+		return requestAsPromise (validKeyRequest);
 	}
 
 	private getMyObject (store: IDBObjectStore, key: any): Promise <any> {
 		const readTransaction = store.get (key);
-
-		return new Promise ((resolve, reject) => {
-			readTransaction.onsuccess = () => resolve (readTransaction.result);
-			readTransaction.onerror = reject;
-		});
+		return requestAsPromise (readTransaction);
 	}
 }
 

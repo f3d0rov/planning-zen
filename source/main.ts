@@ -1,17 +1,14 @@
 
-import { BasicTaskProvider } from "./tasks/basic_task_provider";
 import { EisenhowerMatrixTaskEditor } from "./eisenhower/eisenhower_matrix_task_editor";
 import { GithubPageOpener } from "./misc/github_page_opener";
 import { StyleSwitcher } from "./misc/style_switcher";
-import { TaskProvider } from "./tasks/task_provider";
-import { IndexedDBTaskProvider } from "./indexed_db_tasks/indexed_db_task_provider";
+import { IdbTaskProvider } from "./idb_tasks/idb_task_provider";
 import { SizeController } from "./eisenhower/size_controller";
 import { LocalStorageThemeSaver } from "./misc/theme_saver";
-import { BasicCompletedTaskProvider } from "./completed_tasks/basic_completed_task_provider";
 import { CompletedTasksOverlay } from "./completed_tasks_view/completed_tasks_overlay";
-import { CachedTask } from "./tasks/cached_task";
-import { BasicTask } from "./tasks/basic_task";
 import { CompletedTasksOverlayOpener } from "./completed_tasks_view/completed_tasks_overlay_opener";
+import { IdbOpener } from "./idb/idb_opener";
+import { IdbCompletedTaskProvider } from "./idb_completed_tasks/idb_completed_task_provider";
 
 
 function main () {
@@ -32,15 +29,16 @@ function initMiscTools () {
 }
 
 async function initTasks () {
-	const taskProvider = new IndexedDBTaskProvider;
+	const indexedDBOpener = new IdbOpener;
+
+	const taskProvider = new IdbTaskProvider (indexedDBOpener);
 	await taskProvider.openDB();
 
-	const completedTaskProvider = new BasicCompletedTaskProvider;
-
+	const completedTaskProvider = new IdbCompletedTaskProvider (indexedDBOpener);
+	await completedTaskProvider.openDb();
 
 	const app = new EisenhowerMatrixTaskEditor (taskProvider, completedTaskProvider);
 	await app.restoreTasks();
-
 
 	const completedTasksOverlay = new CompletedTasksOverlay (completedTaskProvider);
 	const overlayOpener = new CompletedTasksOverlayOpener (completedTasksOverlay);
