@@ -55,4 +55,22 @@
 	--notice-text-color: gray;
 	--notice-link-color: #5dbb5d;
 	--notice-link-active-color: lime;
+	
+	--completed-task-list-overlay-background: rgba(0,0,0,0.3);
+	--completed-task-list-background: var(--decision-box-square-background);
+	--completed-task-list-header-background: var(--accent-color);
+	--completed-task-list-header-color: var(--text-color);
+	--completed-task-list-header-text-size: 20px;
+
+
+	--completed-task-list-header-button-background-color: var(--header-button-background-color);
+	--completed-task-list-header-button-symbol-color: var(--header-button-symbol-color);
+
+	--completed-task-list-header-button-background-hover-color: var(--header-button-background-hover-color);
+	--completed-task-list-header-button-symbol-hover-color: var(--header-button-symbol-hover-color);
+
+	--completed-task-list-header-button-background-active-color: var(--header-button-background-active-color);
+	--completed-task-list-header-button-symbol-active-color: var(--header-button-symbol-active-color);
+	
+	--no-completed-tasks-message-text-color: #4a4a4a;
 }

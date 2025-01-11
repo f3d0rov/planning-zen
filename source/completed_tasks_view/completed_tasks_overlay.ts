@@ -87,7 +87,7 @@ export class CompletedTasksOverlay {
 	private createElementsForTasks (groupedTasks: Array <Array <CompletedTask>>): void {
 		for (let dailyTaskList of groupedTasks) {
 			const dailyTasks = new DailyTasks (dailyTaskList);
-			this.tasksContainer.appendChild (dailyTasks.getElement());
+			this.tasksContainer.prepend (dailyTasks.getElement());
 		}
 	}
 
