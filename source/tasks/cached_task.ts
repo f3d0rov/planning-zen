@@ -2,7 +2,7 @@
 import { Task, TaskSection } from "./task";
 
 
-export class CachedTask {
+export class CachedTask implements Task{
 	private underlyingTask: Task;
 
 	private cachedName: string | undefined;
