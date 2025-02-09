@@ -23,7 +23,7 @@ export class TaskZoneTaskInserter {
 	}
 
 	private deleteTaskIfNameIsEmpty (taskId: number, task: CachedTask): void {
-		if (task.getName() === "") {
+		if (task.getName().trim() === "") {
 			this.data.deleteTask (taskId);
 		}
 	}
