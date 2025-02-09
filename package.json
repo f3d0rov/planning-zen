@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "build-app-ts": "tsc --build ./tsconfig.json",
-    "pack-app": "cd web && npx webpack && cd ..",
-    "build-app": "npm run build-app-ts && npm run pack-app",
+    "pack-app-dev": "cd web && npx webpack --config dev.webpack.config.js && cd ..",
+    "pack-app-prod": "cd web && npx webpack --config prod.webpack.config.js && cd ..",
+    "build-app-dev": "npm run build-app-ts && npm run pack-app-dev",
+    "build-app-prod": "npm run build-app-ts && npm run pack-app-prod",
     "build-tests-ts": "tsc --build ./tests-tsconfig.json",
     "pack-tests": "cd tests && npx webpack && cd ..",
     "build-tests": "npm run build-tests-ts && npm run pack-tests",
-    "build": "npm run build-app && npm run build-tests",
+    "build": "npm run build-app-dev && npm run build-tests",
+    "build-prod": "npm run build-app-prod && npm run build-tests",
     "test": "karma start ./karma.conf.js --single-run"
   },
   "author": "f3d0rov",
