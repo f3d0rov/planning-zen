@@ -15,6 +15,9 @@ export interface LinkedList <T> {
 	contains (value: T): boolean;
 	forEach (callbackfn: (value: T) => boolean): void
 	iterate (): LinkedListIterator <T>;
+
+	get length(): number;
+	get array(): Array <T>;
 }
 
 
@@ -180,6 +183,20 @@ export class BasicLinkedList <T> implements LinkedList <T> {
 	
 	public iterate(): LinkedListIterator<T> {
 		return new BasicLinkedListIterator <T> (this.head);
+	}
+
+	
+	public get length(): number {
+		let count = 0;
+		this.forEachItem (item => {count++; return true});
+		return count;
+	}
+
+	
+	public get array(): Array <T> {
+		let array = new Array <T>;
+		this.forEach (item => {array.push (item); return true});
+		return array;
 	}
 }
 

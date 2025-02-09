@@ -5,7 +5,7 @@ import { CompletedTaskProvider } from "../completed_tasks/completed_task_provide
 import { IdbData } from "../idb/idb_data";
 import { IdbOpener } from "../idb/idb_opener";
 import { getIdbStoreKeys, requestAsPromise } from "../idb/idb_tools";
-import { CachedTask } from "../tasks/cached_task";
+import { Task } from "../tasks/task";
 
 
 export class IdbCompletedTask extends BasicCompletedTask {
@@ -38,8 +38,9 @@ export class IdbCompletedTaskProvider implements CompletedTaskProvider {
 		this.db = openingResult.db;
 	}
 
-	public async completeTask (task: CachedTask): Promise <CompletedTask> {
-		const completedTask = new IdbCompletedTask (task.getName(), new Date());
+	public async completeTask (task: Task): Promise <CompletedTask> {
+		const taskName = await task.getName();
+		const completedTask = new IdbCompletedTask (taskName, new Date());
 		const serialized = this.serialize (completedTask);
 		const key = await this.storeInDb (serialized);
 		completedTask.setKey (key.valueOf());

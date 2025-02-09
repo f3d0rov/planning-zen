@@ -1,5 +1,5 @@
 
-import { CachedTask } from "../tasks/cached_task";
+import { Task } from "../tasks/task";
 import { BasicCompletedTask } from "./basic_comleted_task";
 import { CompletedTask } from "./comleted_task";
 import { CompletedTaskProvider } from "./completed_task_provider";
@@ -8,8 +8,9 @@ import { CompletedTaskProvider } from "./completed_task_provider";
 export class BasicCompletedTaskProvider implements CompletedTaskProvider {
 	private createdTasks: Array <BasicCompletedTask> = new Array <BasicCompletedTask>
 
-	public completeTask (task: CachedTask): CompletedTask {
-		const newCompletedTask = new BasicCompletedTask(task.getName(), new Date());
+	public async completeTask (task: Task): Promise <CompletedTask> {
+		const taskName = await task.getName();
+		const newCompletedTask = new BasicCompletedTask(taskName, new Date());
 		this.createdTasks.push (newCompletedTask);
 		return newCompletedTask;
 	}
