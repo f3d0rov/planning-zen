@@ -123,9 +123,9 @@
 
 .completed_task_list .date_line {
 	text-align: center;
-	color: var(--completed-task-list-date-color);
+	color: gray;
 }
 
-.completed_task_list .day_tasks {
-	color: var(--completed-task-list-text-color);
+.completed_task_list .item {
+	padding-left: 10px;
 }

@@ -1,6 +1,6 @@
 
 import { assert } from "chai";
-import { LocalStorageThemeSaver, ThemeSaver } from "../../source/themes/theme_saver";
+import { LocalStorageThemeSaver, ThemeSaver } from "../../source/misc/theme_saver";
 
 describe (
 	"LocalStorageStyleSaver",
