@@ -28,7 +28,7 @@
 			"group": "build",
 
 			"type": "shell",
-			"command": "npx webpack",
+			"command": "npx webpack --config dev.webpack.config.js",
 
 			"options": {
 				"cwd": "${workspaceFolder}/web/"
