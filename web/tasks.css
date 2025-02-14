@@ -36,6 +36,53 @@
 	cursor: move;
 }
 
+.decision_box_add_task_button {
+	display: flex;
+	flex-flow: row;
+	align-items: center;
+
+	height: fit-content;
+	width: 18px;
+	
+	padding: 5px;
+	border-radius: 5px;
+
+	color: var(--decision-box-add-task-color);
+	background-color: var(--decision-box-add-task-background-color);
+	
+	transition: background-color 0.1s ease-in-out,
+				box-shadow 0.1s ease-in-out;
+}
+
+.decision_box_add_task_button:hover {
+	cursor: pointer;
+	color: var(--decision-box-add-task-hover-text-color);
+	background-color: var(--decision-box-add-task-hover-background-color);
+}
+
+
+.decision_box_add_task_button:active {
+	cursor: pointer;
+	background-color: var(--decision-box-add-task-active-background-color);
+	
+	box-shadow: var(--decision-box-add-task-active-box-shadow);
+}
+
+.decision_box_add_task_button_symbol {
+	color: var(--decision-box-add-task-color);
+	fill: var(--decision-box-add-task-color);
+}
+
+.decision_box_add_task_button:hover .decision_box_add_task_button_symbol {
+	color: var(--decision-box-add-task-hover-color);
+	fill: var(--decision-box-add-task-hover-color);
+}
+
+.decision_box_add_task_button:active .decision_box_add_task_button_symbol {
+	color: var(--decision-box-add-task-active-color);
+	fill: var(--decision-box-add-task-active-color);
+}
+
 .decision_box_task_edit_input {
 	background-color: transparent;
 	border: none;

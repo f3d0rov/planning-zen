@@ -31,6 +31,16 @@
 
 	--task-font-size: 16px;
 
+	--decision-box-add-task-color: var(--text-color);
+	--decision-box-add-task-background-color: var(--accent-color);
+
+	--decision-box-add-task-hover-color: var(--text-color);
+	--decision-box-add-task-hover-background-color: #47ec47;
+	
+	--decision-box-add-task-active-color: var(--text-color);
+	--decision-box-add-task-active-background-color: #47ec47;
+	--decision-box-add-task-active-box-shadow: inset rgb(49, 49, 49) 0 3px 3px;
+
 	--decision-box-highlight-border-color: lime;
 
 	--dropoff-box-text-color: var(--text-color);
@@ -46,8 +56,6 @@
 	--notice-link-color: #5dbb5d;
 	--notice-link-active-color: lime;
 	
-	--completed-task-list-text-color: var(--text-color);
-	--completed-task-list-date-color: gray;
 	--completed-task-list-overlay-background: rgba(0,0,0,0.3);
 	--completed-task-list-background: var(--decision-box-square-background);
 	--completed-task-list-header-background: var(--accent-color);
