@@ -1,6 +1,6 @@
 
-import { CustomTheme } from "./misc/custom_theme";
-import { ThemeList } from "./misc/theme_list";
+import { CustomTheme } from "./themes/custom_theme";
+import { ThemeList } from "./themes/theme_list";
 
 export function initCustomThemes (themes: ThemeList): void {
 	themes.addTheme (new CustomTheme ({

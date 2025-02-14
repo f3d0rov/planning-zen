@@ -1,17 +1,17 @@
 
 import { EisenhowerMatrixTaskEditor } from "./eisenhower/eisenhower_matrix_task_editor";
 import { GithubPageOpener } from "./misc/github_page_opener";
-import { ThemeManager } from "./misc/theme_manager";
+import { ThemeManager } from "./themes/theme_manager";
 import { IdbTaskProvider } from "./idb_tasks/idb_task_provider";
 import { SizeController } from "./eisenhower/size_controller";
-import { LocalStorageThemeSaver } from "./misc/theme_saver";
+import { LocalStorageThemeSaver } from "./themes/theme_saver";
 import { CompletedTasksOverlay } from "./completed_tasks_view/completed_tasks_overlay";
 import { CompletedTasksOverlayOpener } from "./completed_tasks_view/completed_tasks_overlay_opener";
 import { IdbOpener } from "./idb/idb_opener";
 import { IdbCompletedTaskProvider } from "./idb_completed_tasks/idb_completed_task_provider";
-import { ThemeList } from "./misc/theme_list";
+import { ThemeList } from "./themes/theme_list";
 import { initCustomThemes } from "./themes";
-import { BuiltinTheme } from "./misc/builtin_theme";
+import { BuiltinTheme } from "./themes/builtin_theme";
 
 
 function main () {
