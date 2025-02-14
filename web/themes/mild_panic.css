@@ -1,53 +1,53 @@
 
-.light_mode {
-	--accent-color: #8aee8a;
+.mild_panic {
+	--accent-color: #ff4a4a;
 	--background-color: white;
-	--text-color: black;
-	--task-criteria-color: rgb(197, 197, 197);
+	--text-color: white;
+	--task-criteria-color: rgb(94, 94, 94);
 
 
-
-	--header-button-background-color: #5dbb5d;
+	
+	--header-button-background-color: #d52424;
 	--header-button-symbol-color: var(--text-color);
 
-	--header-button-background-hover-color: #73ea73;
+	--header-button-background-hover-color: #a41616;
 	--header-button-symbol-hover-color: var(--text-color);
 
 	--header-button-background-active-color: var(--text-color);
-	--header-button-symbol-active-color: #5dbb5d;
-	
+	--header-button-symbol-active-color: #a41616;
 
 
-	--decision-box-square-name: gray;
-	--decision-box-square-background: #f0f0c6;
+
+	--decision-box-square-name: #4a4a4a;
+	--decision-box-square-background: #ffbdbd;
 
 	
 	--decision-box-task-text-color: var(--text-color);
 	--decision-box-task-background-color: var(--accent-color);
 
 	--decision-box-task-hover-text-color: var(--text-color);
-	--decision-box-task-hover-background-color: #47ec47;
-	--decision-box-task-hover-box-shadow: rgb(156, 156, 156) 0 3px 3px;
+	--decision-box-task-hover-background-color: #ff0808;
+	--decision-box-task-hover-box-shadow: rgb(26, 26, 26) 0 3px 3px;
 
 	--task-font-size: 16px;
 
-	--decision-box-highlight-border-color: lime;
+	--decision-box-highlight-border-color: var(--accent-color);
+	
+	--dropoff-box-text-color: rgb(88, 88, 88);
+	--dropoff-box-border-color: rgb(88, 88, 88);
 
-	--dropoff-box-text-color: var(--text-color);
-	--dropoff-box-border-color: var(--text-color);
-
-	--dropoff-box-text-highlight-color: #5dbb5d;
-	--dropoff-box-border-highlight-color: #5dbb5d;
-
+	--dropoff-box-text-highlight-color: green;
+	--dropoff-box-border-highlight-color: green;
+	
 	--delete-dropoff-box-text-highlight-color: red;
 	--delete-dropoff-box-border-highlight-color: red;
 
 	--notice-text-color: gray;
-	--notice-link-color: #5dbb5d;
-	--notice-link-active-color: lime;
+	--notice-link-color: #bb1d1d;
+	--notice-link-active-color: red;
 	
-	--completed-task-list-text-color: var(--text-color);
-	--completed-task-list-date-color: gray;
+	--completed-task-list-text-color: black;
+	--completed-task-list-date-color: #555;
 	--completed-task-list-overlay-background: rgba(0,0,0,0.3);
 	--completed-task-list-background: var(--decision-box-square-background);
 	--completed-task-list-header-background: var(--accent-color);

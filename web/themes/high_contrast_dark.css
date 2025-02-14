@@ -1,0 +1,140 @@
+
+.high_contrast_dark {
+	--primary-contrast-color: white;
+	--secondary-contrast-color: orange;
+	--background-contrast-color: black;
+
+	--accent-color: var(--background-contrast-color);
+	--background-color: var(--background-contrast-color);
+	--text-color: var(--primary-contrast-color);
+	--task-criteria-color: var(--primary-contrast-color);
+
+	--outline-accent-color: var(--primary-contrast-color);
+
+
+	--header-button-background-color: var(--background-contrast-color);
+	--header-button-symbol-color: var(--text-color);
+
+	--header-button-background-hover-color: var(--background-contrast-color);
+	--header-button-symbol-hover-color: var(--secondary-contrast-color);
+
+	--header-button-background-active-color: var(--secondary-contrast-color);
+	--header-button-symbol-active-color: var(--background-contrast-color);
+
+
+
+	--decision-box-square-name: var(--primary-contrast-color);
+	--decision-box-square-background: var(--background-contrast-color);
+
+	
+	--decision-box-task-text-color: var(--text-color);
+	--decision-box-task-background-color: var(--background-contrast-color);
+
+	--decision-box-task-hover-text-color: var(--text-color);
+	--decision-box-task-hover-background-color: var(--background-contrast-color);
+	--decision-box-task-hover-box-shadow: unset;
+
+	--task-font-size: 16px;
+
+	--decision-box-highlight-border-color: var(--secondary-contrast-color);
+	
+	--dropoff-box-text-color: var(--text-color);
+	--dropoff-box-border-color: var(--text-color);
+
+	--dropoff-box-text-highlight-color: var(--primary-contrast-color);
+	--dropoff-box-border-highlight-color: var(--primary-contrast-color);
+	
+	--delete-dropoff-box-text-highlight-color: var(--primary-contrast-color);
+	--delete-dropoff-box-border-highlight-color: var(--primary-contrast-color);
+
+	--notice-text-color: var(--primary-contrast-color);
+	--notice-link-color: var(--primary-contrast-color);
+	--notice-link-active-color: var(--secondary-contrast-color);
+
+	--completed-task-list-text-color: var(--primary-contrast-color);
+	--completed-task-list-date-color: var(--primary-contrast-color);
+	--completed-task-list-overlay-background: rgba(0,0,0,0.5);
+	--completed-task-list-background: var(--background-contrast-color);
+	--completed-task-list-header-background: var(--accent-color);
+	--completed-task-list-header-color: var(--text-color);
+	--completed-task-list-header-text-size: 20px;
+
+
+	--completed-task-list-header-button-background-color: var(--header-button-background-color);
+	--completed-task-list-header-button-symbol-color: var(--header-button-symbol-color);
+
+	--completed-task-list-header-button-background-hover-color: var(--header-button-background-hover-color);
+	--completed-task-list-header-button-symbol-hover-color: var(--header-button-symbol-hover-color);
+
+	--completed-task-list-header-button-background-active-color: var(--header-button-background-active-color);
+	--completed-task-list-header-button-symbol-active-color: var(--header-button-symbol-active-color);
+	
+	--no-completed-tasks-message-text-color: var(--primary-contrast-color);
+
+	.header {
+		outline: solid var(--primary-contrast-color) 2px;
+	}
+
+	.completed_task_list {
+		outline: solid var(--outline-accent-color) 2px;
+	}
+
+	.completed_task_list_header {
+		outline: solid var(--outline-accent-color) 2px;
+	}
+
+	.header_button {
+		outline: solid var(--outline-accent-color) 2px;
+	}
+
+	.header_button:hover {
+		outline: dashed var(--secondary-contrast-color) 2px;
+	}
+
+	.completed_task_list_header .button {
+		outline: solid var(--outline-accent-color) 2px;
+	}
+
+	.completed_task_list_header .button:hover {
+		outline: dashed var(--secondary-contrast-color) 2px;
+	}
+
+	.notice a {
+		border-radius: 3px;
+		padding: 3px;
+	}
+
+	.notice a:hover {
+		outline: dashed var(--secondary-contrast-color) 2px;
+		color: var(--secondary-contrast-color);
+	}
+	
+	.task_box {
+		outline: solid 3px var(--primary-contrast-color);
+	}
+
+	.decision_box_task {
+		outline: solid 2px var(--primary-contrast-color);
+	}
+	
+	.decision_box_task:hover {
+		outline: dashed 2px var(--secondary-contrast-color);
+		transform: none !important;
+	}
+
+	.util_box .highlight_box {
+		border: var(--primary-contrast-color) solid 3px;
+	}
+
+	.util_box.highlight {
+		scale: none !important;
+	}
+	
+	.util_box.highlight .highlight_box {
+		border: var(--secondary-contrast-color) dashed 3px;
+	}
+
+	.thrash .util_box.highlight .highlight_box {
+		border: var(--secondary-contrast-color) dashed 3px;
+	}
+}
