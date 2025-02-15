@@ -3,7 +3,7 @@ import { assert } from "chai";
 import { LocalStorageThemeSaver, ThemeSaver } from "../../source/themes/theme_saver";
 
 describe (
-	"LocalStorageStyleSaver",
+	"LocalStorageThemeSaver",
 
 	() => {
 		it ("Clearing local storage", function () {
