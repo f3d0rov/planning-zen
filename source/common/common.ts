@@ -49,3 +49,17 @@ var templateCloner = new TemplateCloner;
 export function cloneTemplateById (id: string): HTMLElement {
 	return templateCloner.cloneTemplateById (id);
 }
+
+
+export function getURLForObject (path: string) {
+	return getNormalizedURL() + path;
+}
+
+function getNormalizedURL (): string {
+	let base = `${document.URL}`;
+	if (base.endsWith ('/') === false) {
+		return base + '/';
+	} else {
+		return base;
+	}
+}
