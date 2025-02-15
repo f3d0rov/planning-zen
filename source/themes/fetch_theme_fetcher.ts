@@ -1,4 +1,5 @@
 
+import { getURLForObject } from "../common/common";
 import { ThemeFetcher } from "./theme_fetcher";
 
 
@@ -10,14 +11,16 @@ export class FetchThemeFetcher implements ThemeFetcher {
 	}
 
 	private getThemePath (themeClass: string): string {
-		return `/themes/${themeClass}.css`;
+		const path = `themes/${themeClass}.css`;
+		return getURLForObject (path);
 	}
 
 	private fetchThemeBody (path: string): Promise <Response> {
 		return fetch (path, {
 			method: 'GET',
 			mode: 'same-origin',
-			cache: 'default'
+			cache: 'default',
+			credentials: 'omit'
 		});
 	}
 
