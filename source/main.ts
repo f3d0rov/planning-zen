@@ -12,6 +12,9 @@ import { IdbCompletedTaskProvider } from "./idb_completed_tasks/idb_completed_ta
 import { ThemeList } from "./themes/theme_list";
 import { initCustomThemes } from "./themes";
 import { BuiltinTheme } from "./themes/builtin_theme";
+import { BasicButton } from "./common/button";
+import { BodyClassThemeApplicator } from "./themes/theme_applicator";
+import { NextThemeIconIndicator } from "./themes/theme_indicator";
 
 
 function main () {
@@ -31,10 +34,17 @@ async function initMiscTools () {
 }
 
 async function initThemes () {
+	const switchStyleButtonId = "switch_style_button";
+
 	const themeList = initThemeList();
 	const themeSaver = new LocalStorageThemeSaver;
-	const themeManager = new ThemeManager (themeList, themeSaver);
+	const themeApplicator = new BodyClassThemeApplicator;
+	const themeManager = new ThemeManager (themeApplicator, themeList, themeSaver);
 	await themeManager.initializeTheme();
+	themeManager.setThemeIndicator (new NextThemeIconIndicator);
+
+	const switchThemeButton = new BasicButton (switchStyleButtonId);
+	themeManager.setSwitchThemeButton (switchThemeButton);
 }
 
 function initThemeList (): ThemeList {
