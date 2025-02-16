@@ -1,5 +1,5 @@
 
-import { getElementById } from "../common/common";
+import { BasicButton, Button } from "../common/button";
 import { CompletedTasksOverlay } from "./completed_tasks_overlay";
 
 
@@ -7,15 +7,11 @@ export class CompletedTasksOverlayOpener {
 	static buttonId = "open_completed_tasks";
 
 	private overlay: CompletedTasksOverlay;
-	private button: HTMLElement;
+	private button: Button
 
 	constructor (overlay: CompletedTasksOverlay) {
 		this.overlay = overlay;
-		this.button = getElementById (CompletedTasksOverlayOpener.buttonId);
-		this.setupEvents();
-	}
-
-	private setupEvents () {
-		this.button.addEventListener ('click', ev => this.overlay.show());
+		this.button = new BasicButton (CompletedTasksOverlayOpener.buttonId);
+		this.button.setClickCallback (() => this.overlay.show());
 	}
 }

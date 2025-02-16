@@ -73,7 +73,7 @@ export class ThemeManager {
 
 	private async loadNextTheme (): Promise <void> {
 		const nextThemeId = this.getNextThemeIndex();
-		this.loadTheme (nextThemeId);
+		return this.loadTheme (nextThemeId);
 	}
 
 	private async loadTheme (themeId: number): Promise <void> {
