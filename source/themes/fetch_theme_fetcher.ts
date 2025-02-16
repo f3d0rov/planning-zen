@@ -24,12 +24,8 @@ export class FetchThemeFetcher implements ThemeFetcher {
 		});
 	}
 
-	private requestAsText (request: Promise <Response>): Promise <string> {
-		return new Promise ((resolve, reject) => {
-			request.then (
-				response => resolve (response.text()),
-				reason => reject (reason)
-			);
-		});
+	private async requestAsText (request: Promise <Response>): Promise <string> {
+		const response = await request;
+		return response.text();
 	}
 }
